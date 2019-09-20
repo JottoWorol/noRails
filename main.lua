@@ -2,6 +2,7 @@
 _W = display.actualContentWidth
 _H = display.actualContentHeight
 local physics = require("physics")
+physics.start()
 
 ------ Swipe block ----------
 local swipeDirection = ""
@@ -139,11 +140,11 @@ end
 
 --------- Train Parametrs BLock -------------
 
-local train = display.newImageRect( mainGroup, Osheet,  3, (_W)* 0.15, 128 )
+local train = display.newImageRect( mainGroup, Osheet,  3, (_W)* 0.15, _H*0.225 )
       train.x = display.contentCenterX - train.width * 0.2
       train.y = display.contentCenterY * 2
 
-local speedToTime = 5000
+local speedToTime = 10000 --миллисекудны
 
 coal = require("coal")
 function getCoalConsumption() --litres per 0.1 seconds of total 100 litres
@@ -151,7 +152,7 @@ function getCoalConsumption() --litres per 0.1 seconds of total 100 litres
 end
 --------- End of Tranin Parametrs BLock ------
 
---------- Spawnr BLock --------------
+--------- Spawner BLock --------------
 
 local blockTable = {}
 local previousRow = 0
@@ -167,7 +168,7 @@ local function createBlock()
       newBlock.myName = "enemy"
 
       newBlock.x = CELL_WIDTH * i - 15
-      newBlock.y = -10
+      newBlock.y = -200
       transition.to(newBlock, {time = speedToTime, y = _H + 1000})
 
       grid[i] = grid [i] + 1
@@ -180,7 +181,7 @@ local function createBlock()
       newBlock.myName = "coal"
 
       newBlock.x = CELL_WIDTH * i - 15
-      newBlock.y = -10
+      newBlock.y = -200
       transition.to(newBlock, {time = speedToTime, y = _H + 1000})
 
       grid[i] = grid [i] + 1
@@ -211,5 +212,5 @@ local function gameLoop ()
   end
 end
 
-gameLoopTimer = timer.performWithDelay( 600, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay( 1100, gameLoop, 0 )
 --------- end of game loop -----
