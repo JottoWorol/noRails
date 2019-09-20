@@ -20,13 +20,13 @@
   --Фон индикатора
   indicatorBackground:setStrokeColor( 0,0,0 )  --чёрная рамка
   indicatorBackground.strokeWidth = frameWidth
-  indicatorBackground:setFillColor( 0,0) --заполняем прозрачностью
+  indicatorBackground:setFillColor( 0,0,0) --заполняем прозрачностью | FrAzen: Фон - зелёная трава - так что бэк я заменил на чёрный
   --стартовый цвет индикатора
   indicatorValue:setFillColor( 0,1,0)
 
   local function recoverCoal() --для восстановления до сотки
     coalAmount=maxCoalAmount --максимальное значение топлива
-    
+
   end
 
   local function getCoalPercentage()
@@ -55,4 +55,3 @@
 
 
 coalConsumeTimer = timer.performWithDelay(coalPeriod, consumeCoal, 0 )
-
