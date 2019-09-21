@@ -47,7 +47,7 @@ local CELL_WIDTH = (_W - 20 ) / 5
 --------- Train Parametrs BLock -------------
 
 local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
-      train.x = display.contentCenterX
+      train.x = CELL_WIDTH*3
       train.y = bottomY
 			train.anchorX = train.width/2
 			train.anchorY = train.height*2/3
@@ -63,13 +63,6 @@ function getCoalConsumption() --сколько единиц топлива из 
 	return 3
 end
 
-local function onTrainCollision( self, event )
-    if (event.targer.myName ~= "tapRail" and event.targer.myName ~= "rightRail" and event.targer.myName ~= "leftRail") then
-     print("YOU DIED")
-		end
-end
-train.collision = onTrainCollision
-train:addEventListener( "collision" )
 
 --------- End of Tranin Parametrs BLock ------
 
