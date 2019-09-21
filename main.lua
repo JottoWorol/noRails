@@ -138,7 +138,7 @@ end
 
 function setRail(dir, turned)
 
-	if (railsAmount < 8) then
+	if (lastObject.y > 0) then
 
 				newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.myName = dir
@@ -163,6 +163,7 @@ function setRail(dir, turned)
 					setRail("tapRail", "right")
 				end
 	end
+
 end
 
 
