@@ -1,5 +1,6 @@
 -----Блок топлива---------
-
+-- noMoreCoal() - вызывается, когда закончилось топливо
+-- recoverCoal() - вызывается, чтобы восстановить топливо
 
   local coalAmount = 0 --from 0 to 100
   local maxCoalAmount = 100
@@ -14,7 +15,7 @@
   local frameWidth = 1.5
 
   --создаём два прямоугольника - для рамки и значения/заполнения
-  local indicatorBackground = display.newRect(indicatorPosX, indicatorPosY, indicatorWidth, indicatorHeight)
+  local indicatorBackground = display.newRect(uiGroup,indicatorPosX, indicatorPosY, indicatorWidth, indicatorHeight)
   local indicatorValue = display.newRect(indicatorPosX, indicatorPosY, indicatorWidth - frameWidth*2, indicatorHeight - frameWidth*2)
 
   --Фон индикатора
@@ -33,6 +34,10 @@
     return coalAmount/maxCoalAmount
   end
 
+  local function noMoreCoal()
+    recoverCoal()
+  end
+
   local function updateCoalIndicator()
     --красиво меняем цвет
     indicatorValue:setFillColor((getCoalPercentage()>0.5) and (3*(1 - getCoalPercentage())) or (1), (getCoalPercentage()>0.5) and (1) or (getCoalPercentage()*2), 0 )
@@ -44,13 +49,11 @@
 
   local function consumeCoal()
     coalAmount = coalAmount - getCoalConsumption()
-    --indicatorValue.width = indicatorValue.width- 1
-    --indicatorValue.x = indicatorValue.x - 0.5
-    if(coalAmount<=0) then
-      recoverCoal()
-    end
     updateCoalIndicator()
-
+    if(coalAmount<=0) then
+      noMoreCoal()
+    end
+  
   end
 
 

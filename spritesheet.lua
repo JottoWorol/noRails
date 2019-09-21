@@ -7,13 +7,16 @@ sheetOptions =
         { ---1) Tree
             x = 0,
             y = 0,
-            width = 335,
+            --width = 335,
+            width = 375,  --задевает корову, поэтому сделал ближе к квадрату
             height = 403
         },
         { ---2) Cow
             x = 335,
             y = 0,
-            width = 301,
+            --width = 301,
+            --height = 403
+            width = 403,
             height = 403
         },
         { ---3) train-1
