@@ -53,7 +53,7 @@ local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
 			train.anchorY = train.height*2/3
 			train.myName = "player"
 			physics.addBody( train, "kinematic", {isSensor = true, radius = train.width/2} )
-local moveSpeed = 0.05  --скорость поезда; адекватная скорость - до 0.4
+local moveSpeed = 100  --скорость поезда; адекватная скорость - до 0.4
 
 local function timePerCell()   --время, за которое преодолевается одна ячейка
 	return CELL_WIDTH/moveSpeed
@@ -64,18 +64,18 @@ function getCoalConsumption() --сколько единиц топлива из 
 	return 3
 end
 
-local function onGlobalCollision( event )
-		print("logging")
-    if ( event.phase == "began" ) then
+local function onLocalCollision( self, event )
 
-        print( "began: " .. event.object1.myName .. " and " .. event.object2.myName )
+    if ( event.phase == "began" ) then
+        print( self.myName .. ": collision began with " .. event.other.myName )
 
     elseif ( event.phase == "ended" ) then
-        print( "ended: " .. event.object1.myName .. " and " .. event.object2.myName )
+        print( self.myName .. ": collision ended with " .. event.other.myName )
     end
 end
 
-Runtime:addEventListener( "collision", onGlobalCollision )
+train.collision = onLocalCollision
+train:addEventListener("collision")
 --------- End of Tranin Parametrs BLock ------
 
 
