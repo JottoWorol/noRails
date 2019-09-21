@@ -20,7 +20,7 @@ physics.start()
 -- Set up display groups --сделал их не локальными, чтобы можно добавить индикатор топлива в uiGroup
 backGroup = display.newGroup()  -- Display group for the background image
 shadowGroup = display.newGroup()
-railsGroup = display.newGroup()
+railGroup = display.newGroup()
 mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
 uiGroup = display.newGroup()    -- Display group for UI objects like the score
 
@@ -112,7 +112,7 @@ local	railsTable = {}
 local railsAmount = 0
 lastObject = train
 
-local firstRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 firstRail.x = lastObject.x- train.width/2
 firstRail.y = lastObject.y - CELL_WIDTH
 physics.addBody( firstRail, "static", {radius = CELL_WIDTH} )
@@ -123,7 +123,7 @@ lastObject = firstRail
 transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
 for i = 1, 2 do
-  local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+  local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x
 	newRail.y = lastObject.y - CELL_WIDTH
 	physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
@@ -139,70 +139,60 @@ end
 function setRail(dir)
 
 	if (railsAmount < 8) then
-			if (dir == "tap") then
+			if (dir == "tapRail") then
 
-				newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.x = lastObject.x
 				newRail.y = lastObject.y - CELL_WIDTH
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
-				newRail.myName = "tapRail"
+				newRail.myName = dir
 				table.insert( railsTable, newRail )
 				railsAmount = railsAmount + 1
 				lastObject = newRail
-				--lastObject.x = newRail.x
-				--lastObject.y = newRail.y
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
-			elseif (dir == "left") then
+			elseif (dir == "leftRail") then
 
-				local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.x = lastObject.x
 				newRail.y = lastObject.y - CELL_WIDTH
-				physics.addBody( newRail, "static", {radius = CELL_WIDTH, angle = 90} )
-				newRail.myName = "leftRail"
+				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
+				newRail.myName = dir
 				table.insert( railsTable, newRail )
-				--lastObject.x = newRail.x
-				--lastObject.y = newRail.y
 				lastObject = newRail
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
-				local newRail1 = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				local newRail1 = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail1.x = lastObject.x - CELL_WIDTH
 				newRail1.y = lastObject.y
 				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
 				newRail1.myName = "tapRail"
 				table.insert( railsTable, newRail1 )
-				--lastObject.x = newRail1.x
-				--lastObject.y = newRail1.y
 				lastObject = newRail1
 				railsAmount = railsAmount + 1
 
 				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
-			elseif (dir == "right") then
+			elseif (dir == "rightRail") then
 
-				local newRail = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.x = lastObject.x
 				newRail.y = lastObject.y - CELL_WIDTH
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
-				newRail.myName = "rightRail"
+				newRail.myName = dir
 				table.insert( railsTable, newRail )
-				--lastObject.x = newRail.x
-				--lastObject.y = newRail.y
 				lastObject = newRail
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
-				local newRail1 = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				local newRail1 = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail1.x = lastObject.x + CELL_WIDTH
 				newRail1.y = lastObject.y
 				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
 				newRail1.myName = "tapRail"
 				table.insert( railsTable, newRail1 )
-				--lastObject.x = newRail1.x
-				--lastObject.y = newRail1.y
 				lastObject = newRail1
 				railsAmount = railsAmount + 1
 
@@ -262,17 +252,17 @@ end
 
 
 local function left()
-  swipeDirection = "left"
+  swipeDirection = "leftRail"
 	print("le")
   setRail(swipeDirection)
 end
 local function right()
-  swipeDirection = "right"
+  swipeDirection = "rightRail"
 	print("loggingr")
   setRail(swipeDirection)
 end
 local function onTap()
-  swipeDirection = "tap"
+  swipeDirection = "tapRail"
 	print("tap")
   setRail(swipeDirection)
 end
