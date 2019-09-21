@@ -118,7 +118,7 @@ local previousRow = 0
 local function createBlock()
   for i = 1, GRID_WIDTH do
     local a = math.random(100)
-    if (grid[i] < 3) and (previousRow ~= 1) and ( a < 90) and (a > 30) then
+    if  (previousRow ~= 1) and ( a < 90) and (a > 30) then
 
       local newBlock = display.newImageRect(mainGroup, Osheet, math.random(1, 2), CELL_WIDTH , 100)
 
@@ -128,7 +128,7 @@ local function createBlock()
 
       newBlock.x = CELL_WIDTH * i - 15
       newBlock.y = -200
-      transition.to(newBlock, {time = speedToTime, y = _H + 1000})
+
 
       grid[i] = grid [i] + 1
 
@@ -141,11 +141,12 @@ local function createBlock()
 
       newBlock.x = CELL_WIDTH * i - 15
       newBlock.y = -200
-      transition.to(newBlock, {time = speedToTime, y = _H + 1000})
+
 
       grid[i] = grid [i] + 1
     end
 
+    transition.to(newBlock, {time = speedToTime, y = _H + 1000}) -----движение вниз
     previousRow = (previousRow + 1) % 2
 
   end
