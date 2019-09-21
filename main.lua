@@ -45,6 +45,18 @@ local CELL_WIDTH = (_W - 20 ) / 5
 
 --------- End of Grid Block -------------
 
+
+--------- DIE BLOCK ---------------------
+
+local function die()
+
+	local dieText = display.newText( uiGroup, "YOU DIED!!!",
+	display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+
+end
+
+--------- END OF DIE BLOCK --------------
+
 --------- Train Parametrs BLock -------------
 
 local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
@@ -76,6 +88,9 @@ local function onLocalCollision( self, event )
 				print("rightRail")
 			--elseif (event.myName != "tapRail") then
 			--	physics.pause()
+		elseif ( event.other.myName ~= "tapRail") then
+				physics.pause()
+				die()
 			end
         print( self.myName .. ": collision began with " .. event.other.myName )
 
@@ -121,7 +136,7 @@ local function createBlock()
 			else
 	  	  newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
 	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH-10/2*0.8,isSensor = true} )
+	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8,isSensor = true} )
 	   		newBlock.myName = "enemy"
 			end
 			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
