@@ -1,6 +1,17 @@
 ------ GLOBAL Settings ------
-_W = display.actualContentWidth
-_H = display.actualContentHeight
+_W = display.actualContentWidth  --ширина экрана
+_H = display.actualContentHeight --высота экрана
+
+--левый нижний угол
+local bottomY = display.contentCenterY+_H*0.5
+local bottomX = display.contentCenterX-_W*0.5
+
+local function intDiv(a,b) --функция для целочисленного деления, потмоу что в Lua 5.1 её нет
+	local c = a/b
+	c = c%1
+	return (a/b - c)
+end
+
 local physics = require("physics")
 physics.start()
 
@@ -70,10 +81,10 @@ dragDirection(display.getCurrentStage(), left, right, onTap)
 
 --------- Displays and sprite setting Block----------------------
 
--- Set up display groups
-local backGroup = display.newGroup()  -- Display group for the background image
-local mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
-local uiGroup = display.newGroup()    -- Display group for UI objects like the score
+-- Set up display groups --сделал их не локальными, чтобы можно добавить индикатор топлива в uiGroup
+backGroup = display.newGroup()  -- Display group for the background image
+mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
+uiGroup = display.newGroup()    -- Display group for UI objects like the score
 
 local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
       background.x = display.contentCenterX
@@ -89,11 +100,6 @@ local Osheet = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
 
 local GRID_WIDTH = 5
 local CELL_WIDTH = (_W - 20 ) / 5
-local grid = {}
-for i = 1, GRID_WIDTH do
-  grid[i] = 0
-end
-
 
 --------- End of Grid Block -------------
 
@@ -103,53 +109,55 @@ local train = display.newImageRect( mainGroup, Osheet,  3, (_W)* 0.15, _H*0.225 
       train.x = display.contentCenterX - train.width * 0.2
       train.y = display.contentCenterY * 2
 
-local speedToTime = 10000 --миллисекудны
+local moveSpeed = 0.1  --скорость поезда; адекватная скорость - до 0.4
+
+local function timePerCell()   --время, за которое преодолевается одна ячейка
+	return CELL_WIDTH/moveSpeed
+end
 
 coal = require("coal")
-function getCoalConsumption() --litres per 0.1 seconds of total 100 litres
+function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
 	return 3
 end
 --------- End of Tranin Parametrs BLock ------
 
---------- Spawner BLock --------------
 
-local blockTable = {}
-local previousRow = 0
+--------- Spawner BLock --------------
+local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
+local levelLength = 10 --линий на уровень
+local levelMap = {} --таблица с линиями
+local blockTable = {} --таблица с блоками препятствий
+
+local levelPath = system.pathForFile( "level0.txt", system.ResourceDirectory ) --открываем файл уровня
+for line in io.lines(levelPath) do
+   	table.insert(levelMap, line)           --считываем линии уровня
+end
+
+local linesCounter = 1 --счётчик линий уровня
+
 local function createBlock()
   for i = 1, GRID_WIDTH do
-    local a = math.random(100)
-    if  (previousRow ~= 1) and ( a < 90) and (a > 30) then
 
-      local newBlock = display.newImageRect(mainGroup, Osheet, math.random(1, 2), CELL_WIDTH , 100)
+  	if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
+  		linesCounter = 1
+  	end
 
-      table.insert(blockTable, newBlock)
-      physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
-      newBlock.myName = "enemy"
+  	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
 
-      newBlock.x = CELL_WIDTH * i - 15
-      newBlock.y = -200
+  	if(blockID~=0) then
+  		local newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
+    	table.insert(blockTable, newBlock)
+   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+   		newBlock.myName = "enemy"
 
-
-      grid[i] = grid [i] + 1
-
-    elseif   a >= 90 then
-      local newBlock = display.newImageRect(mainGroup, Osheet, 5, CELL_WIDTH , 60)
-
-      table.insert(blockTable, newBlock)
-      physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
-      newBlock.myName = "coal"
-
-      newBlock.x = CELL_WIDTH * i - 15
-      newBlock.y = -200
+   	 	newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
+    	newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH  --спавним чуть выше вернего края
 
 
-      grid[i] = grid [i] + 1
-    end
-
-    transition.to(newBlock, {time = speedToTime, y = _H + 1000}) -----движение вниз
-    previousRow = (previousRow + 1) % 2
-
+    	transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
+	end
   end
+  linesCounter = linesCounter + 1
 end
 
 --------- end of spawner -------
@@ -164,13 +172,12 @@ local function gameLoop ()
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
 
-      if (thisBlock.y > _H + 100  )  then
-          grid [(thisBlock.x + 15)/CELL_WIDTH] = grid [(thisBlock.x + 15)/CELL_WIDTH] - 1
+      if (thisBlock.y > _H + CELL_WIDTH)  then
           display.remove( thisBlock ) -- убрать с экрана
           table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
       end
   end
 end
 
-gameLoopTimer = timer.performWithDelay( 1100, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
 --------- end of game loop -----
