@@ -110,30 +110,33 @@ end
 
 local	railsTable = {}
 local railsAmount = 0
-local lastObjectX = train.x
-local lastObjectY = train.y
+--local lastObjectX = train.x
+--local lastObjectY = train.y
+lastObject = train
 
 local firstRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-firstRail.x = lastObjectX - train.width/2
-firstRail.y = lastObjectY - CELL_WIDTH
+firstRail.x = lastObject.x- train.width/2
+firstRail.y = lastObject.y - CELL_WIDTH
 physics.addBody( firstRail, "static", {radius = CELL_WIDTH} )
 firstRail.myName = "tapRail"
 table.insert( railsTable, firstRail )
 railsAmount = railsAmount + 1
-lastObjectX = firstRail.x
-lastObjectY = firstRail.y
+--lastObject.x = firstRail.x
+--lastObject.y = firstRail.y
+lastObject = firstRail
 transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
 for i = 1, 2 do
 	local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-	newRail.x = lastObjectX
-	newRail.y = lastObjectY - CELL_WIDTH
+	newRail.x = lastObject.x
+	newRail.y = lastObject.y - CELL_WIDTH
 	physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
 	newRail.myName = "tapRail"
 	table.insert( railsTable, newRail )
 	railsAmount = railsAmount + 1
-	lastObjectX = newRail.x
-	lastObjectY = newRail.y
+	--lastObject.x = newRail.x
+	--lastObject.y = newRail.y
+	lastObject = newRail
 	transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 end
 
@@ -145,27 +148,29 @@ function setRails(dir)
 			if (dir == "tap") then
 
 				newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail.x = lastObjectX
-				newRail.y = lastObjectY - CELL_WIDTH
+				newRail.x = lastObject.x
+				newRail.y = lastObject.y - CELL_WIDTH
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
 				newRail.myName = "tapRail"
 				table.insert( railsTable, newRail )
 				railsAmount = railsAmount + 1
-				lastObjectX = newRail.x
-				lastObjectY = newRail.y
+				lastObject = newRail1
+				--lastObject.x = newRail.x
+				--lastObject.y = newRail.y
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
 			elseif (dir == "left") then
 
 				local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail.x = lastObjectX
-				newRail.y = lastObjectY - CELL_WIDTH
+				newRail.x = lastObject.x
+				newRail.y = lastObject.y - CELL_WIDTH
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH, angle = 90} )
 				newRail.myName = "leftRail"
 				table.insert( railsTable, newRail )
-				lastObjectX = newRail.x
-				lastObjectY = newRail.y
+				--lastObject.x = newRail.x
+				--lastObject.y = newRail.y
+				lastObject = newRail
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
@@ -175,8 +180,9 @@ function setRails(dir)
 				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
 				newRail1.myName = "tapRail"
 				table.insert( railsTable, newRail1 )
-				lastObjectX = newRail1.x
-				lastObjectY = newRail1.y
+				lastObject.x = newRail1.x
+				lastObject.y = newRail1.y
+				lastObject = newRail1
 				railsAmount = railsAmount + 1
 
 				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
@@ -189,8 +195,8 @@ function setRails(dir)
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH, rotation = 90} )
 				newRail.myName = "rightRail"
 				table.insert( railsTable, newRail )
-				lastObjectX = newRail.x
-				lastObjectY = newRail.y
+				lastObject.x = newRail.x
+				lastObject.y = newRail.y
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
@@ -200,8 +206,8 @@ function setRails(dir)
 				physics.addBody( newRail1, "static", {radius = CELL_WIDTH, angle = 90} )
 				newRail1.myName = "tapRail"
 				table.insert( railsTable, newRail1 )
-				lastObjectX = newRail1.x
-				lastObjectY = newRail1.y
+				lastObject.x = newRail1.x
+				lastObject.y = newRail1.y
 				railsAmount = railsAmount + 1
 
 				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
