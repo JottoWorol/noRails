@@ -68,10 +68,10 @@ local function onLocalCollision( self, event )
 
     if ( event.phase == "began" ) then
 			if (event.other.myName == "leftRail")then
-				transition.to(train, {time = timePerCell(), x = train.x - CELL_WIDTH})
+				transition.to(train, {time = timePerCell()*0.8, x = train.x - CELL_WIDTH})
 				print("leftRail")
 			elseif (event.other.myName == "rightRail") then
-				transition.to(train, {time = timePerCell(), x = train.x+CELL_WIDTH})
+				transition.to(train, {time = timePerCell()*0.8, x = train.x+CELL_WIDTH})
 				print("rightRail")
 			--elseif (event.myName != "tapRail") then
 			--	physics.pause()
@@ -115,12 +115,12 @@ local function createBlock()
 			if (blockID == 3)then
 				newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
 	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH-10, isSensor = true} )
+	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8, isSensor = true} )
 	   		newBlock.myName = "coal"
 			else
 	  	  newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
 	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH-10,isSensor = true} )
+	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH-10/2*0.8,isSensor = true} )
 	   		newBlock.myName = "enemy"
 			end
 			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
