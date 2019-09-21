@@ -179,7 +179,7 @@ function setRails(dir)
 				lastObjectY = newRail1.y
 				railsAmount = railsAmount + 1
 
-				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y), y = bottomY+CELL_WIDTH})
+				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
 			elseif (dir == "right") then
 
