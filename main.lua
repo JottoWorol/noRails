@@ -17,7 +17,7 @@ physics.start()
 physics.setGravity( 0, 0 )
 local composer = require( "composer" )
 
-
+--------- End of GLOBAL SETTINGS --------------------------------
 --------- Displays and sprite setting Block----------------------
 
 display.setStatusBar( display.HiddenStatusBar )
@@ -46,16 +46,6 @@ local CELL_WIDTH = (_W - 20 ) / 5
 --------- End of Grid Block -------------
 
 
---------- DIE BLOCK ---------------------
-
-local function die()
-
-	local dieText = display.newText( uiGroup, "YOU DIED!!!",
-	display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-
-end
-
---------- END OF DIE BLOCK --------------
 
 --------- Train Parametrs BLock -------------
 
@@ -65,8 +55,8 @@ local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
 			--train.anchorX = train.width/2
 			train.anchorY = train.height*2/3
 			train.myName = "player"
-			physics.addBody( train, "dynamic", {isSensor = true, radius = train.width/2*0.8} )
-local moveSpeed = 60  --скорость поезда; адекватная скорость - до 0.4
+			physics.addBody( train, "dynamic", {isSensor = true, radius = train.width / 2 * 0.8} )
+local moveSpeed = 70  --скорость поезда; адекватная скорость - до 0.4
 
 local function timePerCell()   --в секундах
 	return CELL_WIDTH*1000/moveSpeed
@@ -245,9 +235,7 @@ function dragDirection(dispObj, left, right, tap)
             end
                 local deltaX = event.x - prevX
                 prevX = event.x;
-                if deltaX > -0.05 and deltaX < 0.05 then
-                    dirFunc = tap
-                elseif deltaX >= 0.05 then
+                if deltaX >= 0.05 then
                     dirFunc = right
                 else
                     dirFunc = left
@@ -256,6 +244,7 @@ function dragDirection(dispObj, left, right, tap)
         return true
     end
     dispObj:addEventListener("touch", touchListener)
+		dispObj:addEventListener("tap", tap)
     -- dispObj:addEventListener("tap", onTap)
 
 end
@@ -283,11 +272,15 @@ dragDirection(display.getCurrentStage(), left, right, onTap)
 ---------End of Swipe Block--------------
 
 --------- gameLoop -------------
+local core = 0
+local scoreText = display.newText( uiGroup, "Score: " .. core,
+display.contentCenterX, 20, native.systemFont, 36 )
 
 local function gameLoop ()
   -- body...
   createBlock()
-
+	core = core + 1
+	scoreText.text = "Score: " .. core
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
 
@@ -311,3 +304,15 @@ end
 
 gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
 --------- end of game loop -----
+
+
+--------- DIE BLOCK ---------------------
+
+local function die()
+
+	local dieText = display.newText( uiGroup, "YOU DIED!!!",
+	display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+	gameLoop.cancel()
+end
+
+--------- END OF DIE BLOCK --------------
