@@ -124,7 +124,7 @@ local function createBlock()
 	   		newBlock.myName = "enemy"
 			end
 			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
-			newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH  --спавним чуть выше вернего края
+			newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH - CELL_WIDTH*0.5  --спавним чуть выше вернего края
 			newBlock:setLinearVelocity(0, moveSpeed)
 			--transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
 	end
@@ -150,7 +150,7 @@ table.insert( railsTable, firstRail )
 railsAmount = railsAmount + 1
 lastObject = firstRail
 --transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-firstRail:setLinearVelocity(0, 100)
+firstRail:setLinearVelocity(0, moveSpeed)
 for i = 1, 2 do
   local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x

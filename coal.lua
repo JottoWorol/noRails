@@ -20,7 +20,7 @@
   --Фон индикатора
   indicatorBackground:setStrokeColor( 0,0,0 )  --чёрная рамка
   indicatorBackground.strokeWidth = frameWidth
-  indicatorBackground:setFillColor( 0,0,0) --заполняем прозрачностью | FrAzen: Фон - зелёная трава - так что бэк я заменил на чёрный
+  indicatorBackground:setFillColor( 0.5,0.5,0.5) --заполняем прозрачностью | FrAzen: Фон - зелёная трава - так что бэк я заменил на чёрный
   --стартовый цвет индикатора
   indicatorValue:setFillColor( 0,1,0)
 
