@@ -14,7 +14,7 @@ end
 
 local physics = require("physics")
 physics.start()
-
+physics.setGravity( 0, 0 )
 local composer = require( "composer" )
 
 
@@ -51,7 +51,8 @@ local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
       train.y = bottomY
 			train.anchorX = train.width/2
 			train.anchorY = train.height*2/3
-			physics.addBody( train, "static", {isSensor = true} )
+			train.myName = "player"
+			physics.addBody( train, "kinematic", {isSensor = true, radius = train.width/2} )
 local moveSpeed = 0.05  --скорость поезда; адекватная скорость - до 0.4
 
 local function timePerCell()   --время, за которое преодолевается одна ячейка
@@ -63,7 +64,18 @@ function getCoalConsumption() --сколько единиц топлива из 
 	return 3
 end
 
+local function onGlobalCollision( event )
+		print("logging")
+    if ( event.phase == "began" ) then
 
+        print( "began: " .. event.object1.myName .. " and " .. event.object2.myName )
+
+    elseif ( event.phase == "ended" ) then
+        print( "ended: " .. event.object1.myName .. " and " .. event.object2.myName )
+    end
+end
+
+Runtime:addEventListener( "collision", onGlobalCollision )
 --------- End of Tranin Parametrs BLock ------
 
 
@@ -93,17 +105,18 @@ local function createBlock()
 			if (blockID == 3)then
 				newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
 	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH-10, isSensor = true} )
 	   		newBlock.myName = "coal"
 			else
 	  	  newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
 	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH-10,isSensor = true} )
 	   		newBlock.myName = "enemy"
 			end
 			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
 			newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH  --спавним чуть выше вернего края
-    	transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
+			newBlock:setLinearVelocity(0, moveSpeed)
+			--transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
 	end
   end
   linesCounter = linesCounter + 1
@@ -121,23 +134,24 @@ lastObject = train
 local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 firstRail.x = lastObject.x - train.width/2
 firstRail.y = bottomY - CELL_WIDTH*0.5
-physics.addBody( firstRail, "static", {radius = CELL_WIDTH} )
+physics.addBody( firstRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
 firstRail.myName = "tapRail"
 table.insert( railsTable, firstRail )
 railsAmount = railsAmount + 1
 lastObject = firstRail
-transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-
+--transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+firstRail:setLinearVelocity(0, 100)
 for i = 1, 2 do
   local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x
 	newRail.y = lastObject.y - CELL_WIDTH + CELL_WIDTH*0.1
-	physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
+	physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
 	newRail.myName = "tapRail"
 	table.insert( railsTable, newRail )
 	railsAmount = railsAmount + 1
 	lastObject = newRail
-	transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+	newRail:setLinearVelocity(0, moveSpeed)
+	--transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 end
 
 --- На старте создаются под нами + 3 впереди
@@ -148,7 +162,7 @@ function setRail(dir, turned)
 
 				newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.myName = dir
-				physics.addBody( newRail, "static", {radius = CELL_WIDTH, isSensor = true} )
+				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
 				table.insert( railsTable, newRail )
 				if (turned == "") then
 					newRail.y = lastObject.y - CELL_WIDTH + CELL_WIDTH*0.1
@@ -162,7 +176,8 @@ function setRail(dir, turned)
 				end
 				railsAmount = railsAmount + 1
 				lastObject = newRail
-				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+				--transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+				newRail:setLinearVelocity(0, moveSpeed)
 				if (dir == "leftRail") then
 					setRail("tapRail", "left")
 				elseif (dir == "rightRail") then
@@ -263,7 +278,7 @@ local function gameLoop ()
 					display.remove( thisRail ) -- убрать с экрана
           table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
 					railsAmount = railsAmount - 1
-					print (i)
+					--print (i)
       end
   end
 end
