@@ -47,16 +47,16 @@ local CELL_WIDTH = (_W - 20 ) / 5
 --------- Train Parametrs BLock -------------
 
 local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
-      train.x = CELL_WIDTH*3
+      train.x = display.contentCenterX
       train.y = bottomY
-			train.anchorX = train.width/2
+			--train.anchorX = train.width/2
 			train.anchorY = train.height*2/3
 			train.myName = "player"
 			physics.addBody( train, "kinematic", {isSensor = true, radius = train.width/2} )
-local moveSpeed = 0.05  --скорость поезда; адекватная скорость - до 0.4
+local moveSpeed = 100  --скорость поезда; адекватная скорость - до 0.4
 
-local function timePerCell()   --время, за которое преодолевается одна ячейка
-	return CELL_WIDTH/moveSpeed
+local function timePerCell()   --в секундах
+	return CELL_WIDTH*1000/moveSpeed
 end
 
 coal = require("coal")
@@ -132,7 +132,7 @@ local railsAmount = 0
 lastObject = train
 
 local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-firstRail.x = lastObject.x - train.width/2
+firstRail.x = display.contentCenterX
 firstRail.y = bottomY - CELL_WIDTH*0.5
 physics.addBody( firstRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
 firstRail.myName = "tapRail"
@@ -144,7 +144,7 @@ firstRail:setLinearVelocity(0, 100)
 for i = 1, 2 do
   local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x
-	newRail.y = lastObject.y - CELL_WIDTH + CELL_WIDTH*0.1
+	newRail.y = lastObject.y - CELL_WIDTH
 	physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
 	newRail.myName = "tapRail"
 	table.insert( railsTable, newRail )
@@ -165,7 +165,7 @@ function setRail(dir, turned)
 				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
 				table.insert( railsTable, newRail )
 				if (turned == "") then
-					newRail.y = lastObject.y - CELL_WIDTH + CELL_WIDTH*0.1
+					newRail.y = lastObject.y - CELL_WIDTH
 					newRail.x = lastObject.x
 				elseif (turned == "left") then
 					newRail.x = lastObject.x - CELL_WIDTH
