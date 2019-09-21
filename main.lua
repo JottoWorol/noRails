@@ -20,6 +20,7 @@ local composer = require( "composer" )
 
 --------- Displays and sprite setting Block----------------------
 
+display.setStatusBar( display.HiddenStatusBar )
 -- Set up display groups --сделал их не локальными, чтобы можно добавить индикатор топлива в uiGroup
 backGroup = display.newGroup()  -- Display group for the background image
 shadowGroup = display.newGroup()
