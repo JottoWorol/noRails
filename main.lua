@@ -52,8 +52,8 @@ local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
 			--train.anchorX = train.width/2
 			train.anchorY = train.height*2/3
 			train.myName = "player"
-			physics.addBody( train, "kinematic", {isSensor = true, radius = train.width/2} )
-local moveSpeed = 100  --скорость поезда; адекватная скорость - до 0.4
+			physics.addBody( train, "dynamic", {isSensor = true, radius = train.width/2*0.8} )
+local moveSpeed = 60  --скорость поезда; адекватная скорость - до 0.4
 
 local function timePerCell()   --в секундах
 	return CELL_WIDTH*1000/moveSpeed
@@ -67,9 +67,19 @@ end
 local function onLocalCollision( self, event )
 
     if ( event.phase == "began" ) then
+			if (event.other.myName == "leftRail")then
+				transition.to(train, {time = timePerCell(), x = train.x - CELL_WIDTH})
+				print("leftRail")
+			elseif (event.other.myName == "rightRail") then
+				transition.to(train, {time = timePerCell(), x = train.x+CELL_WIDTH})
+				print("rightRail")
+			--elseif (event.myName != "tapRail") then
+			--	physics.pause()
+			end
         print( self.myName .. ": collision began with " .. event.other.myName )
 
     elseif ( event.phase == "ended" ) then
+
         print( self.myName .. ": collision ended with " .. event.other.myName )
     end
 end
@@ -134,7 +144,7 @@ lastObject = train
 local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 firstRail.x = display.contentCenterX
 firstRail.y = bottomY - CELL_WIDTH*0.5
-physics.addBody( firstRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
+physics.addBody( firstRail, "dynamic", {radius = CELL_WIDTH/2, isSensor = true} )
 firstRail.myName = "tapRail"
 table.insert( railsTable, firstRail )
 railsAmount = railsAmount + 1
@@ -145,7 +155,7 @@ for i = 1, 2 do
   local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x
 	newRail.y = lastObject.y - CELL_WIDTH
-	physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
+	physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2, isSensor = true} )
 	newRail.myName = "tapRail"
 	table.insert( railsTable, newRail )
 	railsAmount = railsAmount + 1
@@ -162,7 +172,7 @@ function setRail(dir, turned)
 
 				newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.myName = dir
-				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH, isSensor = true} )
+				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*0.8, isSensor = true} )
 				table.insert( railsTable, newRail )
 				if (turned == "") then
 					newRail.y = lastObject.y - CELL_WIDTH
