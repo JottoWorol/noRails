@@ -113,8 +113,8 @@ local railsAmount = 0
 lastObject = train
 
 local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-firstRail.x = lastObject.x- train.width/2
-firstRail.y = lastObject.y - CELL_WIDTH
+firstRail.x = lastObject.x - train.width/2
+firstRail.y = bottomY
 physics.addBody( firstRail, "static", {radius = CELL_WIDTH} )
 firstRail.myName = "tapRail"
 table.insert( railsTable, firstRail )
@@ -125,7 +125,7 @@ transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y
 for i = 1, 2 do
   local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x
-	newRail.y = lastObject.y - CELL_WIDTH
+	newRail.y = lastObject.y - CELL_WIDTH + CELL_WIDTH*0.1
 	physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
 	newRail.myName = "tapRail"
 	table.insert( railsTable, newRail )
@@ -145,7 +145,7 @@ function setRail(dir, turned)
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
 				table.insert( railsTable, newRail )
 				if (turned == "") then
-					newRail.y = lastObject.y - CELL_WIDTH
+					newRail.y = lastObject.y - CELL_WIDTH + CELL_WIDTH*0.1
 					newRail.x = lastObject.x
 				elseif (turned == "left") then
 					newRail.x = lastObject.x - CELL_WIDTH
