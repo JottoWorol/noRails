@@ -74,6 +74,7 @@ end
 
 local linesCounter = 1 --счётчик линий уровня
 
+
 local function createBlock()
   for i = 1, GRID_WIDTH do
 
@@ -86,14 +87,14 @@ local function createBlock()
   	if(blockID~=0) then
 			if (blockID == 3)then
 				newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
-	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
-	   		newBlock.myName = "coal"
+	    		table.insert(blockTable, newBlock)
+	   			physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+	   			newBlock.myName = "coal"
 			else
-	  	  newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
-	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
-	   		newBlock.myName = "enemy"
+	  	  		newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
+	    		table.insert(blockTable, newBlock)
+	   			physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+	   			newBlock.myName = "enemy"
 			end
 			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
 			newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH  --спавним чуть выше вернего края

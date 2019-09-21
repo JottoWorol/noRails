@@ -44,8 +44,6 @@
 
   local function consumeCoal()
     coalAmount = coalAmount - getCoalConsumption()
-    --indicatorValue.width = indicatorValue.width- 1
-    --indicatorValue.x = indicatorValue.x - 0.5
     if(coalAmount<=0) then
       recoverCoal()
     end
