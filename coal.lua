@@ -4,6 +4,7 @@
   local coalAmount = 0 --from 0 to 100
   local maxCoalAmount = 100
   local coalPeriod = 100 --how frequently we consume coal, milliseconds
+  local isConsuming = true
 
   local indicatorWidth = 100              --размер индикатора
   local indicatorHeight = indicatorWidth/6
@@ -26,7 +27,14 @@
 
   local function recoverCoal() --для восстановления до сотки
     coalAmount=maxCoalAmount --максимальное значение топлива
+  end
 
+  local function stopConsume()
+      isConsuming = false
+  end
+
+  local function startConsume()
+      isConsuming = true
   end
 
   local function getCoalPercentage()
@@ -43,14 +51,13 @@
   end
 
   local function consumeCoal()
-    coalAmount = coalAmount - getCoalConsumption()
-    --indicatorValue.width = indicatorValue.width- 1
-    --indicatorValue.x = indicatorValue.x - 0.5
-    if(coalAmount<=0) then
-      recoverCoal()
+    if(isConsuming) then
+      coalAmount = coalAmount - getCoalConsumption()
+      if(coalAmount<=0) then
+        recoverCoal()
+      end
+      updateCoalIndicator()
     end
-    updateCoalIndicator()
-
   end
 
 
