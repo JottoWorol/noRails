@@ -55,7 +55,8 @@ local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
       train.x = display.contentCenterX
       train.y = bottomY
 			train.anchorX = train.width/2
-			train.anchorY = train.height*2/3
+      train.anchorY = train.height*2/3
+			--train.anchorY = train.height*2/3
 			physics.addBody( train, "static", {isSensor = true} )
 local moveSpeed = 0.05  --скорость поезда; адекватная скорость - до 0.4
 

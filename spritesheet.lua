@@ -11,7 +11,7 @@ sheetOptions =
             height = 395
         },
         { ---2) Cow
-            x = 380,
+            x = 416,
             y = 0,
             width = 395,
             height = 395
@@ -30,16 +30,16 @@ sheetOptions =
             height = 320
         },
         { ---5) train-1
-            x = 938,
-            y = 11,
-            width = 339,
-            height = 339
+            x = 826,
+            y = 69,
+            width = 395,
+            height = 395
         },
         { ---6) rails
-            x = 11,
-            y = 670,
-            width = 301,
-            height = 301
+            x = 52,
+            y = 610,
+            width = 395,
+            height = 395
         }
     },
 }

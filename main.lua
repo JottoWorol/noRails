@@ -127,7 +127,7 @@ lastObject = train
 
 local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 firstRail.x = lastObject.x - train.width/2
-firstRail.y = bottomY
+firstRail.y = bottomY - CELL_WIDTH*0.5
 physics.addBody( firstRail, "static", {radius = CELL_WIDTH} )
 firstRail.myName = "tapRail"
 table.insert( railsTable, firstRail )
