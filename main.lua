@@ -127,7 +127,7 @@ lastObject = firstRail
 transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
 for i = 1, 2 do
-	local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+  local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 	newRail.x = lastObject.x
 	newRail.y = lastObject.y - CELL_WIDTH
 	physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
@@ -154,7 +154,7 @@ function setRails(dir)
 				newRail.myName = "tapRail"
 				table.insert( railsTable, newRail )
 				railsAmount = railsAmount + 1
-				lastObject = newRail1
+				lastObject = newRail
 				--lastObject.x = newRail.x
 				--lastObject.y = newRail.y
 
@@ -180,8 +180,8 @@ function setRails(dir)
 				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
 				newRail1.myName = "tapRail"
 				table.insert( railsTable, newRail1 )
-				lastObject.x = newRail1.x
-				lastObject.y = newRail1.y
+				--lastObject.x = newRail1.x
+				--lastObject.y = newRail1.y
 				lastObject = newRail1
 				railsAmount = railsAmount + 1
 
@@ -190,13 +190,14 @@ function setRails(dir)
 			elseif (dir == "right") then
 
 				local newRail = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail.x = lastObjectX
-				newRail.y = lastObjectY - CELL_WIDTH
+				newRail.x = lastObject.x
+				newRail.y = lastObject.y - CELL_WIDTH
 				physics.addBody( newRail, "static", {radius = CELL_WIDTH, rotation = 90} )
 				newRail.myName = "rightRail"
 				table.insert( railsTable, newRail )
-				lastObject.x = newRail.x
-				lastObject.y = newRail.y
+				--lastObject.x = newRail.x
+				--lastObject.y = newRail.y
+				lastObject = newRail
 
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 
@@ -206,8 +207,9 @@ function setRails(dir)
 				physics.addBody( newRail1, "static", {radius = CELL_WIDTH, angle = 90} )
 				newRail1.myName = "tapRail"
 				table.insert( railsTable, newRail1 )
-				lastObject.x = newRail1.x
-				lastObject.y = newRail1.y
+				--lastObject.x = newRail1.x
+				--lastObject.y = newRail1.y
+				lastObject = newRail
 				railsAmount = railsAmount + 1
 
 				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
@@ -307,6 +309,7 @@ local function gameLoop ()
       if (thisRail.y > _H + CELL_WIDTH)  then
 					display.remove( thisRail ) -- убрать с экрана
           table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
+					railsAmount = railsAmount - 1
 
       end
   end
