@@ -137,71 +137,33 @@ end
 
 --- На старте создаются под нами + 3 впереди
 
-function setRail(dir)
+function setRail(dir, turned)
 
 	if (railsAmount < 8) then
-			if (dir == "tapRail") then
 
 				newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail.x = lastObject.x
-				newRail.y = lastObject.y - CELL_WIDTH
-				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
 				newRail.myName = dir
+				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
 				table.insert( railsTable, newRail )
+				if (turned == "") then
+					newRail.y = lastObject.y - CELL_WIDTH
+					newRail.x = lastObject.x
+				elseif (turned == "left") then
+					newRail.x = lastObject.x - CELL_WIDTH
+					newRail.y = lastObject.y
+				elseif (turned == "right") then
+					newRail.x = lastObject.x + CELL_WIDTH
+					newRail.y = lastObject.y
+				end
 				railsAmount = railsAmount + 1
 				lastObject = newRail
-
 				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-
-			elseif (dir == "leftRail") then
-
-				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail.x = lastObject.x
-				newRail.y = lastObject.y - CELL_WIDTH
-				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
-				newRail.myName = dir
-				table.insert( railsTable, newRail )
-				lastObject = newRail
-
-				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-
-				local newRail1 = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail1.x = lastObject.x - CELL_WIDTH
-				newRail1.y = lastObject.y
-				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
-				newRail1.myName = "tapRail"
-				table.insert( railsTable, newRail1 )
-				lastObject = newRail1
-				railsAmount = railsAmount + 1
-
-				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-
-			elseif (dir == "rightRail") then
-
-				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail.x = lastObject.x
-				newRail.y = lastObject.y - CELL_WIDTH
-				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
-				newRail.myName = dir
-				table.insert( railsTable, newRail )
-				lastObject = newRail
-
-				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-
-				local newRail1 = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
-				newRail1.x = lastObject.x + CELL_WIDTH
-				newRail1.y = lastObject.y
-				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
-				newRail1.myName = "tapRail"
-				table.insert( railsTable, newRail1 )
-				lastObject = newRail1
-				railsAmount = railsAmount + 1
-
-				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
-
-			end
+				if (dir == "leftRail") then
+					setRail("tapRail", "left")
+				elseif (dir == "rightRail") then
+					setRail("tapRail", "right")
+				end
 	end
-
 end
 
 
@@ -255,17 +217,17 @@ end
 local function left()
   swipeDirection = "leftRail"
 	print("le")
-  setRail(swipeDirection)
+  setRail(swipeDirection, "")
 end
 local function right()
   swipeDirection = "rightRail"
 	print("loggingr")
-  setRail(swipeDirection)
+  setRail(swipeDirection, "")
 end
 local function onTap()
   swipeDirection = "tapRail"
 	print("tap")
-  setRail(swipeDirection)
+  setRail(swipeDirection, "")
 end
 
 
