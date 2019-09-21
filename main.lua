@@ -15,8 +15,207 @@ end
 local physics = require("physics")
 physics.start()
 
+--------- Displays and sprite setting Block----------------------
+
+-- Set up display groups --сделал их не локальными, чтобы можно добавить индикатор топлива в uiGroup
+backGroup = display.newGroup()  -- Display group for the background image
+shadowGroup = display.newGroup()
+railsGroup = display.newGroup()
+mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
+uiGroup = display.newGroup()    -- Display group for UI objects like the score
+
+local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
+      background.x = display.contentCenterX
+      background.y = display.contentCenterY
+
+local sho = require("spritesheet")
+local Osheet = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
+
+
+--------- End of Displays Block ---------
+
+--------- Grid Block --------------------
+
+local GRID_WIDTH = 5
+local CELL_WIDTH = (_W - 20 ) / 5
+
+--------- End of Grid Block -------------
+
+--------- Train Parametrs BLock -------------
+
+local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
+      train.x = display.contentCenterX
+      train.y = bottomY
+			train.anchorX = train.width/2
+			train.anchorY = train.height*2/3
+local moveSpeed = 0.05  --скорость поезда; адекватная скорость - до 0.4
+
+local function timePerCell()   --время, за которое преодолевается одна ячейка
+	return CELL_WIDTH/moveSpeed
+end
+
+coal = require("coal")
+function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
+	return 3
+end
+--------- End of Tranin Parametrs BLock ------
+
+
+--------- Spawner BLock --------------
+local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
+local levelLength = 10 --линий на уровень
+local levelMap = {} --таблица с линиями
+local blockTable = {} --таблица с блоками препятствий
+
+local levelPath = system.pathForFile( "level0.txt", system.ResourceDirectory ) --открываем файл уровня
+for line in io.lines(levelPath) do
+   	table.insert(levelMap, line)           --считываем линии уровня
+end
+
+local linesCounter = 1 --счётчик линий уровня
+
+local function createBlock()
+  for i = 1, GRID_WIDTH do
+
+  	if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
+  		linesCounter = 1
+  	end
+
+  	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
+
+  	if(blockID~=0) then
+			if (blockID == 3)then
+				newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
+	    	table.insert(blockTable, newBlock)
+	   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+	   		newBlock.myName = "coal"
+			else
+	  	  newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
+	    	table.insert(blockTable, newBlock)
+	   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
+	   		newBlock.myName = "enemy"
+			end
+			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
+			newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH  --спавним чуть выше вернего края
+    	transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
+	end
+  end
+  linesCounter = linesCounter + 1
+end
+
+--------- end of spawner -------
+
+
+--------- Railroad block -------
+
+local	railsTable = {}
+local railsAmount = 0
+local lastObjectX = train.x
+local lastObjectY = train.y
+
+local firstRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+firstRail.x = lastObjectX - train.width/2
+firstRail.y = lastObjectY - CELL_WIDTH
+physics.addBody( firstRail, "static", {radius = CELL_WIDTH} )
+firstRail.myName = "tapRail"
+table.insert( railsTable, firstRail )
+railsAmount = railsAmount + 1
+lastObjectX = firstRail.x
+lastObjectY = firstRail.y
+transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+
+for i = 1, 2 do
+	local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+	newRail.x = lastObjectX
+	newRail.y = lastObjectY - CELL_WIDTH
+	physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
+	newRail.myName = "tapRail"
+	table.insert( railsTable, newRail )
+	railsAmount = railsAmount + 1
+	lastObjectX = newRail.x
+	lastObjectY = newRail.y
+	transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+end
+
+--- На старте создаются под нами + 3 впереди
+
+function setRails(dir)
+
+	if (railsAmount < 8) then
+			if (dir == "tap") then
+
+				newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				newRail.x = lastObjectX
+				newRail.y = lastObjectY - CELL_WIDTH
+				physics.addBody( newRail, "static", {radius = CELL_WIDTH} )
+				newRail.myName = "tapRail"
+				table.insert( railsTable, newRail )
+				railsAmount = railsAmount + 1
+				lastObjectX = newRail.x
+				lastObjectY = newRail.y
+
+				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+
+			elseif (dir == "left") then
+
+				local newRail = display.newImageRect(mainGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				newRail.x = lastObjectX
+				newRail.y = lastObjectY - CELL_WIDTH
+				physics.addBody( newRail, "static", {radius = CELL_WIDTH, angle = 90} )
+				newRail.myName = "leftRail"
+				table.insert( railsTable, newRail )
+				lastObjectX = newRail.x
+				lastObjectY = newRail.y
+
+				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+
+				local newRail1 = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				newRail1.x = lastObjectX - CELL_WIDTH
+				newRail1.y = lastObjectY
+				physics.addBody( newRail1, "static", {radius = CELL_WIDTH} )
+				newRail1.myName = "tapRail"
+				table.insert( railsTable, newRail1 )
+				lastObjectX = newRail1.x
+				lastObjectY = newRail1.y
+				railsAmount = railsAmount + 1
+
+				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y), y = bottomY+CELL_WIDTH})
+
+			elseif (dir == "right") then
+
+				local newRail = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				newRail.x = lastObjectX
+				newRail.y = lastObjectY - CELL_WIDTH
+				physics.addBody( newRail, "static", {radius = CELL_WIDTH, rotation = 90} )
+				newRail.myName = "rightRail"
+				table.insert( railsTable, newRail )
+				lastObjectX = newRail.x
+				lastObjectY = newRail.y
+
+				transition.to(newRail, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+
+				local newRail1 = display.newImageRect(railsGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				newRail1.x = lastObjectX + CELL_WIDTH
+				newRail1.y = lastObjectY
+				physics.addBody( newRail1, "static", {radius = CELL_WIDTH, angle = 90} )
+				newRail1.myName = "tapRail"
+				table.insert( railsTable, newRail1 )
+				lastObjectX = newRail1.x
+				lastObjectY = newRail1.y
+				railsAmount = railsAmount + 1
+
+				transition.to(newRail1, {time = timePerCell()*(bottomY+CELL_WIDTH - newRail1.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
+
+			end
+	end
+
+end
+
+
+--------- Railroad block -------
+
 ------ Swipe block ----------
-local swipeDirection = ""
+swipeDirection = ""
 
 function dragDirection(dispObj, left, right, tap)
     local prevX
@@ -62,15 +261,18 @@ end
 
 local function left()
   swipeDirection = "left"
-  print("left")
+	print("le")
+  setRails(swipeDirection)
 end
 local function right()
   swipeDirection = "right"
-  print("right")
+	print("loggingr")
+  setRails(swipeDirection)
 end
 local function onTap()
   swipeDirection = "tap"
-  print("tap")
+	print("tap")
+  setRails(swipeDirection)
 end
 
 
@@ -78,103 +280,28 @@ dragDirection(display.getCurrentStage(), left, right, onTap)
 
 ---------End of Swipe Block--------------
 
-
---------- Displays and sprite setting Block----------------------
-
--- Set up display groups --сделал их не локальными, чтобы можно добавить индикатор топлива в uiGroup
-backGroup = display.newGroup()  -- Display group for the background image
-mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
-uiGroup = display.newGroup()    -- Display group for UI objects like the score
-
-local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
-      background.x = display.contentCenterX
-      background.y = display.contentCenterY
-
-local sho = require("spritesheet")
-local Osheet = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
-
-
---------- End of Displays Block ---------
-
---------- Grid Block --------------------
-
-local GRID_WIDTH = 5
-local CELL_WIDTH = (_W - 20 ) / 5
-
---------- End of Grid Block -------------
-
---------- Train Parametrs BLock -------------
-
-local train = display.newImageRect( mainGroup, Osheet,  3, (_W)* 0.15, _H*0.225 )
-      train.x = display.contentCenterX - train.width * 0.2
-      train.y = display.contentCenterY * 2
-
-local moveSpeed = 0.1  --скорость поезда; адекватная скорость - до 0.4
-
-local function timePerCell()   --время, за которое преодолевается одна ячейка
-	return CELL_WIDTH/moveSpeed
-end
-
-coal = require("coal")
-function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
-	return 3
-end
---------- End of Tranin Parametrs BLock ------
-
-
---------- Spawner BLock --------------
-local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
-local levelLength = 10 --линий на уровень
-local levelMap = {} --таблица с линиями
-local blockTable = {} --таблица с блоками препятствий
-
-local levelPath = system.pathForFile( "level0.txt", system.ResourceDirectory ) --открываем файл уровня
-for line in io.lines(levelPath) do
-   	table.insert(levelMap, line)           --считываем линии уровня
-end
-
-local linesCounter = 1 --счётчик линий уровня
-
-local function createBlock()
-  for i = 1, GRID_WIDTH do
-
-  	if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
-  		linesCounter = 1
-  	end
-
-  	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
-
-  	if(blockID~=0) then
-  		local newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
-    	table.insert(blockTable, newBlock)
-   		physics.addBody( newBlock, "static", { radius = CELL_WIDTH-10,} )
-   		newBlock.myName = "enemy"
-
-   	 	newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
-    	newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH  --спавним чуть выше вернего края
-
-
-    	transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
-	end
-  end
-  linesCounter = linesCounter + 1
-end
-
---------- end of spawner -------
-
 --------- gameLoop -------------
 
 local function gameLoop ()
   -- body...
-
   createBlock()
 
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
 
       if (thisBlock.y > _H + CELL_WIDTH)  then
-          display.remove( thisBlock ) -- убрать с экрана
+					display.remove( thisBlock ) -- убрать с экрана
           table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
+
+      end
+  end
+	for i = #railsTable, 1 , -1 do
+    local thisRail = railsTable[i]
+
+      if (thisRail.y > _H + CELL_WIDTH)  then
+					display.remove( thisRail ) -- убрать с экрана
+          table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
+
       end
   end
 end

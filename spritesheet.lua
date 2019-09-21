@@ -19,11 +19,12 @@ sheetOptions =
             width = 403,
             height = 403
         },
-        { ---3) train-1
-            x = 335+301,
-            y = 0,
-            width = 256,
-            height = 356
+        {
+          ---3) Lake
+              x = 0,
+              y = 403,
+              width = 427,
+              height = 621
         },
         { ---4) train-2
             x = 335+301,
@@ -31,11 +32,11 @@ sheetOptions =
             width = 256,
             height = 320
         },
-        { ---5) Lake
-            x = 0,
-            y = 403,
-            width = 427,
-            height = 621
+        { ---5) train-1
+            x = 335+301,
+            y = 0,
+            width = 256,
+            height = 356
         },
         { ---6) rails
             x = 904 - 222,
