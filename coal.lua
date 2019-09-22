@@ -62,3 +62,4 @@
 
 
 coalConsumeTimer = timer.performWithDelay(coalPeriod, consumeCoal, 0 )
+

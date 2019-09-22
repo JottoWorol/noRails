@@ -56,9 +56,9 @@ local train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
 			train.anchorY = train.height*2/3
 			train.myName = "player"
 			physics.addBody( train, "dynamic", {isSensor = true, radius = train.width / 2 * 0.8} )
-local moveSpeed = 70  --скорость поезда; адекватная скорость - до 0.4
+local moveSpeed = 70  --скорость поезда;
 
-local function timePerCell()   --в секундах
+local function timePerCell()   --в миллисекундах
 	return CELL_WIDTH*1000/moveSpeed
 end
 
@@ -80,7 +80,7 @@ local function onLocalCollision( self, event )
 			--	physics.pause()
 		elseif ( event.other.myName ~= "tapRail") then
 				physics.pause()
-				die()
+				diee()
 			end
         print( self.myName .. ": collision began with " .. event.other.myName )
 
@@ -101,6 +101,18 @@ local levelLength = 10 --линий на уровень
 local levelMap = {} --таблица с линиями
 local blockTable = {} --таблица с блоками препятствий
 
+local function setBlock(blockID, gridX, levelMapLine, cellsW, cellsH, name)
+    newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH * cellsW, CELL_WIDTH*cellsH)
+    table.insert(blockTable, newBlock)
+    physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8, isSensor = true})
+    newBlock.myName = name
+    newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (gridX-1))  --спавним в нужном ряду
+    newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH - CELL_WIDTH*0.5  --спавним чуть выше вернего края
+    newBlock:setLinearVelocity(0, moveSpeed)
+    --transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
+end
+
+
 local levelPath = system.pathForFile( "level0.txt", system.ResourceDirectory ) --открываем файл уровня
 for line in io.lines(levelPath) do
    	table.insert(levelMap, line)           --считываем линии уровня
@@ -109,31 +121,16 @@ end
 local linesCounter = 1 --счётчик линий уровня
 
 local function createBlock()
+  if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
+      linesCounter = 1
+  end
   for i = 1, GRID_WIDTH do
-
-  	if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
-  		linesCounter = 1
-  	end
 
   	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
 
   	if(blockID~=0) then
-			if (blockID == 3)then
-				newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
-	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8, isSensor = true} )
-	   		newBlock.myName = "coal"
-			else
-	  	  newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH , CELL_WIDTH)
-	    	table.insert(blockTable, newBlock)
-	   		physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8,isSensor = true} )
-	   		newBlock.myName = "enemy"
-			end
-			newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (i-1))  --спавним в нужном ряду
-			newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH - CELL_WIDTH*0.5  --спавним чуть выше вернего края
-			newBlock:setLinearVelocity(0, moveSpeed)
-			--transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
-	end
+			setBlock(blockID,i,linesCounter,1,1,"enemy")
+	  end
   end
   linesCounter = linesCounter + 1
 end
@@ -302,17 +299,17 @@ local function gameLoop ()
   end
 end
 
-gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay(timePerCell()-50, gameLoop, 0 )
 --------- end of game loop -----
 
 
 --------- DIE BLOCK ---------------------
 
-local function die()
+function diee()
 
 	local dieText = display.newText( uiGroup, "YOU DIED!!!",
 	display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-	gameLoop.cancel()
+	timer.cancel(gameLoopTimer)
 end
 
 --------- END OF DIE BLOCK --------------
