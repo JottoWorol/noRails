@@ -17,17 +17,17 @@ sheetOptions =
             height = 395
         },
         {
-          ---3) Lake
-              x = 1641,
+          ---3) House1
+              x = 1608,
               y = 0,
-              width = 407,
-              height = 604
+              width = 395,
+              height = 395
         },
-        { ---4) train-2
-            x = 938,
-            y = 348,
-            width = 256,
-            height = 320
+        { ---4) House2
+            x = 33,
+            y = 1237,
+            width = 347,
+            height = 347
         },
         { ---5) train-1
             x = 826,
@@ -40,6 +40,18 @@ sheetOptions =
             y = 610,
             width = 395,
             height = 395
+        },
+        { ---7) YellowGrass
+            x = 560,
+            y = 720,
+            width = 232,
+            height = 232
+        },
+        { ---8) Lake
+            x = 1668,
+            y = 542,
+            width = 354,
+            height = 604
         }
-    },
+    }
 }
