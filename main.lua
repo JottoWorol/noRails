@@ -97,7 +97,7 @@ train:addEventListener("collision")
 
 --------- Spawner BLock --------------
 local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
-local levelLength = 10 --линий на уровень
+local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
 local blockTable = {} --таблица с блоками препятствий
 
@@ -211,7 +211,7 @@ function dragDirection(dispObj, left, right, tap)
     local isFocus = false
     local dirFunc = nil
     local thisTimer = nil
-
+    local swipeDetectionDelta  = 0.7
 
     function repeatedly()
         if dirFunc ~= nil then dirFunc() end
@@ -232,9 +232,9 @@ function dragDirection(dispObj, left, right, tap)
             end
                 local deltaX = event.x - prevX
                 prevX = event.x;
-                if deltaX >= 0.05 then
+                if deltaX >= swipeDetectionDelta then
                     dirFunc = right
-                else
+                elseif deltaX <= -swipeDetectionDelta
                     dirFunc = left
                 end
             end
@@ -278,28 +278,35 @@ local function gameLoop ()
   createBlock()
 	core = core + 1
 	scoreText.text = "Score: " .. core
+  
+end
+
+local function collectGarbage()
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
 
       if (thisBlock.y > _H + CELL_WIDTH)  then
-					display.remove( thisBlock ) -- убрать с экрана
+          display.remove( thisBlock ) -- убрать с экрана
           table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
 
       end
   end
-	for i = #railsTable, 1 , -1 do
+  for i = #railsTable, 1 , -1 do
     local thisRail = railsTable[i]
 
       if (thisRail.y > _H)  then
-					display.remove( thisRail ) -- убрать с экрана
+          display.remove( thisRail ) -- убрать с экрана
           table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
-					railsAmount = railsAmount - 1
-					--print (i)
+          railsAmount = railsAmount - 1
+          --print (i)
       end
   end
 end
 
+
 gameLoopTimer = timer.performWithDelay(timePerCell()-50, gameLoop, 0 )
+
+cleanerTimer = timer.performWithDelay(1000,collectGarbage,0)
 --------- end of game loop -----
 
 
