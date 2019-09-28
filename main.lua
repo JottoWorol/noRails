@@ -1,6 +1,7 @@
 ------ GLOBAL Settings ------
 _W = display.actualContentWidth  --ширина экрана
 _H = display.actualContentHeight --высота экрана
+display.fps = 30           
 
 --левый нижний угол
 local bottomY = display.contentCenterY+_H*0.5
@@ -100,38 +101,54 @@ local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество я
 local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
 local blockTable = {} --таблица с блоками препятствий
+local linesCounter = 1 --счётчик линий уровня
+local lastLine
+local emptyLinesCount = cellsOnScreen - 1
 
-local function setBlock(blockID, gridX, levelMapLine, cellsW, cellsH, name)
-    newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH * cellsW, CELL_WIDTH*cellsH)
+local function setBlock(blockID, x,y, name) --поставить блок blockID в точке (x,y) с myNamename
+    newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH, CELL_WIDTH)
     table.insert(blockTable, newBlock)
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8, isSensor = true})
     newBlock.myName = name
-    newBlock.x = bottomX + 5 + CELL_WIDTH*(0.5 + (gridX-1))  --спавним в нужном ряду
-    newBlock.y = bottomY - (cellsOnScreen+2)*CELL_WIDTH - CELL_WIDTH*0.5  --спавним чуть выше вернего края
+    newBlock.x = x  --спавним в нужном ряду
+    newBlock.y = y  --спавним чуть выше вернего края
     newBlock:setLinearVelocity(0, moveSpeed)
-    --transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка])
+    return newBlock
+    --transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка]) 
 end
 
-
-local levelPath = system.pathForFile( "level0.txt", system.ResourceDirectory ) --открываем файл уровня
-for line in io.lines(levelPath) do
-   	table.insert(levelMap, line)           --считываем линии уровня
+local function loadLevel(levelNumber) --загрузить уровень из файла level[levelNumber].txt
+	local fileName = "level"..tostring(levelNumber)..".txt"
+	local levelPath = system.pathForFile( fileName, system.ResourceDirectory ) --открываем файл уровня
+	for line in io.lines(levelPath) do
+  		table.insert(levelMap, line)           --считываем линии уровня
+	end
 end
 
-local linesCounter = 1 --счётчик линий уровня
+loadLevel(0)  -- загружаем нулевой уровень
 
 local function createBlock()
   if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
       linesCounter = 1
   end
+  local isChanged = false --есть ли что-то на линии
+  local thisLine
   for i = 1, GRID_WIDTH do
-
   	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
-
   	if(blockID~=0) then
-			setBlock(blockID,i,linesCounter,1,1,"enemy")
-	  end
+			thisLine = setBlock(blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH,"enemy")
+			--print(lastLine.y + emptyLinesCount*CELL_WIDTH + CELL_WIDTH*0.5)
+			isChanged = true
+			print(isChanged)
+	end
   end
+  if(not isChanged) then
+  	emptyLinesCount = emptyLinesCount + 1
+  else
+  	lastLine = thisLine
+  	print("i was here")
+  	emptyLinesCount = 0
+  end 
   linesCounter = linesCounter + 1
 end
 
@@ -145,6 +162,7 @@ local railsAmount = 0
 lastObject = train
 
 local firstRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+
 firstRail.x = display.contentCenterX
 firstRail.y = bottomY - CELL_WIDTH*0.5
 physics.addBody( firstRail, "dynamic", {radius = CELL_WIDTH/2, isSensor = true} )
@@ -152,6 +170,8 @@ firstRail.myName = "tapRail"
 table.insert( railsTable, firstRail )
 railsAmount = railsAmount + 1
 lastObject = firstRail
+lastLine = lastObject --для синхронизаций объектов препятствий
+createBlock() --ставим первое препятствие сразу после первой рельсы
 --transition.to(firstRail, {time = timePerCell()*(bottomY+CELL_WIDTH - firstRail.y)/CELL_WIDTH, y = bottomY+CELL_WIDTH})
 firstRail:setLinearVelocity(0, moveSpeed)
 for i = 1, 2 do
@@ -199,8 +219,6 @@ function setRail(dir, turned)
 	end
 
 end
-
-
 --------- Railroad block -------
 
 ------ Swipe block ----------
@@ -304,7 +322,8 @@ local function collectGarbage()
 end
 
 
-gameLoopTimer = timer.performWithDelay(timePerCell()-50, gameLoop, 0 )
+--gameLoopTimer = timer.performWithDelay(50, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
 
 cleanerTimer = timer.performWithDelay(1000,collectGarbage,0)
 --------- end of game loop -----
