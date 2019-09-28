@@ -234,7 +234,7 @@ function dragDirection(dispObj, left, right, tap)
                 prevX = event.x;
                 if deltaX >= swipeDetectionDelta then
                     dirFunc = right
-                elseif deltaX <= -swipeDetectionDelta
+                elseif deltaX <= -swipeDetectionDelta then
                     dirFunc = left
                 end
             end
