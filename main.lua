@@ -65,7 +65,7 @@ end
 
 coal = require("coal")
 function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
-	return 3
+	return 1
 end
 
 local function onLocalCollision( self, event )
@@ -79,8 +79,9 @@ local function onLocalCollision( self, event )
 				print("rightRail")
 			--elseif (event.myName != "tapRail") then
 			--	physics.pause()
-		elseif ( event.other.myName ~= "tapRail") then
-				physics.pause()
+			elseif ( event.other.myName == "coal") then
+				recoverCoal()
+			elseif ( event.other.myName == "enemy") then
 				diee()
 			end
         print( self.myName .. ": collision began with " .. event.other.myName )
@@ -133,11 +134,16 @@ local function createBlock()
   end
   local isChanged = false --есть ли что-то на линии
   local thisLine
+  local blockName
   for i = 1, GRID_WIDTH do
   	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
   	if(blockID~=0) then
-			thisLine = setBlock(blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH,"enemy")
-			--print(lastLine.y + emptyLinesCount*CELL_WIDTH + CELL_WIDTH*0.5)
+  			if(blockID==9) then
+  				blockName = "coal"
+  			else
+				blockName = "enemy"
+			end
+			thisLine = setBlock(blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH,blockName)
 			isChanged = true
 			print(isChanged)
 	end
@@ -261,9 +267,7 @@ function dragDirection(dispObj, left, right, tap)
     dispObj:addEventListener("touch", touchListener)
 		dispObj:addEventListener("tap", tap)
     -- dispObj:addEventListener("tap", onTap)
-
 end
-
 
 local function left()
   swipeDirection = "leftRail"
@@ -293,10 +297,13 @@ display.contentCenterX, 20, native.systemFont, 36 )
 
 local function gameLoop ()
   -- body...
-  createBlock()
+  	createBlock()
 	core = core + 1
 	scoreText.text = "Score: " .. core
-  
+	print(getCoalPercentage())
+  	if(getCoalPercentage()<=0)then
+  		diee()
+  	end
 end
 
 local function collectGarbage()
@@ -332,10 +339,12 @@ cleanerTimer = timer.performWithDelay(1000,collectGarbage,0)
 --------- DIE BLOCK ---------------------
 
 function diee()
-
 	local dieText = display.newText( uiGroup, "YOU DIED!!!",
 	display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
 	timer.cancel(gameLoopTimer)
+	timer.cancel(cleanerTimer)
+	physics.pause()
+	stopConsumeCoal()
 end
 
 --------- END OF DIE BLOCK --------------

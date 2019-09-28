@@ -52,6 +52,12 @@ sheetOptions =
             y = 542,
             width = 354,
             height = 604
+        },
+        { ---9) Coal
+            x = 908,
+            y = 674,
+            width = 410,
+            height = 408
         }
     }
 }

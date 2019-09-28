@@ -1,4 +1,7 @@
 -----Блок топлива---------
+-- startConsumeCoal - чтобы начать потребление
+-- stopConsumeCoal - чтобы прекратить потребление
+-- recoverCoal - восстановить уровень топлива
 
 
   local coalAmount = 0 --from 0 to 100
@@ -25,19 +28,19 @@
   --стартовый цвет индикатора
   indicatorValue:setFillColor( 0,1,0)
 
-  local function recoverCoal() --для восстановления до сотки
+  function recoverCoal() --для восстановления до сотки
     coalAmount=maxCoalAmount --максимальное значение топлива
   end
 
-  local function stopConsume()
+  function stopConsumeCoal()
       isConsuming = false
   end
 
-  local function startConsume()
+  function startConsumeCoal()
       isConsuming = true
   end
 
-  local function getCoalPercentage()
+  function getCoalPercentage()
     return coalAmount/maxCoalAmount
   end
 
@@ -52,14 +55,12 @@
 
   local function consumeCoal()
     if(isConsuming) then
-      coalAmount = coalAmount - getCoalConsumption()
-      if(coalAmount<=0) then
-        recoverCoal()
-      end
+      coalAmount = coalAmount - getCoalConsumption()  
       updateCoalIndicator()
     end
   end
 
-
+recoverCoal()
+startConsumeCoal()
 coalConsumeTimer = timer.performWithDelay(coalPeriod, consumeCoal, 0 )
 
