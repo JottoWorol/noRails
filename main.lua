@@ -81,6 +81,7 @@ local function onLocalCollision( self, event )
 			--	physics.pause()
 			elseif ( event.other.myName == "coal") then
 				recoverCoal()
+				event.other.isUsed = true
 			elseif ( event.other.myName == "enemy") then
 				diee()
 			end
@@ -111,6 +112,7 @@ local function setBlock(blockID, x,y, name) --поставить блок blockI
     table.insert(blockTable, newBlock)
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8, isSensor = true})
     newBlock.myName = name
+    newBlock.isUsed = false
     newBlock.x = x  --спавним в нужном ряду
     newBlock.y = y  --спавним чуть выше вернего края
     newBlock:setLinearVelocity(0, moveSpeed)
@@ -309,7 +311,10 @@ end
 local function collectGarbage()
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
-
+      if(thisBlock.myName == "coal" and thisBlock.isUsed == true) then
+      	  display.remove( thisBlock ) -- убрать с экрана
+          table.remove( blockTable, i )
+      end
       if (thisBlock.y > _H + CELL_WIDTH)  then
           display.remove( thisBlock ) -- убрать с экрана
           table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
@@ -332,7 +337,7 @@ end
 --gameLoopTimer = timer.performWithDelay(50, gameLoop, 0 )
 gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
 
-cleanerTimer = timer.performWithDelay(1000,collectGarbage,0)
+cleanerTimer = timer.performWithDelay(500,collectGarbage,0)
 --------- end of game loop -----
 
 
