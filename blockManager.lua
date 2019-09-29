@@ -122,27 +122,3 @@ function initializeGrid(level) --загрузить блоки уровня leve
 end
 
 initializeGrid(0)
-
-
-
-
-
-
-
-
-
-
---------- end of spawner -------
-
-
---------- Railroad block -------
-
-
-
-
-
-
-
-
-
-
