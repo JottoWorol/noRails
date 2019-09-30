@@ -60,7 +60,6 @@
     end
   end
 
-recoverCoal()
-startConsumeCoal()
+
 coalConsumeTimer = timer.performWithDelay(coalPeriod, consumeCoal, 0 )
 

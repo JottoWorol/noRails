@@ -13,13 +13,21 @@ local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
 blockTable = {} --таблица с блоками препятствий
 local linesCounter = 1 --счётчик линий уровня
-local lastLine
-local lastRail
-local emptyLinesCount = cellsOnScreen - 1
+local lastLine  --последняя линия препятствий
+local lastRail  --последняя рельса
+local emptyLinesCount = cellsOnScreen + 1
 railsTable = {}
 railsAmount = 0
 putRailUpperBound = _H/10  --выше этого уровня поставить рельсу нельзя
-moveSpeed = 70
+
+
+function getLastRail()
+	return lastRail
+end
+
+function getTrain()
+	return train
+end
 
 local function loadLevel(levelNumber) --загрузить уровень из файла level[levelNumber].txt
 	local fileName = "level"..tostring(levelNumber)..".txt"
@@ -42,7 +50,7 @@ local function setBlock(blockID, x,y, name) --поставить блок blockI
     --transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка]) 
 end
 
-function setBlockLine()
+function setBlockLine() --поставить линию блоков
   if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
       linesCounter = 1
   end
@@ -72,7 +80,7 @@ function setBlockLine()
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
-function setRail(dir, turned)
+function setRail(dir, turned) --поставить одну рельсу
 	if (lastRail.y > putRailUpperBound) then
 				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.myName = dir
@@ -100,6 +108,29 @@ function setRail(dir, turned)
 	end
 end
 
+function collectGarbage() --убираем всё, что вышло за экран
+  for i = #blockTable, 1 , -1 do
+    local thisBlock = blockTable[i]
+      if(thisBlock.myName == "coal" and thisBlock.isUsed == true) then
+      	  display.remove( thisBlock ) -- убрать с экрана
+          table.remove( blockTable, i )
+      end
+      if (thisBlock.y > _H + CELL_WIDTH)  then
+          display.remove( thisBlock ) -- убрать с экрана
+          table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
+
+      end
+  end
+  for i = #railsTable, 1 , -1 do
+    local thisRail = railsTable[i]
+
+      if (thisRail.y > _H)  then
+          display.remove( thisRail ) -- убрать с экрана
+          table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
+          railsAmount = railsAmount - 1
+      end
+  end
+end
 
 function initializeGrid(level) --загрузить блоки уровня level
 	train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
@@ -121,4 +152,4 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	setRail("tapRail","")
 end
 
-initializeGrid(0)
+
