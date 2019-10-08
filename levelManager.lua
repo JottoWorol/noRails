@@ -16,17 +16,17 @@ function gameLoop () --запускаем с периодом timePerCell()
   if(getLastRail().y>train.y) then
     diee("No rails!")
   end
+  print(os.time())
 end
 
-gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay(timePerCell()/2, gameLoop, 0 )
 cleanerTimer = timer.performWithDelay(500,collectGarbage,0)
 
 
 function updateSpeed()
   moveSpeed = moveSpeed + speedDelta
+  --gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
   updateBlockSpeed()
-  gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
-  print("loopstart")
 end
 
 updateSpeedTimer = timer.performWithDelay(500,updateSpeed,0)
@@ -54,7 +54,6 @@ function onLocalCollision( self, event ) --когда происходит ст�
 end
 
 function pauseTimers()
-  print("timerStop")
   timer.pause(updateSpeedTimer)
   timer.pause(cleanerTimer)
   timer.pause( gameLoopTimer )
@@ -65,7 +64,7 @@ pauseTimers()
 function startTimers()
   timer.resume(cleanerTimer)
   timer.resume(updateSpeedTimer)
-  print("started")
+  timer.resume(gameLoopTimer)
 end
 
 function levelStart(level)  --запускаем уровень #level

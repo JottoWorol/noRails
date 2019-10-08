@@ -5,37 +5,26 @@ function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local isFocus = false
     local dirFunc = nil
     local thisTimer = nil
-    local swipeDetectionDelta  = 0.4
+    local swipeDetectionDelta  = 0.1
 
-    function repeatedly()
-        if dirFunc ~= nil then dirFunc() end
-    end
-
-    function touchListener(event)
-        if event.phase == "began" then
-            prevX = event.x;
-            dispObj:setFocus( self )
-            isFocus = true
-            thisTimer = timer.performWithDelay(100, repeatedly, 1)
-        elseif isFocus then
-            if event.phase == "ended" or event.phase == "cancelled" then
-                timer.cancel(thisTimer)
-                dispObj:setFocus( nil )
-                isFocus = false
-                dirFunc = nil
-            end
-                local deltaX = event.x - prevX
-                prevX = event.x;
-                if deltaX >= swipeDetectionDelta then
-                    dirFunc = right
-                elseif deltaX <= -swipeDetectionDelta then
-                    dirFunc = left
+    function touchListener(event)  
+        print("touch start")  
+        if event.phase == "ended" or event.phase == "cancelled" then
+                local deltaX = event.x - event.xStart
+                if deltaX > swipeDetectionDelta then
+                    --dirFunc = right
+                    right()
+                elseif deltaX < -swipeDetectionDelta then
+                    --dirFunc = left
+                    left()
+                else
+                    tap()
                 end
-            end
+        end
         return true
     end
     dispObj:addEventListener("touch", touchListener)
-	dispObj:addEventListener("tap", tap)
+	--dispObj:addEventListener("tap", tap)
 end
 
 local function left()
