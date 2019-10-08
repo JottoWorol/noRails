@@ -1,8 +1,12 @@
 local score = 0
 local scoreText = display.newText( uiGroup, "Score: " .. score,
 display.contentCenterX, 20, native.systemFont, 36 )
+isDead = false
 
 function gameLoop () --запускаем с периодом timePerCell()
+  if(isDead)then
+    return
+  end
   setBlockLine()
 	score = score + 1
 	scoreText.text = "Score: " .. score
@@ -16,6 +20,16 @@ end
 
 gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
 cleanerTimer = timer.performWithDelay(500,collectGarbage,0)
+
+
+function updateSpeed()
+  moveSpeed = moveSpeed + speedDelta
+  updateBlockSpeed()
+  gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
+  print("loopstart")
+end
+
+updateSpeedTimer = timer.performWithDelay(500,updateSpeed,0)
 
 function onLocalCollision( self, event ) --когда происходит столкновение
     if ( event.phase == "began" ) then
@@ -39,6 +53,21 @@ function onLocalCollision( self, event ) --когда происходит ст�
     end
 end
 
+function pauseTimers()
+  print("timerStop")
+  timer.pause(updateSpeedTimer)
+  timer.pause(cleanerTimer)
+  timer.pause( gameLoopTimer )
+end
+
+pauseTimers()
+
+function startTimers()
+  timer.resume(cleanerTimer)
+  timer.resume(updateSpeedTimer)
+  print("started")
+end
+
 function levelStart(level)  --запускаем уровень #level
   physics.start()
   physics.setGravity( 0, 0 )
@@ -46,17 +75,23 @@ function levelStart(level)  --запускаем уровень #level
         background.x = display.contentCenterX
         background.y = display.contentCenterY
   initializeGrid(level)
+  startTimers()
   train.collision = onLocalCollision
   train:addEventListener("collision")
   recoverCoal()
   startConsumeCoal()
+  isDead = false;
 end
 
 function diee(message)
-  local dieText = display.newText( uiGroup, message,
-  display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-  timer.cancel(gameLoopTimer)
-  timer.cancel(cleanerTimer)
+  if(isDead) then
+    return
+  end
+  isDead = true
+  pauseTimers()
   physics.pause()
   stopConsumeCoal()
+  local dieText = display.newText( uiGroup, message,
+  display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+  
 end

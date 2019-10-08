@@ -11,7 +11,7 @@ setRail - поставить рельсу
 local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
 local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
-blockTable = {} --таблица с блоками препятствий
+ blockTable = {} --таблица с блоками препятствий
 local linesCounter = 1 --счётчик линий уровня
 local lastLine  --последняя линия препятствий
 local lastRail  --последняя рельса
@@ -67,20 +67,18 @@ function setBlockLine() --поставить линию блоков
 			end
 			thisLine = setBlock(blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH,blockName)
 			isChanged = true
-			print(isChanged)
 	end
   end
   if(not isChanged) then
   	emptyLinesCount = emptyLinesCount + 1
   else
   	lastLine = thisLine
-  	print("i was here")
   	emptyLinesCount = 0
   end 
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
-function setRail(dir, turned) --поставить одну рельсу
+function setRail(dir, turned) --поставить одну рельсу и вернуть объект с ней
 	if (lastRail.y > putRailUpperBound) then
 				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
 				newRail.myName = dir
@@ -129,6 +127,15 @@ function collectGarbage() --убираем всё, что вышло за экр
           table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
           railsAmount = railsAmount - 1
       end
+  end
+end
+
+function updateBlockSpeed()
+  for i, block in pairs(blockTable) do
+  	block:setLinearVelocity(0, moveSpeed)
+  end
+  for i, rail in pairs(railsTable) do
+  	rail:setLinearVelocity(0, moveSpeed)
   end
 end
 

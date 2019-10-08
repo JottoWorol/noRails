@@ -28,18 +28,6 @@
   --стартовый цвет индикатора
   indicatorValue:setFillColor( 0,1,0)
 
-  function recoverCoal() --для восстановления до сотки
-    coalAmount=maxCoalAmount --максимальное значение топлива
-  end
-
-  function stopConsumeCoal()
-      isConsuming = false
-  end
-
-  function startConsumeCoal()
-      isConsuming = true
-  end
-
   function getCoalPercentage()
     return coalAmount/maxCoalAmount
   end
@@ -60,6 +48,20 @@
     end
   end
 
-
 coalConsumeTimer = timer.performWithDelay(coalPeriod, consumeCoal, 0 )
 
+function recoverCoal() --для восстановления до сотки
+  coalAmount=maxCoalAmount --максимальное значение топлива
+end
+
+function stopConsumeCoal()
+  isConsuming = false
+  timer.pause(coalConsumeTimer);
+end
+
+stopConsumeCoal()
+
+function startConsumeCoal()
+  isConsuming = true
+  timer.resume(coalConsumeTimer);
+end

@@ -5,7 +5,7 @@ function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local isFocus = false
     local dirFunc = nil
     local thisTimer = nil
-    local swipeDetectionDelta  = 0.7
+    local swipeDetectionDelta  = 0.4
 
     function repeatedly()
         if dirFunc ~= nil then dirFunc() end
