@@ -24,20 +24,17 @@ function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
         return true
     end
     dispObj:addEventListener("touch", touchListener)
-	--dispObj:addEventListener("tap", tap)
 end
 
+--с цифрами работать быстрее, чем со строками. и можно будет быстро получить номер рельсы в спрайтшите
 local function left()
-  swipeDirection = "leftRail"
-  setRail(swipeDirection, "")
+  setRail(-1)  
 end
 local function right()
-  swipeDirection = "rightRail"
-  setRail(swipeDirection, "")
+  setRail(1)
 end
 local function onTap()
-  swipeDirection = "tapRail"
-  setRail(swipeDirection, "")
+  setRail(0)
 end
 
 dragDirection(display.getCurrentStage(), left, right, onTap)

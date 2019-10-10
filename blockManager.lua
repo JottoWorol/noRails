@@ -40,14 +40,13 @@ end
 local function setBlock(blockID, x,y, name) --поставить блок blockID в точке (x,y) с myNamename
     newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH, CELL_WIDTH)
     table.insert(blockTable, newBlock)
-    physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH/2*0.8, isSensor = true})
+    physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
     newBlock.myName = name
     newBlock.isUsed = false
     newBlock.x = x  --спавним в нужном ряду
     newBlock.y = y  --спавним чуть выше вернего края
     newBlock:setLinearVelocity(0, moveSpeed)
     return newBlock
-    --transition.to(newBlock, {time = timePerCell()*(cellsOnScreen+3), y = bottomY+CELL_WIDTH})  --блоки едут до ([нижний край] минус [1 ячейка]) 
 end
 
 function setBlockLine() --поставить линию блоков
@@ -60,7 +59,7 @@ function setBlockLine() --поставить линию блоков
   for i = 1, GRID_WIDTH do
   	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
   	if(blockID~=0) then
-  			if(blockID==9) then
+  			if(blockID==11) then
   				blockName = "coal"
   			else
 				blockName = "enemy"
@@ -78,30 +77,26 @@ function setBlockLine() --поставить линию блоков
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
-function setRail(dir, turned) --поставить одну рельсу и вернуть объект с ней
+function setRail(dir) --поставить одну рельсу и вернуть объект с ней
+	--dir -1 == left   1 == right  0 == forward
+	-- 3+dir == номер нужной рельсы в спрайтшите
 	if (lastRail.y > putRailUpperBound) then
-				local newRail = display.newImageRect(railGroup, Osheet, 6 , CELL_WIDTH , CELL_WIDTH )
+				local newRail = display.newImageRect(railGroup, Osheet, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
 				newRail.myName = dir
 				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*0.8, isSensor = true} )
 				table.insert( railsTable, newRail )
-				if (turned == "") then
-					newRail.y = lastRail.y - CELL_WIDTH
+				newRail.y = lastRail.y - CELL_WIDTH
+				if(lastRail.isTrain) then
 					newRail.x = lastRail.x
-				elseif (turned == "left") then
-					newRail.x = lastRail.x - CELL_WIDTH
-					newRail.y = lastRail.y
-				elseif (turned == "right") then
-					newRail.x = lastRail.x + CELL_WIDTH
-					newRail.y = lastRail.y
+				elseif (dir == 0) then	
+					newRail.x = lastRail.x + lastRail.myName*CELL_WIDTH*0.5
+				else
+					newRail.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*dir+(lastRail.myName+dir)*math.abs(lastRail.myName))
 				end
+				
 				railsAmount = railsAmount + 1
 				lastRail = newRail
 				newRail:setLinearVelocity(0, moveSpeed)
-				if (dir == "leftRail") then
-					setRail("tapRail", "left")
-				elseif (dir == "rightRail") then
-					setRail("tapRail", "right")
-				end
 				return newRail
 	end
 end
@@ -140,23 +135,23 @@ function updateBlockSpeed()
 end
 
 function initializeGrid(level) --загрузить блоки уровня level
-	train = display.newImageRect( mainGroup, Osheet,  5, (_W)* 0.15, _H*0.13 )
+	train = display.newImageRect( mainGroup, Osheet,  1, (_W)* 0.15, _H*0.13 )
 	train.x = display.contentCenterX
 	train.y = bottomY + CELL_WIDTH*0.5  --ставим поезд, чтобы к нему прикрепить первую рельсу
 	lastRail = train
-	train.anchorY = train.height*2/3
+	--train.anchorY = train.height*2/3
 	train.myName = "player"
-	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width / 2 * 0.8} )
-
+	train.isTrain = true
+	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width*0.3} )
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
-	lastLine = setRail("tapRail","") --для синхронизаций объектов препятствий
+	lastLine = setRail(0) --для синхронизаций объектов препятствий
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	--теперь перемещаем поезд как будто он выезжает
 	transition.to(train, {time = timePerCell(), y = bottomY})
 	--ещё две рельсы
-	setRail("tapRail","")
-	setRail("tapRail","")
+	setRail(0)
+	setRail(0)
 end
 
 

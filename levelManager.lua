@@ -2,6 +2,10 @@ local score = 0
 local scoreText = display.newText( uiGroup, "Score: " .. score,
 display.contentCenterX, 20, native.systemFont, 36 )
 isDead = false
+local rotationState = 0
+local zeroDegreeDetection = 10
+local rotationSpeed = 2.5
+local xTurnSpeed = timePerCell()*0.5
 
 function gameLoop () --запускаем с периодом timePerCell()
   if(isDead)then
@@ -16,42 +20,18 @@ function gameLoop () --запускаем с периодом timePerCell()
   if(getLastRail().y>train.y) then
     diee("No rails!")
   end
-  print(os.time())
 end
 
 gameLoopTimer = timer.performWithDelay(timePerCell()/2, gameLoop, 0 )
 cleanerTimer = timer.performWithDelay(500,collectGarbage,0)
 
 
-function updateSpeed()
+function updateSpeed() --обновляем скорость уровня
   moveSpeed = moveSpeed + speedDelta
-  --gameLoopTimer = timer.performWithDelay(timePerCell(), gameLoop, 0 )
   updateBlockSpeed()
 end
 
 updateSpeedTimer = timer.performWithDelay(500,updateSpeed,0)
-
-function onLocalCollision( self, event ) --когда происходит столкновение
-    if ( event.phase == "began" ) then
-      if (event.other.myName == "leftRail")then
-        transition.to(train, {time = timePerCell()*0.8, x = train.x - CELL_WIDTH})
-        print("leftRail")
-      elseif (event.other.myName == "rightRail") then
-        transition.to(train, {time = timePerCell()*0.8, x = train.x+CELL_WIDTH})
-        print("rightRail")
-      elseif ( event.other.myName == "coal") then
-        recoverCoal()
-        event.other.isUsed = true
-      elseif ( event.other.myName == "enemy") then
-        diee("Wrong way!")
-      end
-        print( self.myName .. ": collision began with " .. event.other.myName )
-
-    elseif ( event.phase == "ended" ) then
-
-        print( self.myName .. ": collision ended with " .. event.other.myName )
-    end
-end
 
 function pauseTimers()
   timer.pause(updateSpeedTimer)
@@ -66,6 +46,31 @@ function startTimers()
   timer.resume(updateSpeedTimer)
   timer.resume(gameLoopTimer)
 end
+
+
+local function rotationControl()
+  if(train==nil) then
+    return
+  end
+  if(rotationState==0) then
+    if(train.rotation <= -45 or train.rotation >= 45)then
+        train.angularVelocity = -train.angularVelocity
+        rotationState = 1
+    end
+  elseif(rotationState == 1) then
+    if(train.rotation<zeroDegreeDetection and train.rotation>-zeroDegreeDetection)then
+        timer.pause(checkRotationTimer)
+        print( "paused" )
+        train.angularVelocity = -train.angularVelocity
+        train.angularVelocity = 0
+        train.rotation = 0
+        rotationState = -1
+    end
+  end
+end
+
+checkRotationTimer = timer.performWithDelay(34,rotationControl,0)
+timer.pause(checkRotationTimer)
 
 function levelStart(level)  --запускаем уровень #level
   physics.start()
@@ -82,7 +87,7 @@ function levelStart(level)  --запускаем уровень #level
   isDead = false;
 end
 
-function diee(message)
+function diee(message) --умираем, высвечивается сообщение message
   if(isDead) then
     return
   end
@@ -92,5 +97,44 @@ function diee(message)
   stopConsumeCoal()
   local dieText = display.newText( uiGroup, message,
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-  
+end
+
+function turnLeft()
+  transition.to(train, {time = xTurnSpeed, x = train.x - CELL_WIDTH})
+  train.angularVelocity = -moveSpeed*2.5
+  rotationState = 0
+  timer.resume(checkRotationTimer)
+end
+
+function turnRight()
+  transition.to(train, {time = xTurnSpeed, x = train.x + CELL_WIDTH})
+  train.angularVelocity = moveSpeed*2.5
+  rotationState = 0
+  timer.resume(checkRotationTimer)
+end
+
+
+
+function onLocalCollision( self, event ) --когда происходит столкновение
+    if ( event.phase == "began" ) then
+      if (event.other.myName == -1 and not event.other.isUsed)then
+        event.other.isUsed = true
+        turnLeft()
+        print("left")
+      elseif (event.other.myName == 1 and not event.other.isUsed) then
+        event.other.isUsed = true
+        turnRight()
+        print("right")
+      elseif ( event.other.myName == "coal") then
+        recoverCoal()
+        event.other.isUsed = true
+      elseif ( event.other.myName == "enemy") then
+        diee("Wrong way!")
+      end
+       -- print( self.myName .. ": collision began with " .. event.other.myName )
+
+    elseif ( event.phase == "ended" ) then
+
+        --print( self.myName .. ": collision ended with " .. event.other.myName )
+    end
 end
