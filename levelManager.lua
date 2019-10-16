@@ -4,8 +4,7 @@ display.contentCenterX, 20, native.systemFont, 36 )
 isDead = false
 local rotationState = 0
 local zeroDegreeDetection = 10
-local rotationSpeed = 2.5
-local xTurnSpeed = timePerCell()*0.5
+local xTurnTime = timePerCell()*0.5
 
 function gameLoop () --запускаем с периодом timePerCell()
   if(isDead)then
@@ -100,15 +99,15 @@ function diee(message) --умираем, высвечивается сообще
 end
 
 function turnLeft()
-  transition.to(train, {time = xTurnSpeed, x = train.x - CELL_WIDTH})
-  train.angularVelocity = -moveSpeed*2.5
+  transition.to(train, {time = xTurnTime, x = train.x - CELL_WIDTH})
+  train.angularVelocity = - moveSpeed*rotationSpeed
   rotationState = 0
   timer.resume(checkRotationTimer)
 end
 
 function turnRight()
-  transition.to(train, {time = xTurnSpeed, x = train.x + CELL_WIDTH})
-  train.angularVelocity = moveSpeed*2.5
+  transition.to(train, {time = xTurnTime, x = train.x + CELL_WIDTH})
+  train.angularVelocity = moveSpeed*rotationSpeed
   rotationState = 0
   timer.resume(checkRotationTimer)
 end

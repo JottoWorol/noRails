@@ -20,6 +20,7 @@ CELL_WIDTH = (_W - 20 ) / 5
 --параметры поезда
 moveSpeed = 70
 speedDelta = 1;  --moveSpeed = moveSpeed + speedDelta
+rotationSpeed = 3  --how fast train rotates
 function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
   return 1
 end
