@@ -1,4 +1,5 @@
 swipeDirection = ""
+local currentColumn = 3 --текущая колонка (от 1 до 5)
 
 function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local prevX
@@ -28,13 +29,21 @@ end
 
 --с цифрами работать быстрее, чем со строками. и можно будет быстро получить номер рельсы в спрайтшите
 local function left()
-  setRail(-1)  
+    if(currentColumn==1) then
+        return
+    end
+    currentColumn = currentColumn - 1
+    setRail(-1)  
 end
 local function right()
-  setRail(1)
+    if(currentColumn == 5) then
+        return
+    end
+    setRail(1)
+    currentColumn = currentColumn + 1
 end
 local function onTap()
-  setRail(0)
+    setRail(0)
 end
 
 dragDirection(display.getCurrentStage(), left, right, onTap)
