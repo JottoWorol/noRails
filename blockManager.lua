@@ -137,7 +137,7 @@ end
 
 function clearScreen()
 
-  emptyLinesCount = 0
+  emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0
   display.remove( train )
@@ -156,13 +156,16 @@ function clearScreen()
       table.remove( railsTable, i )
       railsAmount = railsAmount - 1
   end
-
+  physics.start()
+  startTimers()
   recoverCoal()
+  startConsumeCoal()
+
 
 end
 
 
-function initializeGrid(level) --загрузить блоки уровня level
+function initializeGrid() --загрузить блоки уровня level
   level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
   clearScreen()
 
