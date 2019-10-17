@@ -2,9 +2,13 @@ local score = 0
 local scoreText = display.newText( uiGroup, "Score: " .. score,
 display.contentCenterX, 20, native.systemFont, 36 )
 isDead = false
+isPosibleToPlaceRail = true
 local rotationState = 0
 local zeroDegreeDetection = 10
 local xTurnTime = timePerCell()*0.5
+
+local composer = require( "composer" )
+
 
 function gameLoop () --запускаем с периодом timePerCell()
   if(isDead)then
@@ -71,6 +75,9 @@ end
 checkRotationTimer = timer.performWithDelay(34,rotationControl,0)
 timer.pause(checkRotationTimer)
 
+
+
+
 function levelStart(level)  --запускаем уровень #level
   physics.start()
   physics.setGravity( 0, 0 )
@@ -91,11 +98,16 @@ function diee(message) --умираем, высвечивается сообще
     return
   end
   isDead = true
+  isPosibleToPlaceRail = false
   pauseTimers()
   physics.pause()
   stopConsumeCoal()
   local dieText = display.newText( uiGroup, message,
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+  local restartButton = display.newText( uiGroup, "Restart?)", display.contentCenterX,
+                                display.contentCenterY * 1.5, native.systemFont,50)
+        restartButton:setFillColor(0, 0, 1)
+  --restartButton:addEventListener("tap", stfat() )
 end
 
 function turnLeft()

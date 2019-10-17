@@ -8,9 +8,9 @@ function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local thisTimer = nil
     local swipeDetectionDelta  = 0.1
 
-    function touchListener(event)  
-        print("touch start")  
-        if event.phase == "ended" or event.phase == "cancelled" then
+    function touchListener(event)
+        print("touch start")
+        if (event.phase == "ended" or event.phase == "cancelled") and isPosibleToPlaceRail then
                 local deltaX = event.x - event.xStart
                 if deltaX > swipeDetectionDelta then
                     --dirFunc = right
@@ -33,7 +33,7 @@ local function left()
         return
     end
     currentColumn = currentColumn - 1
-    setRail(-1)  
+    setRail(-1)
 end
 local function right()
     if(currentColumn == 5) then

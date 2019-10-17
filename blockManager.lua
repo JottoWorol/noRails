@@ -18,7 +18,7 @@ local lastRail  --последняя рельса
 local emptyLinesCount = cellsOnScreen + 1
 railsTable = {}
 railsAmount = 0
-putRailUpperBound = _H/10  --выше этого уровня поставить рельсу нельзя
+putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
 
 
 function getLastRail()
@@ -73,7 +73,7 @@ function setBlockLine() --поставить линию блоков
   else
   	lastLine = thisLine
   	emptyLinesCount = 0
-  end 
+  end
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
@@ -88,12 +88,12 @@ function setRail(dir) --поставить одну рельсу и вернут
 				newRail.y = lastRail.y - CELL_WIDTH
 				if(lastRail.isTrain) then
 					newRail.x = lastRail.x
-				elseif (dir == 0) then	
+				elseif (dir == 0) then
 					newRail.x = lastRail.x + lastRail.myName*CELL_WIDTH*0.5
 				else
 					newRail.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*dir+(lastRail.myName+dir)*math.abs(lastRail.myName))
 				end
-				
+
 				railsAmount = railsAmount + 1
 				lastRail = newRail
 				newRail:setLinearVelocity(0, moveSpeed)
@@ -153,5 +153,3 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	setRail(0)
 	setRail(0)
 end
-
-
