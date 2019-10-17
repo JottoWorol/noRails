@@ -134,8 +134,37 @@ function updateBlockSpeed()
   end
 end
 
+
+function clearScreen()
+
+  linesCounter = 1
+  score = 0
+  display.remove( train )
+  dieText.text = ""
+  restartButton.text = ""
+
+  for i = #blockTable, 1 , -1 do
+    local thisBlock = blockTable[i]
+      display.remove(thisBlock)
+      table.remove( blockTable, i )
+  end
+  for i = #railsTable, 1 , -1 do
+    local thisRail = railsTable[i]
+      display.remove(railsTable)
+      table.remove( railsTable, i )
+      railsAmount = railsAmount - 1
+  end
+
+  recoverCoal()
+
+end
+
+
 function initializeGrid(level) --загрузить блоки уровня level
-	train = display.newImageRect( mainGroup, Osheet,  1, (_W)* 0.15, _H*0.13 )
+  level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
+  clearScreen()
+
+  train = display.newImageRect( mainGroup, Osheet,  1, (_W)* 0.15, _H*0.13 )
 	train.x = display.contentCenterX
 	train.y = bottomY + CELL_WIDTH*0.5  --ставим поезд, чтобы к нему прикрепить первую рельсу
 	lastRail = train
@@ -145,6 +174,7 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width*0.3} )
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
+
 	lastLine = setRail(0) --для синхронизаций объектов препятствий
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	--теперь перемещаем поезд как будто он выезжает
@@ -152,4 +182,10 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	--ещё две рельсы
 	setRail(0)
 	setRail(0)
+
+  --обнуление ништяков для рестарта
+
+
+
+
 end

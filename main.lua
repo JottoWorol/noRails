@@ -45,11 +45,14 @@ uiGroup = display.newGroup()    -- Display group for UI objects like the score
 sho = require("spritesheet")
 Osheet = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
 
+
 --вызываем манагеров # порядок не менять
 local coal = require("coal")
 local blockManager = require("blockManager")
 local levelManager = require("levelManager")
 local controlManager = require("controlManager")
+
+
 
 --начинаем нулевой уровень
 levelStart(0)

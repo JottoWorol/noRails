@@ -1,4 +1,4 @@
-local score = 0
+score = 0
 local scoreText = display.newText( uiGroup, "Score: " .. score,
 display.contentCenterX, 20, native.systemFont, 36 )
 isDead = false
@@ -6,9 +6,11 @@ isPosibleToPlaceRail = true
 local rotationState = 0
 local zeroDegreeDetection = 10
 local xTurnTime = timePerCell()*0.5
-
+  dieText = display.newText( uiGroup, "",
+  display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+  restartButton = display.newText( uiGroup, "d", display.contentCenterX,
+                                display.contentCenterY * 1.5, native.systemFont,50)
 local composer = require( "composer" )
-
 
 function gameLoop () --запускаем с периодом timePerCell()
   if(isDead)then
@@ -93,6 +95,9 @@ function levelStart(level)  --запускаем уровень #level
   isDead = false;
 end
 
+
+
+
 function diee(message) --умираем, высвечивается сообщение message
   if(isDead) then
     return
@@ -102,12 +107,10 @@ function diee(message) --умираем, высвечивается сообще
   pauseTimers()
   physics.pause()
   stopConsumeCoal()
-  local dieText = display.newText( uiGroup, message,
-  display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-  local restartButton = display.newText( uiGroup, "Restart?)", display.contentCenterX,
-                                display.contentCenterY * 1.5, native.systemFont,50)
-        restartButton:setFillColor(0, 0, 1)
-  --restartButton:addEventListener("tap", stfat() )
+  dieText.text = message
+  restartButton.text = "Restart?)"
+        restartButton:setFillColor(0, 0, 0)
+  restartButton:addEventListener( "tap" , initializeGrid )
 end
 
 function turnLeft()

@@ -1,4 +1,4 @@
------Блок топлива---------
+ -----Блок топлива---------
 -- startConsumeCoal - чтобы начать потребление
 -- stopConsumeCoal - чтобы прекратить потребление
 -- recoverCoal - восстановить уровень топлива
@@ -43,7 +43,7 @@
 
   local function consumeCoal()
     if(isConsuming) then
-      coalAmount = coalAmount - getCoalConsumption()  
+      coalAmount = coalAmount - getCoalConsumption()
       updateCoalIndicator()
     end
   end
