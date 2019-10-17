@@ -16,6 +16,8 @@ local linesCounter = 1 --счётчик линий уровня
 local lastLine  --последняя линия препятствий
 local lastRail  --последняя рельса
 local emptyLinesCount = cellsOnScreen + 1
+local spriteBonusOffset = 4
+local spriteEnemiesOffset = 5
 railsTable = {}
 railsAmount = 0
 putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
@@ -57,9 +59,14 @@ function setBlockLine() --поставить линию блоков
   local thisLine
   local blockName
   for i = 1, GRID_WIDTH do
-  	local blockID = string.byte(levelMap[linesCounter],i)-48   --считываем номер блока из спрайтшита
-  	if(blockID~=0) then
-  			if(blockID==11) then
+  	local blockID = string.byte(levelMap[linesCounter],i)
+    if(blockID>=48 and blockID<=57) then
+      blockID = blockID - 48 + spriteBonusOffset
+    else
+      blockID = blockID - 96 + spriteEnemiesOffset
+    end
+  	if(blockID~=4) then
+  			if(blockID==5) then
   				blockName = "coal"
   			else
 				blockName = "enemy"
