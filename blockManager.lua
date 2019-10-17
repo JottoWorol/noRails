@@ -137,6 +137,7 @@ end
 
 function clearScreen()
 
+  emptyLinesCount = 0
   linesCounter = 1
   score = 0
   display.remove( train )
