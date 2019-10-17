@@ -148,8 +148,8 @@ function clearScreen()
   linesCounter = 1
   score = 0
   display.remove( train )
-  dieText.text = ""
-  restartButton.text = ""
+  display.remove(dieText)
+  display.remove( restartButton )
   isPosibleToPlaceRail = true
   isDead = false
   for i = #blockTable, 1 , -1 do
@@ -172,9 +172,9 @@ function clearScreen()
 end
 
 
-function initializeGrid() --загрузить блоки уровня level
-  level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
-  clearScreen()
+function initializeGrid(level) --загрузить блоки уровня level
+  --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
+
 
   train = display.newImageRect( mainGroup, Osheet,  1, (_W)* 0.15, _H*0.13 )
 	train.x = display.contentCenterX
