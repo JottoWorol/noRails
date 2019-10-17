@@ -80,7 +80,7 @@ timer.pause(checkRotationTimer)
 
 
 
-function levelStart(level)  --запускаем уровень #level
+function levelStart()  --запускаем уровень #level
   physics.start()
   physics.setGravity( 0, 0 )
   local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
@@ -110,7 +110,7 @@ function diee(message) --умираем, высвечивается сообще
   dieText.text = message
   restartButton.text = "Restart?)"
         restartButton:setFillColor(0, 0, 0)
-  restartButton:addEventListener( "tap" , initializeGrid )
+  restartButton:addEventListener( "tap" , levelStart )
 end
 
 function turnLeft()
