@@ -141,22 +141,28 @@ function clearScreen()
   emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0
+  currentColumn = 3
+
   display.remove( train )
-  display.remove(dieText)
+  display.remove( dieText )
   display.remove( restartButton )
+  display.remove( background )
+
   isPosibleToPlaceRail = true
   isDead = false
+
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
       display.remove(thisBlock)
       table.remove( blockTable, i )
   end
   for i = #railsTable, 1 , -1 do
-    local thisRail = railsTable[i]
-      display.remove(railsTable)
+      local thisRail = railsTable[i]
+      display.remove(thisRail)
       table.remove( railsTable, i )
       railsAmount = railsAmount - 1
   end
+  print(railsAmount)
   physics.start()
   startTimers()
   recoverCoal()

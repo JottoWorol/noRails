@@ -1,5 +1,5 @@
 swipeDirection = ""
-local currentColumn = 3 --текущая колонка (от 1 до 5)
+currentColumn = 3 --текущая колонка (от 1 до 5)
 
 function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local prevX
