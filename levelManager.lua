@@ -6,10 +6,7 @@ isPosibleToPlaceRail = true
 local rotationState = 0
 local zeroDegreeDetection = 10
 local xTurnTime = timePerCell()*0.5
-  dieText = display.newText( uiGroup, "",
-  display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-  restartButton = display.newText( uiGroup, "", display.contentCenterX,
-                                display.contentCenterY * 1.5, native.systemFont,50)
+
 local composer = require( "composer" )
 
 function gameLoop () --запускаем с периодом timePerCell()
@@ -81,12 +78,13 @@ timer.pause(checkRotationTimer)
 
 
 function levelStart()  --запускаем уровень #level
+  clearScreen()
   physics.start()
   physics.setGravity( 0, 0 )
   local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
         background.x = display.contentCenterX
         background.y = display.contentCenterY
-  initializeGrid()
+  initializeGrid(0)  -- add Levelgetter
   startTimers()
   train.collision = onLocalCollision
   train:addEventListener("collision")
@@ -107,8 +105,10 @@ function diee(message) --умираем, высвечивается сообще
   pauseTimers()
   physics.pause()
   stopConsumeCoal()
-  dieText.text = message
-  restartButton.text = "Restart?)"
+  dieText = display.newText( uiGroup, message,
+  display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+  restartButton = display.newText( uiGroup, "Restart?)", display.contentCenterX,
+                                display.contentCenterY * 1.5, native.systemFont,50)
         restartButton:setFillColor(0, 0, 0)
   restartButton:addEventListener( "tap" , levelStart )
 end
