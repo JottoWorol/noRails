@@ -142,7 +142,8 @@ function clearScreen()
   display.remove( train )
   dieText.text = ""
   restartButton.text = ""
-
+  isPosibleToPlaceRail = true
+  isDead = false
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
       display.remove(thisBlock)
