@@ -4,8 +4,10 @@ display.contentCenterX, 20, native.systemFont, 36 )
 isDead = false
 isPosibleToPlaceRail = true
 local rotationState = 0
+local turnTargetX = 0
 local zeroDegreeDetection = 10
-local xTurnTime = timePerCell()*0.5
+local xTurnTime = timePerCell()*0.1
+local rotationTime = xTurnTime*0.8
 
 local composer = require( "composer" )
 
@@ -54,28 +56,29 @@ local function rotationControl()
   if(train==nil) then
     return
   end
-  if(rotationState==0) then
-    if(train.rotation <= -45 or train.rotation >= 45)then
-        train.angularVelocity = -train.angularVelocity
-        rotationState = 1
-    end
-  elseif(rotationState == 1) then
-    if(train.rotation<zeroDegreeDetection and train.rotation>-zeroDegreeDetection)then
-        timer.pause(checkRotationTimer)
-        print( "paused" )
-        train.angularVelocity = -train.angularVelocity
-        train.angularVelocity = 0
-        train.rotation = 0
-        rotationState = -1
-    end
+  if(rotationState==0 and (train.rotation == 90 or train.rotation == -90)) then
+    rotationState = 1
+  elseif(rotationState == 1 and train.x == turnTargetX) then
+    rotationState = 2
+    transition.to(train, {time = rotationTime, rotation = 0})
+   -- train:setLinearVelocity(0, 0)
+  elseif(rotationState == 2 and train.rotation == 0) then
+    timer.pause(checkRotationTimer)
+    rotationState = -1
   end
 end
 
 checkRotationTimer = timer.performWithDelay(34,rotationControl,0)
 timer.pause(checkRotationTimer)
 
+local function turnDelay()
+ timer.resume(checkRotationTimer)
+ timer.pause(startTurn)
+ print(3)
+end
 
-
+startTurn = timer.performWithDelay(timePerCell()*0.2, turnDelay)
+timer.pause(startTurn)
 
 function levelStart()  --запускаем уровень #level
   clearScreen()
@@ -93,9 +96,6 @@ function levelStart()  --запускаем уровень #level
   isDead = false;
 end
 
-
-
-
 function diee(message) --умираем, высвечивается сообщение message
   if(isDead) then
     return
@@ -109,22 +109,28 @@ function diee(message) --умираем, высвечивается сообще
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
   restartButton = display.newText( uiGroup, "Restart?)", display.contentCenterX,
                                 display.contentCenterY * 1.5, native.systemFont,50)
-        restartButton:setFillColor(0, 0, 0)
+  restartButton:setFillColor(0, 0, 0)
   restartButton:addEventListener( "tap" , levelStart )
 end
 
 function turnLeft()
+  turnTargetX = train.x - CELL_WIDTH
   transition.to(train, {time = xTurnTime, x = train.x - CELL_WIDTH})
-  train.angularVelocity = - moveSpeed*rotationSpeed
+  transition.to(train, {time = rotationTime, rotation = -90})
+  --train:setLinearVelocity(0, moveSpeed)
   rotationState = 0
-  timer.resume(checkRotationTimer)
+  timer.resume(startTurn)
+  print(1)
 end
 
 function turnRight()
+  turnTargetX = train.x + CELL_WIDTH
   transition.to(train, {time = xTurnTime, x = train.x + CELL_WIDTH})
-  train.angularVelocity = moveSpeed*rotationSpeed
+  transition.to(train, {time = rotationTime, rotation = 90})
+ -- train:setLinearVelocity(0, moveSpeed)
   rotationState = 0
-  timer.resume(checkRotationTimer)
+  timer.resume(startTurn)
+  print(1)
 end
 
 

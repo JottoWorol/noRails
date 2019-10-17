@@ -90,7 +90,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 	if (lastRail.y > putRailUpperBound) then
 				local newRail = display.newImageRect(railGroup, Osheet, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
 				newRail.myName = dir
-				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*0.7, isSensor = true} )
+				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*0.6,isSensor = true} )
 				table.insert( railsTable, newRail )
 				newRail.y = lastRail.y - CELL_WIDTH
 				if(lastRail.isTrain) then
@@ -197,7 +197,7 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	lastLine = setRail(0) --для синхронизаций объектов препятствий
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	--теперь перемещаем поезд как будто он выезжает
-	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH*0.5})
+	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH})
 	--ещё две рельсы
 	setRail(0)
 	setRail(0)
