@@ -1,4 +1,16 @@
 -------Spritesheet
+sheetUI=
+{
+    frames={
+        {--restart
+            x = 0,
+            y = 0,
+            width = 604,
+            height = 209 
+        }
+    }
+
+}
 
 sheetOptions =
 {

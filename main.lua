@@ -19,8 +19,7 @@ CELL_WIDTH = (_W - 20 ) / 5
 
 --параметры поезда
 moveSpeed = 70
-speedDelta = 1;  --moveSpeed = moveSpeed + speedDelta
-rotationSpeed = 5  --how fast train rotates
+
 function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
   return 1
 end
@@ -43,8 +42,8 @@ mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc
 uiGroup = display.newGroup()    -- Display group for UI objects like the score
 
 sho = require("spritesheet")
-Osheet = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
-
+spriteSheet1 = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
+UIsheet = graphics.newImageSheet( "UI.png", sheetUI)
 
 --вызываем манагеров # порядок не менять
 local coal = require("coal")

@@ -40,7 +40,7 @@ local function loadLevel(levelNumber) --загрузить уровень из �
 end
 
 local function setBlock(blockID, x,y, name) --поставить блок blockID в точке (x,y) с myNamename
-    newBlock = display.newImageRect(mainGroup, Osheet, blockID , CELL_WIDTH, CELL_WIDTH)
+    newBlock = display.newImageRect(mainGroup, spriteSheet1, blockID , CELL_WIDTH, CELL_WIDTH)
     table.insert(blockTable, newBlock)
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
     newBlock.myName = name
@@ -88,9 +88,9 @@ function setRail(dir) --поставить одну рельсу и вернут
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
 	if (lastRail.y > putRailUpperBound) then
-				local newRail = display.newImageRect(railGroup, Osheet, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
+				local newRail = display.newImageRect(railGroup, spriteSheet1, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
 				newRail.myName = dir
-				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*0.6,isSensor = true} )
+				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
 				table.insert( railsTable, newRail )
 				newRail.y = lastRail.y - CELL_WIDTH
 				if(lastRail.isTrain) then
@@ -183,7 +183,7 @@ function initializeGrid(level) --загрузить блоки уровня leve
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
 
 
-  train = display.newImageRect( mainGroup, Osheet,  1, (_W)* 0.15, _H*0.13 )
+  train = display.newImageRect( mainGroup, spriteSheet1,  1, (_W)* 0.15, _H*0.13 )
 	train.x = display.contentCenterX
 	train.y = bottomY + CELL_WIDTH*0.5  --ставим поезд, чтобы к нему прикрепить первую рельсу
 	lastRail = train
