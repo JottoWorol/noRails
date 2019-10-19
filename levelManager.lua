@@ -17,7 +17,6 @@ local rotationTime = xTurnTime*3
 local composer = require( "composer" )
 
 function gameLoop () --запускаем с периодом timePerCell()
-  print(moveSpeed)
   if(isDead)then
     return
   end
@@ -27,7 +26,7 @@ function gameLoop () --запускаем с периодом timePerCell()
   if(getCoalPercentage()<=0)then
   	diee("No fuel!")
   end
-  if(getLastRail().y>(train.y+CELL_WIDTH*0.5)) then
+  if(getLastRail().y>train.y) then
     diee("No rails!")
   end
 end
@@ -185,6 +184,10 @@ function onLocalCollision( self, event ) --когда происходит ст�
       elseif ( event.other.myName == "enemy") then
         diee("Wrong way!")
       end
+       -- print( self.myName .. ": collision began with " .. event.other.myName )
+
     elseif ( event.phase == "ended" ) then
+
+        --print( self.myName .. ": collision ended with " .. event.other.myName )
     end
 end

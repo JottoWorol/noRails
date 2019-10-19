@@ -141,7 +141,10 @@ function updateBlockSpeed()
   end
 end
 
+
 function clearScreen()
+
+  --moveSpeed = 70
   emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0
@@ -171,21 +174,27 @@ function clearScreen()
   startTimers()
   recoverCoal()
   startConsumeCoal()
+
+
 end
+
 
 function initializeGrid(level) --загрузить блоки уровня level
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
+
+
   train = display.newImageRect( mainGroup, spriteSheet1,  1, (_W)* 0.15, _H*0.13 )
 	train.x = display.contentCenterX
 	train.y = bottomY + CELL_WIDTH*0.5  --ставим поезд, чтобы к нему прикрепить первую рельсу
 	lastRail = train
+	--train.anchorY = train.height*2/3
 	train.myName = "player"
 	train.isTrain = true
 	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width*0.3} )
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
+
 	lastLine = setRail(0) --для синхронизаций объектов препятствий
-  emptyLinesCount = cellsOnScreen + 1
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	--теперь перемещаем поезд как будто он выезжает
 	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH})
