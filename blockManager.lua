@@ -20,7 +20,7 @@ local spriteBonusOffset = 4
 local spriteEnemiesOffset = 5
 railsTable = {}
 railsAmount = 0
-putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
+putRailUpperBound = _H/8 --выше этого уровня поставить рельсу нельзя
 
 
 function getLastRail()

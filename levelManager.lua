@@ -163,7 +163,7 @@ function diee(message) --умираем, высвечивается сообще
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
   restartButton = display.newImageRect(uiGroup, UIsheet, 1, 604/2, (209/604)*(604/2))
   restartButton.x = _W/2
-  restartButton.y = _H - restartButton.height
+  restartButton.y = _H - restartButton.height*2
   --restartButton:setFillColor(0, 0, 0)
   restartButton:addEventListener( "tap" , levelRestart )
 end
