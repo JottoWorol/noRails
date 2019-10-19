@@ -18,7 +18,7 @@ GRID_WIDTH = 5
 CELL_WIDTH = (_W - 20 ) / 5
 
 --параметры поезда
-moveSpeed = 70
+moveSpeed = 110
 function levelSpeed(level)  --возвращает обычную скорость текущего уровня
   return 110
 end
