@@ -9,7 +9,7 @@ function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local swipeDetectionDelta  = 0.1
 
     function touchListener(event)
-        print("touch start")
+      --  print("touch start")
         if (event.phase == "ended" or event.phase == "cancelled") and isPosibleToPlaceRail then
                 local deltaX = event.x - event.xStart
                 if deltaX > swipeDetectionDelta then

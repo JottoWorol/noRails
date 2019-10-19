@@ -71,6 +71,13 @@ function setBlockLine() --поставить линию блоков
   			else
 				blockName = "enemy"
 			end
+
+      if (lastLine == nil) then
+        print("aaaa")
+      end
+      if(lastLine.y==nil) then
+        print("bbbb")
+      end
 			thisLine = setBlock(blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH,blockName)
 			isChanged = true
 	end
@@ -150,6 +157,7 @@ function clearScreen()
   score = 0
   currentColumn = 3
 
+
   display.remove( train )
   display.remove( dieText )
   display.remove( restartButton )
@@ -170,10 +178,10 @@ function clearScreen()
       railsAmount = railsAmount - 1
   end
   print(railsAmount)
-  physics.start()
-  startTimers()
-  recoverCoal()
-  startConsumeCoal()
+  --physics.start()
+  --startTimers()
+  --recoverCoal()
+  --startConsumeCoal()
 
 
 end
@@ -194,12 +202,13 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
 
-	lastLine = setRail(0) --для синхронизаций объектов препятствий
-	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
+
 	--теперь перемещаем поезд как будто он выезжает
 	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH})
 	--ещё две рельсы
 	setRail(0)
+  lastLine = setRail(0) --для синхронизаций объектов препятствий
+	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	setRail(0)
 
   --обнуление ништяков для рестарта
