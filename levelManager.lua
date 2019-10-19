@@ -161,7 +161,7 @@ function diee(message) --умираем, высвечивается сообще
   stopConsumeCoal()
   dieText = display.newText( uiGroup, message,
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-  restartButton = display.newImageRect(uiGroup, UIsheet, 0, 604/2, 209/2)
+  restartButton = display.newImageRect(uiGroup, UIsheet, 1, 604/2, (209/604)*(604/2))
   restartButton.x = _W/2
   restartButton.y = _H - restartButton.height
   --restartButton:setFillColor(0, 0, 0)
