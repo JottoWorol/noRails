@@ -144,7 +144,7 @@ end
 
 function clearScreen()
 
-  moveSpeed = 70
+  --moveSpeed = 70
   emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0

@@ -11,14 +11,10 @@ local accelerationMode = 0
 speedDelta = 0
 rotationSpeed = 5  --how fast train rotates
 local zeroDegreeDetection = 10
-local xTurnTime = timePerCell()*0.3
-local rotationTime = xTurnTime*2
+local xTurnTime = timePerCell()*0.1
+local rotationTime = xTurnTime*3
 
 local composer = require( "composer" )
-
-function levelSpeed(leve)  --возвращает обычную скорость текущего уровня
-  return 70
-end
 
 function gameLoop () --запускаем с периодом timePerCell()
   if(isDead)then
@@ -80,7 +76,7 @@ end
 
 local function rotationControl()
   if(isDead)then
-    train:setLinearVelocity(0,0)
+   -- train:setLinearVelocity(0,0)
   end
   if(train==nil) then
     return
@@ -92,7 +88,7 @@ local function rotationControl()
     rotationState = 2
     
     train:setLinearVelocity(0, 0)
-    cameraResume()
+    --cameraResume()
   elseif(rotationState == 2 and train.rotation == 0) then
     timer.pause(checkRotationTimer)
     rotationState = -1
@@ -108,18 +104,18 @@ local function turnDelay()
  
  turnTargetX = train.x + turnDir*CELL_WIDTH
  transition.to(train, {time = xTurnTime, x = train.x + turnDir*CELL_WIDTH})
- train:setLinearVelocity(0, moveSpeed)
+ --train:setLinearVelocity(0, moveSpeed)
  timer.resume(checkRotationTimer)
  timer.pause(startTurn)
 end
 
-startTurn = timer.performWithDelay(timePerCell()*0.75, turnDelay,0)
+startTurn = timer.performWithDelay(timePerCell()*0.3, turnDelay,0)
 timer.pause(startTurn)
 
 function turn(dir)
   turnDir = dir
   timer.resume(startTurn)
-  cameraStop()
+ -- cameraStop()
    transition.to(train, {time = rotationTime, rotation = turnDir*90})
 
 end
