@@ -1,5 +1,5 @@
 -------Spritesheet
-sheetUI=
+UI=
 {
     frames={
         {--restart
@@ -7,9 +7,76 @@ sheetUI=
             y = 0,
             width = 604,
             height = 209 
+        },
+        {--start
+            x = 633,
+            y = 0,
+            width = 351,
+            height = 351 
+        },
+        {--pause
+            x = 662,
+            y = 387,
+            width = 136,
+            height = 136 
+        }
+        ,
+        {--continue
+            x = 0,
+            y = 252,
+            width = 606,
+            height = 201 
         }
     }
 
+}
+
+bonus=
+{
+    frames={
+        { --coal
+            x = 2,
+            y = 105,
+            width = 152,
+            height = 152
+        },
+        {  --coin0
+            x = 0,
+            y = 0,
+            width = 96,
+            height = 96
+        },
+        {  --coin1
+            x = 96,
+            y = 0,
+            width = 96,
+            height = 96
+        },
+        {  --coin2
+            x = 192,
+            y = 0,
+            width = 96,
+            height = 96
+        },
+        {  --coin3
+            x = 288,
+            y = 0,
+            width = 96,
+            height = 96
+        },
+        {  --coin4
+            x = 384,
+            y = 0,
+            width = 96,
+            height = 96
+        },
+        {  --coin5
+            x = 480,
+            y = 0,
+            width = 96,
+            height = 96
+        }
+    }
 }
 
 sheetOptions =
@@ -39,12 +106,6 @@ sheetOptions =
             y = 1520,
             width = 826,
             height = 413
-        },
-        { ---5) Coal
-            x = 908,
-            y = 674,
-            width = 410,
-            height = 408
         },
         { ---6) Tree
             x = 0,

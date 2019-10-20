@@ -1,8 +1,6 @@
 score = 0
-local scoreText = display.newText( uiGroup, "Score: " .. score,
-display.contentCenterX, 20, native.systemFont, 36 )
-isDead = false
-isPosibleToPlaceRail = true
+isDead = true
+isPossibleToPlaceRail = false
 local currentLevel = 0 
 local rotationState = -1
 local turnTargetX = 0
@@ -22,7 +20,8 @@ function gameLoop () --запускаем с периодом timePerCell()
   end
   setBlockLine()
 	score = score + 1
-	scoreText.text = "Score: " .. score
+	updateScore()
+  updateCoinIndicator()
   if(getCoalPercentage()<=0)then
   	diee("No fuel!")
   end
@@ -32,7 +31,7 @@ function gameLoop () --запускаем с периодом timePerCell()
 end
 
 gameLoopTimer = timer.performWithDelay(timePerCell()/2, gameLoop, 0 )
-cleanerTimer = timer.performWithDelay(500,collectGarbage,0)
+cleanerTimer = timer.performWithDelay(10,collectGarbage,0)
 
 
 function updateSpeed() --обновляем скорость уровня
@@ -134,38 +133,65 @@ function levelStart(level)  --запускаем уровень #level
   physics.setGravity( 0, 0 )
   currentLevel = level
   moveSpeed = levelSpeed(level)
-  local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
-        background.x = display.contentCenterX
-        background.y = display.contentCenterY
   initializeGrid(level)  -- add Levelgetter
-  startTimers()
   train.collision = onLocalCollision
   train:addEventListener("collision")
   recoverCoal()
   startConsumeCoal()
+  startUpdateCoins()
   isDead = false;
+  coinAmount = 0
+  showCoinIndicator()
+  showScore()
+  showCoalIndicator()
+  showPauseButton()
+  startTimers()
 end
 
-function levelRestart() 
+function levelPause()
+  killPauseButton()
+  showContinueButton()
+  isPossibleToPlaceRail = false
+  pauseTimers()
+  physics.pause()
+  stopConsumeCoal()
+  stopUpdateCoins()
+  isDead=true
+end
+
+function levelContinue()
+  showPauseButton()
+  killContinueButton()
+  isPossibleToPlaceRail = true
+  startTimers()
+  physics.start()
+  startConsumeCoal()
+  startUpdateCoins()
+  isDead=false
+end
+
+function levelRestart()
+  killCoinIndicator() 
+  killScore()
+  killCoalIndicator()
+  killRestartButton()
   levelStart(currentLevel)
 end
 
 function diee(message) --умираем, высвечивается сообщение message
+  killPauseButton()
+  showRestartButton()
   if(isDead) then
     return
   end
   isDead = true
-  isPosibleToPlaceRail = false
+  isPossibleToPlaceRail = false
   pauseTimers()
   physics.pause()
   stopConsumeCoal()
+  stopUpdateCoins()
   dieText = display.newText( uiGroup, message,
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
-  restartButton = display.newImageRect(uiGroup, UIsheet, 1, 604/2, (209/604)*(604/2))
-  restartButton.x = _W/2
-  restartButton.y = _H - restartButton.height*2
-  --restartButton:setFillColor(0, 0, 0)
-  restartButton:addEventListener( "tap" , levelRestart )
 end
 
 function onLocalCollision( self, event ) --когда происходит столкновение
@@ -181,6 +207,10 @@ function onLocalCollision( self, event ) --когда происходит ст�
       elseif ( event.other.myName == "coal") then
         recoverCoal()
         event.other.isUsed = true
+      elseif ( event.other.myName == "coin") then
+        coinPlus()
+        event.other.isUsed = true
+        useCoin(event.other)
       elseif ( event.other.myName == "enemy") then
         diee("Wrong way!")
       end

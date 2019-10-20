@@ -44,17 +44,25 @@ railGroup = display.newGroup()
 mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
 uiGroup = display.newGroup()    -- Display group for UI objects like the score
 
-sho = require("spritesheet")
-spriteSheet1 = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
-UIsheet = graphics.newImageSheet( "UI.png", sheetUI)
+sheetsMap = require("spritesheet")
+sheetBasic = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
+sheetUI = graphics.newImageSheet( "UI.png", UI)
+sheetBonus = graphics.newImageSheet( "bonusSheet.png", bonus)
+print("bonus sheet - ", sheetBonus)
 
+
+function startIt() --начинаем нулевой уровень
+  killStartButton()
+  levelStart(0)
+end
 --вызываем манагеров # порядок не менять
-local coal = require("coal")
+local UImanager = require("UI")
 local blockManager = require("blockManager")
 local levelManager = require("levelManager")
 local controlManager = require("controlManager")
 
 
 
---начинаем нулевой уровень
-levelStart(0)
+showStartButton()
+
+

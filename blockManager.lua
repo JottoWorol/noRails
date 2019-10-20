@@ -13,15 +13,14 @@ local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
  blockTable = {} --таблица с блоками препятствий
 local linesCounter = 1 --счётчик линий уровня
-local lastLine  --последняя линия препятствий
+lastLine = nil  --последняя линия препятствий
 local lastRail  --последняя рельса
 local emptyLinesCount = cellsOnScreen + 1
-local spriteBonusOffset = 4
-local spriteEnemiesOffset = 5
+local spriteEnemiesOffset = 4
 railsTable = {}
 railsAmount = 0
 putRailUpperBound = _H/8 --выше этого уровня поставить рельсу нельзя
-
+coinsMngr = require("coinsManager")
 
 function getLastRail()
 	return lastRail
@@ -39,9 +38,15 @@ local function loadLevel(levelNumber) --загрузить уровень из �
 	end
 end
 
-local function setBlock(blockID, x,y, name) --поставить блок blockID в точке (x,y) с myNamename
-    newBlock = display.newImageRect(mainGroup, spriteSheet1, blockID , CELL_WIDTH, CELL_WIDTH)
+local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --поставить блок blockID в точке (x,y) с myNamename
+    newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
+    if(name=="enemy" or name=="coal") then
+      print("polozhil block")
     table.insert(blockTable, newBlock)
+    else
+      print("polozhil coin")
+    table.insert(coinTable, newBlock)
+    end
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
     newBlock.myName = name
     newBlock.isUsed = false
@@ -58,27 +63,33 @@ function setBlockLine() --поставить линию блоков
   local isChanged = false --есть ли что-то на линии
   local thisLine
   local blockName
+  local sheet
+  local size
   for i = 1, GRID_WIDTH do
   	local blockID = string.byte(levelMap[linesCounter],i)
     if(blockID>=48 and blockID<=57) then
-      blockID = blockID - 48 + spriteBonusOffset
+      blockID = blockID - 48
+      sheet = sheetBonus
     else
       blockID = blockID - 96 + spriteEnemiesOffset
     end
-  	if(blockID~=4) then
-  			if(blockID==5) then
+  	if(blockID~=0) then
+  			if(sheet==sheetBonus and blockID==1) then
   				blockName = "coal"
+          size = CELL_WIDTH*0.6
+        elseif (sheet==sheetBonus and blockID == spriteCoinOffset) then
+          blockName = "coin"
+          size = coinSize
   			else
-				blockName = "enemy"
-			end
+				  blockName = "enemy"
+          sheet = sheetBasic
+          size = CELL_WIDTH
+			  end
 
-      if (lastLine == nil) then
-        print("aaaa")
+      if(blockID == 5) then
+        print("printing a tree :", blockName)
       end
-      if(lastLine.y==nil) then
-        print("bbbb")
-      end
-			thisLine = setBlock(blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH,blockName)
+			thisLine = setBlock(sheet, blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, size, size, blockName)
 			isChanged = true
 	end
   end
@@ -95,7 +106,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
 	if (lastRail.y > putRailUpperBound) then
-				local newRail = display.newImageRect(railGroup, spriteSheet1, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
+				local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
 				newRail.myName = dir
 				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
 				table.insert( railsTable, newRail )
@@ -128,10 +139,12 @@ function collectGarbage() --убираем всё, что вышло за экр
 
       end
   end
+
+  collectGarbageCoins()
+
   for i = #railsTable, 1 , -1 do
     local thisRail = railsTable[i]
-
-      if (thisRail.y > _H)  then
+    if (thisRail.y > _H)  then
           display.remove( thisRail ) -- убрать с экрана
           table.remove( railsTable, i ) -- убрать из памяти, так как содержится в списке
           railsAmount = railsAmount - 1
@@ -160,10 +173,8 @@ function clearScreen()
 
   display.remove( train )
   display.remove( dieText )
-  display.remove( restartButton )
   display.remove( background )
 
-  isPosibleToPlaceRail = true
   isDead = false
 
   for i = #blockTable, 1 , -1 do
@@ -171,6 +182,9 @@ function clearScreen()
       display.remove(thisBlock)
       table.remove( blockTable, i )
   end
+
+  clearCoins()
+
   for i = #railsTable, 1 , -1 do
       local thisRail = railsTable[i]
       display.remove(thisRail)
@@ -178,20 +192,13 @@ function clearScreen()
       railsAmount = railsAmount - 1
   end
   print(railsAmount)
-  --physics.start()
-  --startTimers()
-  --recoverCoal()
-  --startConsumeCoal()
-
-
+ 
 end
 
 
 function initializeGrid(level) --загрузить блоки уровня level
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
-
-
-  train = display.newImageRect( mainGroup, spriteSheet1,  1, (_W)* 0.15, _H*0.13 )
+  train = display.newImageRect( mainGroup, sheetBasic,  1, (_W)* 0.15, _H*0.13 )
 	train.x = display.contentCenterX
 	train.y = bottomY + CELL_WIDTH*0.5  --ставим поезд, чтобы к нему прикрепить первую рельсу
 	lastRail = train
@@ -201,7 +208,7 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width*0.3} )
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
-
+    isPossibleToPlaceRail = true
 
 	--теперь перемещаем поезд как будто он выезжает
 	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH})
@@ -210,10 +217,5 @@ function initializeGrid(level) --загрузить блоки уровня leve
   lastLine = setRail(0) --для синхронизаций объектов препятствий
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	setRail(0)
-
   --обнуление ништяков для рестарта
-
-
-
-
 end
