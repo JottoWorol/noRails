@@ -126,6 +126,14 @@ function setRail(dir) --поставить одну рельсу и вернут
 	end
 end
 
+function deleteLastRail()  
+  local thisRail = railsTable[railsAmount]
+  display.remove(thisRail)
+  table.remove( railsTable, i )
+  railsAmount = railsAmount - 1
+  lastRail = railsTable[railsAmount]
+end
+
 function collectGarbage() --убираем всё, что вышло за экран
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
@@ -190,7 +198,7 @@ function clearScreen()
       railsAmount = railsAmount - 1
   end
   print(railsAmount)
- 
+
 end
 
 
