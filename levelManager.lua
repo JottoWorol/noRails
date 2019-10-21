@@ -2,6 +2,7 @@ score = 0
 isDead = true
 isPossibleToPlaceRail = false
 local currentLevel = 0 
+currentColumn = 3 --текущая колонка (от 1 до 5)
 local rotationState = -1
 local turnTargetX = 0
 local turnDir = 0
@@ -141,6 +142,7 @@ function levelStart(level)  --запускаем уровень #level
   startUpdateCoins()
   isDead = false;
   coinAmount = 0
+  currentColumn = 3
   showCoinIndicator()
   showScore()
   showCoalIndicator()

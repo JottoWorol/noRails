@@ -168,8 +168,6 @@ function clearScreen()
   emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0
-  currentColumn = 3
-
 
   display.remove( train )
   display.remove( dieText )
@@ -208,8 +206,7 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width*0.3} )
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
-    isPossibleToPlaceRail = true
-
+  isPossibleToPlaceRail = true
 	--теперь перемещаем поезд как будто он выезжает
 	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH})
 	--ещё две рельсы

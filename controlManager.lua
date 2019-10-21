@@ -1,12 +1,11 @@
 swipeDirection = ""
-currentColumn = 3 --текущая колонка (от 1 до 5)
 
 function dragDirection(dispObj, left, right, tap) --SWIPE HANDLING
     local prevX
     local isFocus = false
     local dirFunc = nil
     local thisTimer = nil
-    local swipeDetectionDelta  = 0.1
+    local swipeDetectionDelta  = 4.5
 
     function touchListener(event)
       --  print("touch start")
