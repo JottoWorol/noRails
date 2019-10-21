@@ -14,7 +14,8 @@ function dragDirection(dispObj, left, right, tap, down) --SWIPE HANDLING
                 local deltaX = event.x - event.xStart
                 local deltaY = event.y - event.yStart
 
-
+                --- отдаём приоритет горизонтальным свайпам
+                
                 if deltaY < -swipeDetectionDeltaY and deltaX < swipeDetectionDeltaX and deltaX > -swipeDetectionDeltaX then
                     tap()
                 elseif deltaY > swipeDetectionDeltaY and deltaX < swipeDetectionDeltaX and deltaX > -swipeDetectionDeltaX then
