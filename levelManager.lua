@@ -154,6 +154,7 @@ function levelPause()
   killPauseButton()
   showContinueButton()
   isPossibleToPlaceRail = false
+  deleteLastRail()
   pauseTimers()
   physics.pause()
   stopConsumeCoal()
