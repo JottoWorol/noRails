@@ -1,17 +1,23 @@
 score = 0
+
 isDead = true
 isPossibleToPlaceRail = false
-local currentLevel = 0 
+
+local currentLevel = 0
 currentColumn = 3 --текущая колонка (от 1 до 5)
-local rotationState = -1
+
+
 local turnTargetX = 0
 local turnDir = 0
 local accelerationMode = 0
+local rotationState = -1
 speedDelta = 0
 rotationSpeed = 5  --how fast train rotates
 local zeroDegreeDetection = 10
 local xTurnTime = timePerCell()*0.1
 local rotationTime = xTurnTime*3
+
+local deletedRails
 
 local composer = require( "composer" )
 
@@ -86,7 +92,7 @@ local function rotationControl()
     transition.to(train, {time = rotationTime, rotation = 0})
   elseif(rotationState == 1 and train.x == turnTargetX) then
     rotationState = 2
-    
+
     train:setLinearVelocity(0, 0)
     --cameraResume()
   elseif(rotationState == 2 and train.rotation == 0) then
@@ -101,7 +107,7 @@ timer.pause(checkRotationTimer)
 local function turnDelay()
  print("поворачиваем")
  rotationState = 0
- 
+
  turnTargetX = train.x + turnDir*CELL_WIDTH
  transition.to(train, {time = xTurnTime, x = train.x + turnDir*CELL_WIDTH})
  --train:setLinearVelocity(0, moveSpeed)
@@ -117,6 +123,10 @@ function turn(dir)
   timer.resume(startTurn)
  -- cameraStop()
    transition.to(train, {time = rotationTime, rotation = turnDir*90})
+
+end
+
+function deleteLast()
 
 end
 
@@ -173,7 +183,7 @@ function levelContinue()
 end
 
 function levelRestart()
-  killCoinIndicator() 
+  killCoinIndicator()
   killScore()
   killCoalIndicator()
   killRestartButton()

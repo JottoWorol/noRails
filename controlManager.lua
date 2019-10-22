@@ -5,7 +5,7 @@ function dragDirection(dispObj, left, right, tap, down) --SWIPE HANDLING
     local isFocus = false
     local dirFunc = nil
     local thisTimer = nil
-    local swipeDetectionDeltaX  = 10 -- было 4.5
+    local swipeDetectionDeltaX  = 7.5 -- было 4.5
     local swipeDetectionDeltaY  = 10
 
     function touchListener(event)
@@ -15,7 +15,7 @@ function dragDirection(dispObj, left, right, tap, down) --SWIPE HANDLING
                 local deltaY = event.y - event.yStart
 
                 --- отдаём приоритет горизонтальным свайпам
-                
+
                 if deltaY < -swipeDetectionDeltaY and deltaX < swipeDetectionDeltaX and deltaX > -swipeDetectionDeltaX then
                     tap()
                 elseif deltaY > swipeDetectionDeltaY and deltaX < swipeDetectionDeltaX and deltaX > -swipeDetectionDeltaX then
