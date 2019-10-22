@@ -41,11 +41,9 @@ end
 local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --поставить блок blockID в точке (x,y) с myNamename
     newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
     if(name=="enemy" or name=="coal") then
-      print("polozhil block")
-    table.insert(blockTable, newBlock)
+      table.insert(blockTable, newBlock)
     else
-      print("polozhil coin")
-    table.insert(coinTable, newBlock)
+      table.insert(coinTable, newBlock)
     end
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
     newBlock.myName = name

@@ -2,30 +2,53 @@
 UI=
 {
     frames={
-        {--restart
+        {-- 1 restart
             x = 0,
             y = 0,
             width = 604,
             height = 209 
         },
-        {--start
+        {-- 2 start
             x = 633,
             y = 0,
             width = 351,
             height = 351 
         },
-        {--pause
+        {-- 3 pause
             x = 662,
             y = 387,
             width = 136,
             height = 136 
-        }
-        ,
-        {--continue
+        },
+        {-- 4 continue
             x = 0,
             y = 252,
             width = 606,
             height = 201 
+        },
+        {-- 5 coin Indicator
+            x = 0,
+            y = 483,
+            width = 281,
+            height = 140 
+        },
+        {-- 6 coal Icon
+            x = 0,
+            y = 657,
+            width = 475,
+            height = 153 
+        },
+        {-- 7 coal indicator base
+            x = 0,
+            y = 853,
+            width = 328,
+            height = 71 
+        },
+        {-- 8 coal indicator darker
+            x = 328,
+            y = 853,
+            width = 328,
+            height = 71 
         }
     }
 

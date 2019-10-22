@@ -16,7 +16,7 @@ function killStartButton()
 end
 
 function showScore()
-  scoreText = display.newText( uiGroup, "Score: " .. score, display.contentCenterX, 20, native.systemFont, 36 )
+  scoreText = display.newText( uiGroup, "Очки: " .. score, display.contentCenterX, 20, native.systemFont, 36 )
 end
 
 function killScore()
@@ -24,15 +24,15 @@ function killScore()
 end
 
 function updateScore()
-  scoreText.text = "Score: " .. score
+  scoreText.text = "Очки: " .. score
 end
 
 function showCoinIndicator()
-  coinImage = display.newImageRect(uiGroup, sheetBonus, spriteCoinOffset, coinIconSize, coinIconSize)
-  coinImage.x = bottomX + coinIconSize
-  coinImage.y = bottomY - _H + coinIconSize
-  coinText = display.newText( uiGroup, "" .. coinAmount,
-  coinImage.x + coinIconSize*2, coinImage.y, native.systemFont, 25 )
+  coinIndicatorHeight = _H/14
+  coinImage = display.newImageRect(uiGroup, sheetUI, 5, _H/14 * (281/140), _H/14)
+  coinImage.x = bottomX + coinImage.width * 0.5
+  coinImage.y = bottomY - _H + coinImage.height * 0.5
+  coinText = display.newText( uiGroup, "" .. coinAmount, coinImage.x + coinImage.width*0.1, coinImage.y, native.systemFont, 25, left)
 end
 
 function killCoinIndicator()
@@ -45,30 +45,64 @@ function updateCoinIndicator()
 end
 
 function showCoalIndicator()
-  --создаём два прямоугольника - для рамки и значения/заполнения
-  indicatorBackground = display.newRect(indicatorPosX, indicatorPosY, indicatorWidth, indicatorHeight)
-  indicatorValue = display.newRect(indicatorPosX, indicatorPosY, indicatorWidth - frameWidth*2, indicatorHeight - frameWidth*2)
+  indicatorIconHeight = _H/14
+  indicatorIconWidth = indicatorIconHeight*(475/153)
+  indicatorValueHeight = indicatorIconHeight*(71/153)
+  indicatorValueWidth = indicatorIconWidth*(328/475)
+ 
+  --иконка индикатора
+  indicatorIcon = display.newImageRect(uiGroup, sheetUI, 6, indicatorIconWidth, indicatorIconHeight)
+  indicatorIcon.x = _W - indicatorIconWidth/2
+  indicatorIcon.y = bottomY - _H + indicatorIconHeight/2
 
-  --Фон индикатора
-  indicatorBackground:setStrokeColor( 0,0,0 )  --чёрная рамка
-  indicatorBackground.strokeWidth = frameWidth
-  indicatorBackground:setFillColor( 0.5,0.5,0.5) --заполняем прозрачностью | FrAzen: Фон - зелёная трава - так что бэк я заменил на чёрный
-  --стартовый цвет индикатора
-  indicatorValue:setFillColor( 0,1,0)
+  --индикатор
+  indicatorValue = display.newImageRect(uiGroup, sheetUI, 7, indicatorValueWidth, indicatorValueHeight)
+  --затемнитель
+  indicatorValueDarker = display.newImageRect(uiGroup, sheetUI, 8, indicatorValueWidth, indicatorValueHeight)
+
+  indicatorValuePosX = indicatorIcon.x + (125/475)*indicatorIconWidth*0.415
+
+  indicatorValue.x = indicatorValuePosX
+  indicatorValue.y = indicatorIcon.y - indicatorIconWidth*0.005
+  indicatorValueDarker.x = indicatorValuePosX
+  indicatorValueDarker.y = indicatorValue.y
+  indicatorValue:setFillColor(0, 1, 0)
+  --indicatorValue:setFillColor(0.522, 0.788, 0.078)
 end
 
 function killCoalIndicator()
-  display.remove(indicatorBackground)
+  display.remove(indicatorIcon)
   display.remove(indicatorValue)
+  display.remove(indicatorValueDarker)
+
 end
 
 function updateCoalIndicator()
+  local function redColor()
+    if(getCoalPercentage()>0.75) then
+      return 4*(1 - getCoalPercentage())
+    else
+      return 1
+    end
+  end
+
+  local function greenColor()
+    if(getCoalPercentage()>0.75) then
+      return 1
+    else
+      return getCoalPercentage()*(4/3)
+    end
+  end
   --красиво меняем цвет
-  indicatorValue:setFillColor((getCoalPercentage()>0.5) and (3*(1 - getCoalPercentage())) or (1), (getCoalPercentage()>0.5) and (1) or (getCoalPercentage()*2), 0 )
+  indicatorValue:setFillColor(redColor(), greenColor(), 0 )
+  print("red color = ",redColor())
   --обновляем ширину
-  indicatorValue.width = (indicatorWidth - frameWidth) * (getCoalPercentage())
+  indicatorValue.width = (indicatorValueWidth) * (getCoalPercentage())
+  indicatorValueDarker.width = indicatorValue.width
   --обновляем позицию
-  indicatorValue.x = indicatorPosX - ((indicatorWidth - frameWidth) - indicatorValue.width)*0.5
+  indicatorValue.x = indicatorValuePosX - ((indicatorValueWidth) - indicatorValue.width)*0.5
+  indicatorValueDarker.x = indicatorValue.x
+
 end
 
 function showRestartButton()

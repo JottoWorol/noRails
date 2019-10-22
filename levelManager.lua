@@ -30,10 +30,10 @@ function gameLoop () --запускаем с периодом timePerCell()
 	updateScore()
   updateCoinIndicator()
   if(getCoalPercentage()<=0)then
-  	diee("No fuel!")
+  	diee("Нет топлива!")
   end
   if(getLastRail().y>train.y) then
-    diee("No rails!")
+    diee("Нет рельс!")
   end
 end
 
@@ -225,7 +225,7 @@ function onLocalCollision( self, event ) --когда происходит ст�
         event.other.isUsed = true
         useCoin(event.other)
       elseif ( event.other.myName == "enemy") then
-        diee("Wrong way!")
+        diee("Нет пути!")
       end
        -- print( self.myName .. ": collision began with " .. event.other.myName )
 
