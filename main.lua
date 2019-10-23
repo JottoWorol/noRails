@@ -64,5 +64,4 @@ local controlManager = require("controlManager")
 
 
 showStartButton()
-
-
+showTutorialButton()

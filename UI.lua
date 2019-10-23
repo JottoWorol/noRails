@@ -11,6 +11,43 @@ function showStartButton()
   startButton:addEventListener( "tap" , startIt )
 end
 
+function showTutorialButton()
+  howToButton = display.newImageRect( uiGroup,sheetUI, 3, _W/3 , _H/5)
+  howToButton.x = bottomX + _W * 0.5
+  howToButton.y = bottomY - _H * 0.2
+  howToButton:addEventListener( "tap" , showTutorial )
+end
+
+function showTutorial ()
+  killStartButton()
+  killHowToButton()
+  tutorialBackground = display.newImageRect( uiGroup, sheetUI, 9, _W, _H )
+  tutorialBackground.x = display.contentCenterX
+  tutorialBackground.y = display.contentCenterY
+  --- text
+  local text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+
+  tutorialText = display.newText( text , _W * 0.5 , _H*0.2, _W*0.75, _H*0.4, "Font_Russo_One/RussoOne_Regular.ttf", 24 )
+  --tutorialText.align = "center"
+  -- _W*0.75, _H*0.4   -  размеры TextBox для подгона текста в нормальный вид (без этого всё идёт в бесконечную строку)
+  tutorialBackground:addEventListener("tap", tutorialToMenu)
+end
+
+function tutorialToMenu()
+  killTutorial()
+  showStartButton()
+  showTutorialButton()
+end
+
+function killTutorial()
+  display.remove(tutorialBackground)
+  display.remove(tutorialText)
+end
+
+function killHowToButton()
+  display.remove(howToButton)
+end
+
 function killStartButton()
   display.remove(startButton)
 end
@@ -19,7 +56,7 @@ function showScore()
   scoreBack = display.newImageRect( uiGroup, sheetUI, 9, _H/16 * (227/119), _H/14 )
   --scoreBack.x = _H/14 * (281/140) + scoreBack.width*0.5
   scoreBack.x = (bottomX + coinImage.width * 0.5 + _W - (_H/14*(475/153))/2)/2
-  scoreBack.y = bottomY - _H + scoreBack.height*0.5 
+  scoreBack.y = bottomY - _H + scoreBack.height*0.5
   scoreText = display.newText( uiGroup, score, scoreBack.x, scoreBack.y, native.systemFont, 36 )
 end
 
@@ -54,7 +91,7 @@ function showCoalIndicator()
   indicatorIconWidth = indicatorIconHeight*(475/153)
   indicatorValueHeight = indicatorIconHeight*(71/153)
   indicatorValueWidth = indicatorIconWidth*(328/475)
- 
+
   --иконка индикатора
   indicatorIcon = display.newImageRect(uiGroup, sheetUI, 6, indicatorIconWidth, indicatorIconHeight)
   indicatorIcon.x = _W - indicatorIconWidth/2
