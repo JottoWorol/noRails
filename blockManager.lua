@@ -100,15 +100,33 @@ function setBlockLine() --поставить линию блоков
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
+currentRail = nil
+firstThree = 0
+
+function railAnimation()
+  currentRail.y = lastRail.y - CELL_WIDTH
+  if(currentRail.height>CELL_WIDTH) then
+    currentRail.width = currentRail.width/2
+    currentRail.height = currentRail.height/2
+  else
+    currentRail:setLinearVelocity(0, moveSpeed)
+    lastRail = currentRail
+    timer.pause( railAnimationTimer )
+  end
+end
+
+railAnimationTimer = timer.performWithDelay( 40, railAnimation,0 )
+timer.pause( railAnimationTimer )
+
 function setRail(dir) --поставить одну рельсу и вернуть объект с ней
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
 	if (lastRail.y > putRailUpperBound) then
-				local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) , CELL_WIDTH )
+				local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * 4, CELL_WIDTH * 4)
 				newRail.myName = dir
 				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
 				table.insert( railsTable, newRail )
-				newRail.y = lastRail.y - CELL_WIDTH
+        
 				if(lastRail.isTrain) then
 					newRail.x = lastRail.x
 				elseif (dir == 0) then
@@ -118,9 +136,18 @@ function setRail(dir) --поставить одну рельсу и вернут
 				end
 
 				railsAmount = railsAmount + 1
-				lastRail = newRail
-				newRail:setLinearVelocity(0, moveSpeed)
-				return newRail
+        if(firstThree<3) then
+          firstThree = firstThree + 1
+          newRail.y = lastRail.y - CELL_WIDTH
+          newRail.width = newRail.width/4
+          newRail.height = newRail.height/4
+          newRail:setLinearVelocity(0, moveSpeed)
+          lastRail = newRail
+				  return newRail
+        else
+          currentRail = newRail
+          timer.resume( railAnimationTimer )
+        end
 	end
 end
 
@@ -174,6 +201,8 @@ function clearScreen()
   emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0
+  currentRail = nil
+  firstThree = 0
 
   display.remove( train )
   display.remove( dieText )
