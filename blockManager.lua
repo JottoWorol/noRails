@@ -100,18 +100,17 @@ function setBlockLine() --поставить линию блоков
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
-currentRail = nil
+--constants for rail fall animation
 firstThree = 0
+railInitialSize = 3
+railAnimationDivisor  = 1.73205080
 
 function railAnimation()
-  currentRail.y = lastRail.y - CELL_WIDTH
-  if(currentRail.height>CELL_WIDTH) then
-    currentRail.width = currentRail.width/2
-    currentRail.height = currentRail.height/2
-  else
-    currentRail:setLinearVelocity(0, moveSpeed)
-    lastRail = currentRail
-    timer.pause( railAnimationTimer )
+  for i, rail in pairs(railsTable) do
+    if(rail.height>CELL_WIDTH) then
+      rail.width = rail.width/railAnimationDivisor
+      rail.height = rail.height/railAnimationDivisor
+    end
   end
 end
 
@@ -122,7 +121,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
 	if (lastRail.y > putRailUpperBound) then
-				local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * 4, CELL_WIDTH * 4)
+				local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
 				newRail.myName = dir
 				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
 				table.insert( railsTable, newRail )
@@ -139,14 +138,17 @@ function setRail(dir) --поставить одну рельсу и вернут
         if(firstThree<3) then
           firstThree = firstThree + 1
           newRail.y = lastRail.y - CELL_WIDTH
-          newRail.width = newRail.width/4
-          newRail.height = newRail.height/4
+          newRail.width = newRail.width/railInitialSize
+          newRail.height = newRail.height/railInitialSize
           newRail:setLinearVelocity(0, moveSpeed)
           lastRail = newRail
 				  return newRail
         else
+          newRail.y = lastRail.y - CELL_WIDTH
+          newRail:setLinearVelocity(0, moveSpeed)
+          lastRail = newRail
           currentRail = newRail
-          timer.resume( railAnimationTimer )
+          --timer.resume( railAnimationTimer )
         end
 	end
 end
@@ -218,6 +220,8 @@ function clearScreen()
 
   clearCoins()
 
+  timer.pause( railAnimationTimer )
+
   for i = #railsTable, 1 , -1 do
       local thisRail = railsTable[i]
       display.remove(thisRail)
@@ -249,5 +253,6 @@ function initializeGrid(level) --загрузить блоки уровня leve
   lastLine = setRail(0) --для синхронизаций объектов препятствий
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	setRail(0)
+  timer.resume( railAnimationTimer )
   --обнуление ништяков для рестарта
 end

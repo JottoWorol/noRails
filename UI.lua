@@ -16,15 +16,20 @@ function killStartButton()
 end
 
 function showScore()
-  scoreText = display.newText( uiGroup, "Очки: " .. score, display.contentCenterX, 20, native.systemFont, 36 )
+  scoreBack = display.newImageRect( uiGroup, sheetUI, 9, _H/16 * (227/119), _H/14 )
+  --scoreBack.x = _H/14 * (281/140) + scoreBack.width*0.5
+  scoreBack.x = (bottomX + coinImage.width * 0.5 + _W - (_H/14*(475/153))/2)/2
+  scoreBack.y = bottomY - _H + scoreBack.height*0.5 
+  scoreText = display.newText( uiGroup, score, scoreBack.x, scoreBack.y, native.systemFont, 36 )
 end
 
 function killScore()
   display.remove(scoreText)
+  display.remove( scoreBack )
 end
 
 function updateScore()
-  scoreText.text = "Очки: " .. score
+  scoreText.text = score
 end
 
 function showCoinIndicator()
@@ -95,7 +100,6 @@ function updateCoalIndicator()
   end
   --красиво меняем цвет
   indicatorValue:setFillColor(redColor(), greenColor(), 0 )
-  print("red color = ",redColor())
   --обновляем ширину
   indicatorValue.width = (indicatorValueWidth) * (getCoalPercentage())
   indicatorValueDarker.width = indicatorValue.width

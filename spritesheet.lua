@@ -49,6 +49,12 @@ UI=
             y = 853,
             width = 328,
             height = 71 
+        },
+        {-- 9 score indicator
+            x = 521,
+            y = 664,
+            width = 227,
+            height = 119 
         }
     }
 
