@@ -1,7 +1,7 @@
 ------ GLOBAL Settings ------
 _W = display.actualContentWidth  --ширина экрана
 _H = display.actualContentHeight --высота экрана
-display.fps = 30
+display.fps = 60
 
 --левый нижний угол
 bottomY = display.contentCenterY+_H*0.5
