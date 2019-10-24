@@ -25,6 +25,7 @@ function gameLoop () --запускаем с периодом timePerCell()
   if(isDead)then
     return
   end
+  print( currentColumn )
   setBlockLine()
 	score = score + 1
 	updateScore()

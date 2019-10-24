@@ -16,14 +16,14 @@ local linesCounter = 1 --счётчик линий уровня
 lastLine = nil  --последняя линия препятствий
 local lastRail  --последняя рельса
 local emptyLinesCount = cellsOnScreen + 1
-local spriteEnemiesOffset = 4
+local spriteEnemiesOffset = 5
 railsTable = {}
 railsAmount = 0
-putRailUpperBound = _H/8 --выше этого уровня поставить рельсу нельзя
+putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
 coinsMngr = require("coinsManager")
 
-function getLastRail()
-	return lastRail
+function getLastRail(
+)	return lastRail
 end
 
 function getTrain()
@@ -100,6 +100,14 @@ function setBlockLine() --поставить линию блоков
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
+function setTrain(x,y)
+  train = display.newImageRect( mainGroup, sheetBasic,  1, _W* 0.13, _W* 0.13*(340/152))
+  train.myName = "player"
+  train.isTrain = true
+  train.x = x
+  train.y = y
+end
+
 --constants for rail fall animation
 firstThree = 0
 railInitialSize = 3
@@ -116,6 +124,21 @@ end
 
 railAnimationTimer = timer.performWithDelay( 40, railAnimation,0 )
 timer.pause( railAnimationTimer )
+
+isTrainScaled = false
+
+function trainAnimation()
+  if(isTrainScaled) then
+    train.width = train.width*145/136
+    isTrainScaled = false
+  else
+    train.width = train.width/145*136
+    isTrainScaled = true
+  end
+end
+
+trainAnimationTimer = timer.performWithDelay( 100, trainAnimation,0 )
+timer.pause( trainAnimationTimer )
 
 function setRail(dir) --поставить одну рельсу и вернуть объект с ней
 	--dir -1 == left   1 == right  0 == forward
@@ -221,6 +244,7 @@ function clearScreen()
   clearCoins()
 
   timer.pause( railAnimationTimer )
+  timer.pause( trainAnimationTimer )
 
   for i = #railsTable, 1 , -1 do
       local thisRail = railsTable[i]
@@ -235,13 +259,9 @@ end
 
 function initializeGrid(level) --загрузить блоки уровня level
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
-  train = display.newImageRect( mainGroup, sheetBasic,  1, (_W)* 0.15, _H*0.13 )
-	train.x = display.contentCenterX
-	train.y = bottomY + CELL_WIDTH*0.5  --ставим поезд, чтобы к нему прикрепить первую рельсу
+  setTrain(display.contentCenterX, bottomY + CELL_WIDTH*0.5)
 	lastRail = train
 	--train.anchorY = train.height*2/3
-	train.myName = "player"
-	train.isTrain = true
 	physics.addBody( train, "dynamic", {isSensor = true, radius = train.width*0.3} )
 	loadLevel(level)  -- загружаем карту уровня
 	--первая рельса
@@ -254,5 +274,6 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	setRail(0)
   timer.resume( railAnimationTimer )
+  timer.resume( trainAnimationTimer )
   --обнуление ништяков для рестарта
 end

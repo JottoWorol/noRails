@@ -11,8 +11,12 @@ function showStartButton()
   startButton:addEventListener( "tap" , startIt )
 end
 
+function killStartButton()
+  display.remove(startButton)
+end
+
 function showTutorialButton()
-  howToButton = display.newImageRect( uiGroup,sheetUI, 3, _W/3 , _H/5)
+  howToButton = display.newImageRect( uiGroup,sheetUI, 10, _W*0.6 , _W*0.6*(128/370))
   howToButton.x = bottomX + _W * 0.5
   howToButton.y = bottomY - _H * 0.2
   howToButton:addEventListener( "tap" , showTutorial )
@@ -20,16 +24,14 @@ end
 
 function showTutorial ()
   killStartButton()
-  killHowToButton()
+  killTutorialButton()
   tutorialBackground = display.newImageRect( uiGroup, sheetUI, 9, _W, _H )
   tutorialBackground.x = display.contentCenterX
   tutorialBackground.y = display.contentCenterY
   --- text
-  local text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  local text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
 
-  tutorialText = display.newText( text , _W * 0.5 , _H*0.2, _W*0.75, _H*0.4, "Font_Russo_One/RussoOne_Regular.ttf", 24 )
-  --tutorialText.align = "center"
-  -- _W*0.75, _H*0.4   -  размеры TextBox для подгона текста в нормальный вид (без этого всё идёт в бесконечную строку)
+  tutorialText = display.newText({text = text , x=display.contentCenterX, y=display.contentCenterY,width=_W*0.75, height=0, font="Font_Russo_One/RussoOne_Regular.ttf", fontSize=15, align="center"})
   tutorialBackground:addEventListener("tap", tutorialToMenu)
 end
 
@@ -44,12 +46,8 @@ function killTutorial()
   display.remove(tutorialText)
 end
 
-function killHowToButton()
+function killTutorialButton()
   display.remove(howToButton)
-end
-
-function killStartButton()
-  display.remove(startButton)
 end
 
 function showScore()

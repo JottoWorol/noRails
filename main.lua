@@ -53,6 +53,7 @@ print("bonus sheet - ", sheetBonus)
 
 function startIt() --начинаем нулевой уровень
   killStartButton()
+  killTutorialButton()
   levelStart(0)
 end
 --вызываем манагеров # порядок не менять
