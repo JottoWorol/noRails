@@ -5,27 +5,28 @@ function dragDirection(dispObj, left, right, tap, down) --SWIPE HANDLING
     local isFocus = false
     local dirFunc = nil
     local thisTimer = nil
-    local swipeDetectionDeltaX  = 7.5 -- было 4.5
-    local swipeDetectionDeltaY  = 10
+    local swipeDetectionDelta  = 7.5
+
 
     function touchListener(event)
       --  print("touch start")
         if (event.phase == "ended" or event.phase == "cancelled") and isPossibleToPlaceRail then
                 local deltaX = event.x - event.xStart
                 local deltaY = event.y - event.yStart
-
-                --- отдаём приоритет горизонтальным свайпам
-
-                if deltaY < -swipeDetectionDeltaY and deltaX < swipeDetectionDeltaX and deltaX > -swipeDetectionDeltaX then
-                    tap()
-                elseif deltaY > swipeDetectionDeltaY and deltaX < swipeDetectionDeltaX and deltaX > -swipeDetectionDeltaX then
-                    down()
-                elseif deltaX > swipeDetectionDeltaX then
-                    --dirFunc = rights
-                    right()
-                elseif deltaX < -swipeDetectionDeltaX then
-                    --dirFunc = left
-                    left()
+                if(math.abs(deltaY)>swipeDetectionDelta or math.abs(deltaX)>swipeDetectionDelta)then
+                    if(math.abs(deltaY)>math.abs(deltaX)) then
+                        if(deltaY>0) then
+                            down()
+                        else
+                            tap()
+                        end
+                    else
+                        if(deltaX>0)then
+                            right()
+                        else
+                            left()
+                        end
+                    end
                 else
                     tap()
                 end
