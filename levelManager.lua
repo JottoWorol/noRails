@@ -155,6 +155,7 @@ function levelStart(level)  --запускаем уровень #level
   isDead = false;
   coinAmount = 0
   currentColumn = 3
+  columnDelta = 0
   showCoinIndicator()
   showScore()
   showCoalIndicator()
