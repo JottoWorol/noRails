@@ -25,13 +25,22 @@ end
 function showTutorial ()
   killStartButton()
   killTutorialButton()
-  tutorialBackground = display.newImageRect( uiGroup, sheetUI, 9, _W, _H )
+  tutorialBackground = display.newImageRect( uiGroup, "Tutorial0.png", _W, _H )
   tutorialBackground.x = display.contentCenterX
   tutorialBackground.y = display.contentCenterY
   --- text
-  local text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+  local text = [[> Tap to screen or swipe up to pave the way forward;
+
+> Swipe left/right to avoid obstacles;
+
+> Swipe down to delete installed rails;
+
+> Collect the coal to keep moving forward;
+
+> Good luck!]]
 
   tutorialText = display.newText({text = text , x=display.contentCenterX, y=display.contentCenterY,width=_W*0.75, height=0, font="Font_Russo_One/RussoOne_Regular.ttf", fontSize=15, align="center"})
+  tutorialText:setFillColor( 0,0,0 )
   tutorialBackground:addEventListener("tap", tutorialToMenu)
 end
 
