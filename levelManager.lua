@@ -5,6 +5,7 @@ isPossibleToPlaceRail = false
 
 local currentLevel = 0
 currentColumn = 3 --текущая колонка (от 1 до 5)
+columnDelta = 0
 
 
 local turnTargetX = 0
