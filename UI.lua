@@ -214,19 +214,27 @@ function showResults()
   backToMenuButton.x = _W/2
   backToMenuButton.y = _H * 0.8
 
-  --playNextButton:addEventListener("tap", playNext)
+  playNextButton:addEventListener("tap", playNext)
   backToMenuButton:addEventListener("tap", backToMenu)
 
 end
 
-
-
-function backToMenu()
+function killResults()
   display.remove( resultTotalScoreText )
   display.remove( resultCoinsText )
   display.remove( resultScoreText )
   display.remove( resultBackground )
   display.remove( backToMenuButton )
+  display.remove( playNextButton )
+end
+
+function playNext()
+  killResults()
+  levelStart(0)
+end
+
+function backToMenu()
+  killResults()
   clearScreen()
 
   showStartButton()

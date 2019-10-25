@@ -59,7 +59,7 @@ function setBlockLine() --поставить линию блоков
   --    linesCounter = 1
   --end
 
-  if(linesCounter>3) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
+  if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
       levelEnd()
   end
 
