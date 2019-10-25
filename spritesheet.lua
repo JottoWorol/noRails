@@ -61,9 +61,28 @@ UI=
             y = 528,
             width = 370,
             height = 128 
+        },
+        {-- 11 main menu
+            x = 6,
+            y = 981,
+            width = 605,
+            height = 206 
         }
     }
 
+}
+
+tutorialHand=
+{
+    frames={
+        {-- 1 tap
+            x = 17,
+            y = 53,
+            width = 370,
+            height = 128 
+        },
+
+    }
 }
 
 bonus=
