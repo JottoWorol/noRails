@@ -55,9 +55,6 @@ local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --пос
 end
 
 function setBlockLine() --поставить линию блоков
-  --if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
-  --    linesCounter = 1
-  --end
 
   if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
       levelEnd()
