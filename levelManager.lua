@@ -146,6 +146,8 @@ function levelStart(level)  --запускаем уровень #level
   physics.setGravity( 0, 0 )
   currentLevel = level
   moveSpeed = levelSpeed(level)
+  currentColumn = 3
+  columnDelta = 0
   initializeGrid(level)  -- add Levelgetter
   train.collision = onLocalCollision
   train:addEventListener("collision")
@@ -154,8 +156,6 @@ function levelStart(level)  --запускаем уровень #level
   startUpdateCoins()
   isDead = false;
   coinAmount = 0
-  currentColumn = 3
-  columnDelta = 0
   showCoinIndicator()
   showScore()
   showCoalIndicator()
@@ -198,7 +198,7 @@ function levelRestart()
 end
 
 function levelEnd()
-  
+
   isPossibleToPlaceRail = false
 
   pauseTimers()
