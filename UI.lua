@@ -206,11 +206,11 @@ function showResults()
   resultTotalScoreText = display.newText( resultTotalScore, display.contentCenterX, display.contentCenterY/4 , "Font_Russo_One/RussoOne_Regular.ttf", 24, "center" )
   resultCoinsText = display.newText(resultCoinsScore, display.contentCenterX, display.contentCenterY/2 + display.contentCenterY/10 , "Font_Russo_One/RussoOne_Regular.ttf", 24, "center" )
 
-  playNextButton = display.newImageRect(uiGroup, sheetUI, 2, _W/4, _W/4)
+  playNextButton = display.newImageRect(uiGroup, sheetUI, 4, 604/2/1.5, (209/604)*(604/2)/1.5)
   playNextButton.x = _W/2
   playNextButton.y = _H * 0.6
 
-  backToMenuButton = display.newImageRect(uiGroup, sheetUI, 4, 604/2/1.5, (209/604)*(604/2)/1.5 )
+  backToMenuButton = display.newImageRect(uiGroup, sheetUI, 11, 605/3, (206/605)*(605/3))
   backToMenuButton.x = _W/2
   backToMenuButton.y = _H * 0.8
 
