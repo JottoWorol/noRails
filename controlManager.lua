@@ -47,7 +47,7 @@ local function onLeft()
     if(currentColumn == 1) then
         return
     end
-    currentColumn = currentColumn - 1
+    --currentColumn = currentColumn - 1
     --columnDelta = -1
     setRail(-1)
 end
@@ -56,7 +56,7 @@ local function onRight()
     if(currentColumn == 5) then
         return
     end
-    currentColumn = currentColumn + 1
+    --currentColumn = currentColumn + 1
     setRail(1)
     --columnDelta = 1
 end

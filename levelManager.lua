@@ -192,7 +192,7 @@ function levelRestart()
   killScore()
   killCoalIndicator()
   killRestartButton()
-
+  
   levelStart(currentLevel)
 
 end
@@ -216,6 +216,7 @@ function diee(message) --умираем, высвечивается сообще
   if(isDead) then
     return
   end
+  currentColumn = 3
   isDead = true
   isPossibleToPlaceRail = false
   pauseTimers()

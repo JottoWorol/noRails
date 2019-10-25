@@ -124,7 +124,7 @@ function railAnimation()
   end
 end
 
-railAnimationTimer = timer.performWithDelay( 40, railAnimation,0 )
+railAnimationTimer = timer.performWithDelay( 40, railAnimation, 0 )
 timer.pause( railAnimationTimer )
 
 isTrainScaled = false
@@ -167,13 +167,13 @@ function setRail(dir) --поставить одну рельсу и вернут
           newRail.width = newRail.width/railInitialSize
           newRail.height = newRail.height/railInitialSize
           newRail:setLinearVelocity(0, moveSpeed)
-          newRail.column = currentColumn
+          newRail.column = 3
           lastRail = newRail
 				  return newRail
         else
           newRail.y = lastRail.y - CELL_WIDTH
           newRail:setLinearVelocity(0, moveSpeed)
-          newRail.column = currentColumn 
+          newRail.column = currentColumn + dir
           lastRail = newRail
           currentRail = newRail
           --timer.resume( railAnimationTimer )
@@ -236,6 +236,7 @@ function clearScreen()
   score = 0
   currentRail = nil
   firstThree = 0
+  currentColumn = 3
 
   display.remove( train )
   display.remove( dieText )
