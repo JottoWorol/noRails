@@ -76,35 +76,35 @@ tutorialHand=
 {
     frames={
         {-- 1 tap
-            x = 27,
+            x = 20,
             y = 55,
-            width = 156,
-            height = 242
+            width = 175,
+            height = 311
         },
         {-- 2 swipe up
-            x = 200,
+            x = 199,
             y = 0,
-            width = 163,
-            height = 300
+            width = 175,
+            height = 311
         },
         {--3 swipe left
             x = 0,
-            y = 335,
-            width = 170,
-            height = 251
+            y = 299,
+            width = 175,
+            height = 311
         },
         {-- 4 swipe right
-            x = 245,
-            y = 335,
-            width = 155,
+            x = 238,
+            y = 304,
+            width = 175,
             height = 251
 
         },
         {-- 5 swipe down
-            x = 529,
-            y = 158,
-            width = 152,
-            height = 299
+            x = 388,
+            y = 0,
+            width = 175,
+            height = 311
         }
 
     }
