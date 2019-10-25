@@ -14,7 +14,7 @@ local levelMap = {} --таблица с линиями
  blockTable = {} --таблица с блоками препятствий
 local linesCounter = 1 --счётчик линий уровня
 lastLine = nil  --последняя линия препятствий
-local lastRail  --последняя рельса
+lastRail = nil  --последняя рельса
 local emptyLinesCount = cellsOnScreen + 1
 local spriteEnemiesOffset = 5
 railsTable = {}
@@ -173,7 +173,7 @@ function setRail(dir) --поставить одну рельсу и вернут
         else
           newRail.y = lastRail.y - CELL_WIDTH
           newRail:setLinearVelocity(0, moveSpeed)
-          newRail.column = currentColumn + dir
+          newRail.column = currentColumn
           lastRail = newRail
           currentRail = newRail
           --timer.resume( railAnimationTimer )

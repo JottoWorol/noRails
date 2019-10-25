@@ -47,7 +47,9 @@ local function onLeft()
     if(currentColumn == 1) then
         return
     end
-    --currentColumn = currentColumn - 1
+    if (lastRail.y > putRailUpperBound) then
+      currentColumn = currentColumn - 1
+    end
     --columnDelta = -1
     setRail(-1)
 end
@@ -56,7 +58,9 @@ local function onRight()
     if(currentColumn == 5) then
         return
     end
-    --currentColumn = currentColumn + 1
+    if (lastRail.y > putRailUpperBound) then
+      currentColumn = currentColumn + 1
+    end
     setRail(1)
     --columnDelta = 1
 end
