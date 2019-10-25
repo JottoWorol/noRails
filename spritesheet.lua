@@ -6,67 +6,67 @@ UI=
             x = 0,
             y = 0,
             width = 604,
-            height = 209 
+            height = 209
         },
         {-- 2 start
             x = 633,
             y = 0,
             width = 351,
-            height = 351 
+            height = 351
         },
         {-- 3 pause
             x = 662,
             y = 387,
             width = 136,
-            height = 136 
+            height = 136
         },
         {-- 4 continue
             x = 0,
             y = 252,
             width = 606,
-            height = 201 
+            height = 201
         },
         {-- 5 coin Indicator
             x = 0,
             y = 483,
             width = 281,
-            height = 140 
+            height = 140
         },
         {-- 6 coal Icon
             x = 0,
             y = 657,
             width = 475,
-            height = 153 
+            height = 153
         },
         {-- 7 coal indicator base
             x = 0,
             y = 853,
             width = 328,
-            height = 71 
+            height = 71
         },
         {-- 8 coal indicator darker
             x = 328,
             y = 853,
             width = 328,
-            height = 71 
+            height = 71
         },
         {-- 9 score indicator
             x = 521,
             y = 664,
             width = 227,
-            height = 119 
+            height = 119
         },
         {-- 10 how to play
             x = 289,
             y = 528,
             width = 370,
-            height = 128 
+            height = 128
         },
         {-- 11 main menu
             x = 6,
             y = 981,
             width = 605,
-            height = 206 
+            height = 206
         }
     }
 
@@ -76,11 +76,36 @@ tutorialHand=
 {
     frames={
         {-- 1 tap
-            x = 17,
-            y = 53,
-            width = 370,
-            height = 128 
+            x = 27,
+            y = 55,
+            width = 156,
+            height = 242
         },
+        {-- 2 swipe up
+            x = 200,
+            y = 0,
+            width = 163,
+            height = 300
+        },
+        {--3 swipe left
+            x = 0,
+            y = 335,
+            width = 170,
+            height = 251
+        },
+        {-- 4 swipe right
+            x = 245,
+            y = 335,
+            width = 155,
+            height = 251
+
+        },
+        {-- 5 swipe down
+            x = 529,
+            y = 158,
+            width = 152,
+            height = 299
+        }
 
     }
 }
@@ -165,7 +190,7 @@ sheetOptions =
             x = 1096,
             y = 124,
             width = 157,
-            height = 332 
+            height = 332
         },
         { ---6) Tree
             x = 65,
