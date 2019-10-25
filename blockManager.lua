@@ -55,9 +55,14 @@ local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --пос
 end
 
 function setBlockLine() --поставить линию блоков
-  if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
-      linesCounter = 1
+  --if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
+  --    linesCounter = 1
+  --end
+
+  if(linesCounter>3) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
+      levelEnd()
   end
+
   local isChanged = false --есть ли что-то на линии
   local thisLine
   local blockName
@@ -148,7 +153,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 				newRail.myName = dir
 				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
 				table.insert( railsTable, newRail )
-        
+
 				if(lastRail.isTrain) then
 					newRail.x = lastRail.x
 				elseif (dir == 0) then
@@ -176,7 +181,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 	end
 end
 
-function deleteLastRail()  
+function deleteLastRail()
   local thisRail = railsTable[railsAmount]
   display.remove(thisRail)
   table.remove( railsTable, i )
