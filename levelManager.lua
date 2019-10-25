@@ -187,11 +187,27 @@ function levelContinue()
 end
 
 function levelRestart()
+
   killCoinIndicator()
   killScore()
   killCoalIndicator()
   killRestartButton()
+
   levelStart(currentLevel)
+
+end
+
+function levelEnd()
+  
+  isPossibleToPlaceRail = false
+
+  pauseTimers()
+  physics.pause()
+  stopConsumeCoal()
+  stopUpdateCoins()
+
+  showResults()
+
 end
 
 function diee(message) --умираем, высвечивается сообщение message

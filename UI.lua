@@ -185,3 +185,59 @@ end
 function killContinueButton()
   display.remove( continueButton )
 end
+
+function showResults()
+
+  killPauseButton()
+  killScore()
+  killCoalIndicator()
+  killCoinIndicator()
+
+  local resultScore = score
+  local resultCoins = coinAmount
+  local resultTotalScore = [[Total score
+         ]] .. resultScore --Не трогай пробелы)
+  local resultCoinsScore = [[Coins
+    ]] .. resultCoins
+
+  resultBackground = display.newRect(uiGroup, display.contentCenterX, display.contentCenterY, _W, _H)
+  resultBackground:setFillColor(0.5, 0.5, 0.5, 0.6)
+
+  resultTotalScoreText = display.newText( resultTotalScore, display.contentCenterX, display.contentCenterY/4 , "Font_Russo_One/RussoOne_Regular.ttf", 24, "center" )
+  resultCoinsText = display.newText(resultCoinsScore, display.contentCenterX, display.contentCenterY/2 + display.contentCenterY/10 , "Font_Russo_One/RussoOne_Regular.ttf", 24, "center" )
+
+  playNextButton = display.newImageRect(uiGroup, sheetUI, 2, _W/4, _W/4)
+  playNextButton.x = _W/2
+  playNextButton.y = _H * 0.6
+
+  backToMenuButton = display.newImageRect(uiGroup, sheetUI, 4, 604/2/1.5, (209/604)*(604/2)/1.5 )
+  backToMenuButton.x = _W/2
+  backToMenuButton.y = _H * 0.8
+
+  playNextButton:addEventListener("tap", playNext)
+  backToMenuButton:addEventListener("tap", backToMenu)
+
+end
+
+function killResults()
+  display.remove( resultTotalScoreText )
+  display.remove( resultCoinsText )
+  display.remove( resultScoreText )
+  display.remove( resultBackground )
+  display.remove( backToMenuButton )
+  display.remove( playNextButton )
+end
+
+function playNext()
+  killResults()
+  levelStart(0)
+end
+
+function backToMenu()
+  killResults()
+  clearScreen()
+
+  showStartButton()
+  showTutorialButton()
+
+end
