@@ -40,15 +40,15 @@ end
 
 local function onDown()
   deleteLastRail()
-  currentColumn = currentColumn - columnDelta
+  --currentColumn = currentColumn - columnDelta
 end
 
 local function onLeft()
-    if(currentColumn==1) then
+    if(currentColumn == 1) then
         return
     end
     currentColumn = currentColumn - 1
-    columnDelta = -1
+    --columnDelta = -1
     setRail(-1)
 end
 
@@ -56,14 +56,14 @@ local function onRight()
     if(currentColumn == 5) then
         return
     end
-    setRail(1)
     currentColumn = currentColumn + 1
-    columnDelta = 1
+    setRail(1)
+    --columnDelta = 1
 end
 
 local function onTap()
     setRail(0)
-    columnDelta = 0
+    --columnDelta = 0
 end
 
 dragDirection(display.getCurrentStage(), onLeft, onRight, onTap, onDown)

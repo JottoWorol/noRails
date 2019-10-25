@@ -157,6 +157,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 					newRail.x = lastRail.x + lastRail.myName*CELL_WIDTH*0.5
 				else
 					newRail.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*dir+(lastRail.myName+dir)*math.abs(lastRail.myName))
+
 				end
 
 				railsAmount = railsAmount + 1
@@ -166,11 +167,13 @@ function setRail(dir) --поставить одну рельсу и вернут
           newRail.width = newRail.width/railInitialSize
           newRail.height = newRail.height/railInitialSize
           newRail:setLinearVelocity(0, moveSpeed)
+          newRail.column = currentColumn
           lastRail = newRail
 				  return newRail
         else
           newRail.y = lastRail.y - CELL_WIDTH
           newRail:setLinearVelocity(0, moveSpeed)
+          newRail.column = currentColumn 
           lastRail = newRail
           currentRail = newRail
           --timer.resume( railAnimationTimer )
@@ -179,11 +182,14 @@ function setRail(dir) --поставить одну рельсу и вернут
 end
 
 function deleteLastRail()
+  print("before deleting rail currentColumn was ".. currentColumn)
   local thisRail = railsTable[railsAmount]
   display.remove(thisRail)
   table.remove( railsTable, i )
   railsAmount = railsAmount - 1
   lastRail = railsTable[railsAmount]
+  currentColumn = lastRail.column
+  print("deleted rail and currentColumn is " .. currentColumn)
 end
 
 function collectGarbage() --убираем всё, что вышло за экран
