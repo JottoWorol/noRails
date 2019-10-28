@@ -9,7 +9,6 @@ local coinState = 0 -- from 0 to 5
 
 function coinPlus() 
   coinAmount = coinAmount + 1
-  print( "coinAmount is ",coinAmount )
 end
 
 function useCoin(coin)

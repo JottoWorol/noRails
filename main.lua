@@ -18,9 +18,9 @@ GRID_WIDTH = 5
 CELL_WIDTH = (_W - 20 ) / 5
 
 --параметры поезда
-moveSpeed = 70
+moveSpeed = 10
 function levelSpeed(level)  --возвращает обычную скорость текущего уровня
-  return 110
+  return 90
 end
 
 function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду
@@ -30,7 +30,7 @@ end
 function timePerCell()   --время прохождения одной ячейки в миллисекундах
   return CELL_WIDTH*1000/moveSpeed
 end
-
+print( "timePerCell = ",timePerCell(0) )
 --подрубаем физику
 physics = require("physics")
 
@@ -48,7 +48,6 @@ sheetsMap = require("spritesheet")
 sheetBasic = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
 sheetUI = graphics.newImageSheet( "UI.png", UI)
 sheetBonus = graphics.newImageSheet( "bonusSheet.png", bonus)
-print("bonus sheet - ", sheetBonus)
 
 
 function startIt() --начинаем нулевой уровень

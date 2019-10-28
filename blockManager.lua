@@ -56,8 +56,8 @@ end
 
 function setBlockLine() --поставить линию блоков
 
-  if(linesCounter>levelLength) then  --временный КОСТЫЛЬ, чтобы зациклить уровень
-      levelEnd()
+  if(linesCounter>levelLength) then  
+      linesCounter = 1
   end
 
   local isChanged = false --есть ли что-то на линии
@@ -87,7 +87,6 @@ function setBlockLine() --поставить линию блоков
 			  end
 
       if(blockID == 5) then
-        print("printing a tree :", blockName)
       end
 			thisLine = setBlock(sheet, blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, size, size, blockName)
 			isChanged = true
@@ -182,14 +181,12 @@ function setRail(dir) --поставить одну рельсу и вернут
 end
 
 function deleteLastRail()
-  print("before deleting rail currentColumn was ".. currentColumn)
   local thisRail = railsTable[railsAmount]
   display.remove(thisRail)
   table.remove( railsTable, i )
   railsAmount = railsAmount - 1
   lastRail = railsTable[railsAmount]
   currentColumn = lastRail.column
-  print("deleted rail and currentColumn is " .. currentColumn)
 end
 
 function collectGarbage() --убираем всё, что вышло за экран
@@ -225,8 +222,10 @@ function updateBlockSpeed()
   for i, rail in pairs(railsTable) do
   	rail:setLinearVelocity(0, moveSpeed)
   end
+  for i, coin in pairs(coinTable) do
+    coin:setLinearVelocity(0, moveSpeed)
+  end
 end
-
 
 function clearScreen()
 
@@ -261,10 +260,7 @@ function clearScreen()
       table.remove( railsTable, i )
       railsAmount = railsAmount - 1
   end
-  print(railsAmount)
-
 end
-
 
 function initializeGrid(level) --загрузить блоки уровня level
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)

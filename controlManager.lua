@@ -9,7 +9,6 @@ function dragDirection(dispObj, left, right, tap, down) --SWIPE HANDLING
 
 
     function touchListener(event)
-      --  print("touch start")
         if (event.phase == "ended" or event.phase == "cancelled") and isPossibleToPlaceRail then
                 local deltaX = event.x - event.xStart
                 local deltaY = event.y - event.yStart
