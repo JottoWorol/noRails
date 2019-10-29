@@ -56,7 +56,7 @@ end
 
 function setBlockLine() --поставить линию блоков
 
-  if(linesCounter>levelLength) then  
+  if(linesCounter>levelLength) then
       linesCounter = 1
   end
 
@@ -141,9 +141,40 @@ end
 trainAnimationTimer = timer.performWithDelay( 100, trainAnimation,0 )
 timer.pause( trainAnimationTimer )
 
+ghostsTable = {}
+
+function createGhost()
+  for i=2,4 do
+    local newGhost = display.newImageRect(railGroup, sheetBasic, i , CELL_WIDTH *(math.abs( i - 3)+1)* railInitialSize, CELL_WIDTH * railInitialSize)
+          newGhost.myName = i - 3
+          physics.addBody( newGhost, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
+          table.insert( ghostsTable, newGhost )
+          if (i == 3) then
+            newGhost.x = lastRail.myName*CELL_WIDTH*0.5 + lastRail.x
+          else
+      			newGhost.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*(i - 3)+(lastRail.myName+(i - 3))*math.abs(lastRail.myName))
+          end
+          newGhost.width = newGhost.width/railInitialSize
+          newGhost.height = newGhost.height/railInitialSize
+          newGhost.y = lastRail.y - CELL_WIDTH
+          newGhost:setLinearVelocity(0, moveSpeed)
+          newGhost:setFillColor(0.3, 0.3, 0.3, 0.5)
+  end
+end
+
+function deleteGhost ()
+    for i = #ghostsTable, 1 , -1 do
+      local thisGhost = ghostsTable[i]
+        	  display.remove( thisGhost ) -- убрать с экрана
+            table.remove( ghostsTable, i )
+    end
+end
+
+
 function setRail(dir) --поставить одну рельсу и вернуть объект с ней
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
+  deleteGhost()
 	if (lastRail.y > putRailUpperBound) then
     playSound(2)
 		local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
@@ -169,6 +200,7 @@ function setRail(dir) --поставить одну рельсу и вернут
       newRail:setLinearVelocity(0, moveSpeed)
       newRail.column = 3
       lastRail = newRail
+      createGhost()
 		  return newRail
     else
       newRail.y = lastRail.y - CELL_WIDTH
@@ -177,16 +209,19 @@ function setRail(dir) --поставить одну рельсу и вернут
       lastRail = newRail
       currentRail = newRail
       --timer.resume( railAnimationTimer )
+      createGhost()
     end
 	end
 end
 
 function deleteLastRail()
+  deleteGhost()
   local thisRail = railsTable[railsAmount]
   display.remove(thisRail)
   table.remove( railsTable, i )
   railsAmount = railsAmount - 1
   lastRail = railsTable[railsAmount]
+  createGhost()
   currentColumn = lastRail.column
 end
 
@@ -225,6 +260,9 @@ function updateBlockSpeed()
   end
   for i, coin in pairs(coinTable) do
     coin:setLinearVelocity(0, moveSpeed)
+  end
+  for i, ghost in pairs(ghostsTable) do
+    ghost:setLinearVelocity(0, moveSpeed)
   end
 end
 
