@@ -23,6 +23,7 @@ function showTutorialButton()
 end
 
 function showTutorial ()
+  playSound(4)
   killStartButton()
   killTutorialButton()
   tutorialBackground = display.newImageRect( uiGroup, "Tutorial0.png", _W, _H )
@@ -53,6 +54,7 @@ end
 function killTutorial()
   display.remove(tutorialBackground)
   display.remove(tutorialText)
+  playSound(4)
 end
 
 function killTutorialButton()

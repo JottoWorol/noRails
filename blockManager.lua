@@ -144,9 +144,8 @@ timer.pause( trainAnimationTimer )
 function setRail(dir) --поставить одну рельсу и вернуть объект с ней
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
-  playSound(2)
 	if (lastRail.y > putRailUpperBound) then
-    playSound(4)
+    playSound(2)
 		local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
 		newRail.myName = dir
 		physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )

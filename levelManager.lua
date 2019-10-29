@@ -226,6 +226,7 @@ function onLocalCollision( self, event ) --когда происходит ст�
         turnRight()
       elseif ( event.other.myName == "coal") then
         recoverCoal()
+        playSound(3)
         event.other.isUsed = true
       elseif ( event.other.myName == "coin") then
         coinPlus()

@@ -3,6 +3,7 @@ _W = display.actualContentWidth  --ширина экрана
 _H = display.actualContentHeight --высота экрана
 display.fps = 60
 
+local audioManager = require("audioManager")
 --левый нижний угол
 bottomY = display.contentCenterY+_H*0.5
 bottomX = display.contentCenterX-_W*0.5
@@ -58,7 +59,6 @@ end
 
 --вызываем манагеров # порядок не менять
 local UImanager = require("UI")
-local audioManager = require("audioManager")
 local blockManager = require("blockManager")
 local levelManager = require("levelManager")
 local controlManager = require("controlManager")
