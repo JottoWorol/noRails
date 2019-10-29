@@ -144,39 +144,41 @@ timer.pause( trainAnimationTimer )
 function setRail(dir) --поставить одну рельсу и вернуть объект с ней
 	--dir -1 == left   1 == right  0 == forward
 	-- 3+dir == номер нужной рельсы в спрайтшите
+  playSound(2)
 	if (lastRail.y > putRailUpperBound) then
-				local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
-				newRail.myName = dir
-				physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
-				table.insert( railsTable, newRail )
+    playSound(4)
+		local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
+		newRail.myName = dir
+		physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
+		table.insert( railsTable, newRail )
 
-				if(lastRail.isTrain) then
+		if(lastRail.isTrain) then
 					newRail.x = lastRail.x
-				elseif (dir == 0) then
-					newRail.x = lastRail.x + lastRail.myName*CELL_WIDTH*0.5
-				else
-					newRail.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*dir+(lastRail.myName+dir)*math.abs(lastRail.myName))
+		elseif (dir == 0) then
+			newRail.x = lastRail.x + lastRail.myName*CELL_WIDTH*0.5
+		else
+			newRail.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*dir+(lastRail.myName+dir)*math.abs(lastRail.myName))
 
-				end
+		end
 
-				railsAmount = railsAmount + 1
-        if(firstThree<3) then
-          firstThree = firstThree + 1
-          newRail.y = lastRail.y - CELL_WIDTH
-          newRail.width = newRail.width/railInitialSize
-          newRail.height = newRail.height/railInitialSize
-          newRail:setLinearVelocity(0, moveSpeed)
-          newRail.column = 3
-          lastRail = newRail
-				  return newRail
-        else
-          newRail.y = lastRail.y - CELL_WIDTH
-          newRail:setLinearVelocity(0, moveSpeed)
-          newRail.column = currentColumn
-          lastRail = newRail
-          currentRail = newRail
-          --timer.resume( railAnimationTimer )
-        end
+		railsAmount = railsAmount + 1
+    if(firstThree<3) then
+      firstThree = firstThree + 1
+      newRail.y = lastRail.y - CELL_WIDTH
+      newRail.width = newRail.width/railInitialSize
+      newRail.height = newRail.height/railInitialSize
+      newRail:setLinearVelocity(0, moveSpeed)
+      newRail.column = 3
+      lastRail = newRail
+		  return newRail
+    else
+      newRail.y = lastRail.y - CELL_WIDTH
+      newRail:setLinearVelocity(0, moveSpeed)
+      newRail.column = currentColumn
+      lastRail = newRail
+      currentRail = newRail
+      --timer.resume( railAnimationTimer )
+    end
 	end
 end
 

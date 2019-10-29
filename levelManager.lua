@@ -33,7 +33,7 @@ function gameLoop () --запускаем с периодом timePerCell()
   end
 end
 
-gameLoopTimer = timer.performWithDelay(timePerCell()/2, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay(100, gameLoop, 0 )
 cleanerTimer = timer.performWithDelay(10,collectGarbage,0)
 
 
@@ -151,6 +151,7 @@ function levelStart(level)  --запускаем уровень #level
 end
 
 function levelPause()
+  playSound(4)
   killPauseButton()
   showContinueButton()
   isPossibleToPlaceRail = false
@@ -163,6 +164,7 @@ function levelPause()
 end
 
 function levelContinue()
+  playSound(4)
   showPauseButton()
   killContinueButton()
   isPossibleToPlaceRail = true

@@ -22,6 +22,7 @@ end
 coalConsumeTimer = timer.performWithDelay(coalPeriod, consumeCoal, 0 )
 
 function recoverCoal() --для восстановления до сотки
+  playSound(3)
   coalAmount=maxCoalAmount --максимальное значение топлива
 end
 

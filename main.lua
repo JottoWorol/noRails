@@ -49,14 +49,16 @@ sheetBasic = graphics.newImageSheet( "BaseSpritesheet.png", sheetOptions)
 sheetUI = graphics.newImageSheet( "UI.png", UI)
 sheetBonus = graphics.newImageSheet( "bonusSheet.png", bonus)
 
-
 function startIt() --начинаем нулевой уровень
+  playSound(1)
   killStartButton()
   killTutorialButton()
   levelStart(0)
 end
+
 --вызываем манагеров # порядок не менять
 local UImanager = require("UI")
+local audioManager = require("audioManager")
 local blockManager = require("blockManager")
 local levelManager = require("levelManager")
 local controlManager = require("controlManager")
