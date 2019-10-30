@@ -153,7 +153,7 @@ function levelPause()
   transition.pause(train)
   transition.pause(train)
   transition.pause(train)
-  playSound(4)
+  playSound("button0")
   killPauseButton()
   showContinueButton()
   isPossibleToPlaceRail = false
@@ -169,7 +169,7 @@ function levelContinue()
   transition.resume(train)
   transition.resume(train)
   transition.resume(train)
-  playSound(4)
+  playSound("button0")
   showPauseButton()
   killContinueButton()
   isPossibleToPlaceRail = true
@@ -237,7 +237,7 @@ function onLocalCollision( self, event ) --когда происходит ст�
         turnRight()
       elseif ( event.other.myName == "coal") then
         recoverCoal()
-        playSound(3)
+        playSound("coal")
         event.other.isUsed = true
       elseif ( event.other.myName == "coin") then
         coinPlus()

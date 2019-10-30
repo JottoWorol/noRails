@@ -176,7 +176,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 	-- 3+dir == номер нужной рельсы в спрайтшите
   deleteGhost()
 	if (lastRail.y > putRailUpperBound) then
-    playSound(2)
+    playSound("rail")
 		local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
 		newRail.myName = dir
 		physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
@@ -215,6 +215,7 @@ function setRail(dir) --поставить одну рельсу и вернут
 end
 
 function deleteLastRail()
+  playSound("railDestroy")
   deleteGhost()
   local thisRail = railsTable[railsAmount]
   display.remove(thisRail)

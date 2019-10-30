@@ -51,7 +51,7 @@ sheetUI = graphics.newImageSheet( "UI.png", UI)
 sheetBonus = graphics.newImageSheet( "bonusSheet.png", bonus)
 
 function startIt() --начинаем нулевой уровень
-  playSound(1)
+  playSound("playButton")
   killStartButton()
   killTutorialButton()
   levelStart(0)

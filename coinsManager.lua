@@ -8,7 +8,7 @@ local coinState = 0 -- from 0 to 5
 
 
 function coinPlus()
-  playSound(5)
+  playSound("coin")
   coinAmount = coinAmount + 1
 end
 
