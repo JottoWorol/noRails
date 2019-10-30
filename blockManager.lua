@@ -158,7 +158,7 @@ function createGhost()
           newGhost.height = newGhost.height/railInitialSize
           newGhost.y = lastRail.y - CELL_WIDTH
           newGhost:setLinearVelocity(0, moveSpeed)
-          newGhost:setFillColor(0.3, 0.3, 0.3, 0.5)
+          newGhost:setFillColor(0.3, 0.3, 0.3, 0.3)
   end
 end
 
