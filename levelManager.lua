@@ -107,14 +107,13 @@ end
 
 
 function turn(dir)
-  turnDir = dir
-  timer.resume(startTurn)
-  transition.to(train, {time = rotationTime(), rotation = turnDir*70})
+  if (isDead == false) then
+    turnDir = dir
+    timer.resume(startTurn)
+    transition.to(train, {time = rotationTime(), rotation = turnDir*70})
+  end
 end
 
-function deleteLast()
-
-end
 
 function turnLeft()
   turn(-1)
@@ -152,6 +151,8 @@ end
 
 function levelPause()
   transition.pause(train)
+  transition.pause(train)
+  transition.pause(train)
   playSound(4)
   killPauseButton()
   showContinueButton()
@@ -165,6 +166,8 @@ function levelPause()
 end
 
 function levelContinue()
+  transition.resume(train)
+  transition.resume(train)
   transition.resume(train)
   playSound(4)
   showPauseButton()
@@ -204,6 +207,8 @@ end
 
 function diee(message) --умираем, высвечивается сообщение message
   transition.pause(train)
+  transition.pause(train)
+  transition.pause(train)
   killPauseButton()
   showRestartButton()
   if(isDead) then
@@ -212,12 +217,14 @@ function diee(message) --умираем, высвечивается сообще
   currentColumn = 3
   isDead = true
   isPossibleToPlaceRail = false
+
   pauseTimers()
   physics.pause()
   stopConsumeCoal()
   stopUpdateCoins()
   dieText = display.newText( uiGroup, message,
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
+
 end
 
 function onLocalCollision( self, event ) --когда происходит столкновение
