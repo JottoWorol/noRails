@@ -125,7 +125,7 @@ function turnRight()
 end
 
 function levelStart(level)  --запускаем уровень #level
-  
+  transition.cancel(train)
   clearScreen()
   physics.start()
   physics.setGravity( 0, 0 )
@@ -151,6 +151,7 @@ function levelStart(level)  --запускаем уровень #level
 end
 
 function levelPause()
+  transition.pause(train)
   playSound(4)
   killPauseButton()
   showContinueButton()
@@ -164,6 +165,7 @@ function levelPause()
 end
 
 function levelContinue()
+  transition.resume(train)
   playSound(4)
   showPauseButton()
   killContinueButton()
@@ -181,13 +183,13 @@ function levelRestart()
   killScore()
   killCoalIndicator()
   killRestartButton()
-  
+
   levelStart(currentLevel)
 
 end
 
 function levelEnd()
-
+  transition.pause(train)
   isPossibleToPlaceRail = false
 
   pauseTimers()
@@ -197,9 +199,11 @@ function levelEnd()
 
   showResults()
 
+
 end
 
 function diee(message) --умираем, высвечивается сообщение message
+  transition.pause(train)
   killPauseButton()
   showRestartButton()
   if(isDead) then
