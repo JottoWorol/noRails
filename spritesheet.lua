@@ -186,44 +186,62 @@ sheetOptions =
             width = 438,
             height = 218
         },
-        {-- 5) train 1
+        { ---5) насыпь left
+            x = 253,
+            y = 904,
+            width = 438,
+            height = 218
+        },
+        { ---6) напсыть forward
+            x = 38,
+            y = 904,
+            width = 219,
+            height = 219
+        },
+        { ---7) насыпь right
+            x = 674,
+            y = 904,
+            width = 438,
+            height = 218
+        },
+        {-- 8) train 1
             x = 1096,
             y = 124,
             width = 157,
             height = 332
         },
-        { ---6) Tree
+        { ---9) Tree
             x = 65,
             y = 102,
             width = 256,
             height = 256
         },
-        { ---7) Cow
+        { ---10) Cow
             x = 472,
             y = 101,
             width = 256,
             height = 256
         },
         {
-          ---8) House1
+          ---11) House1
             x = 1608,
             y = 0,
             width = 395,
             height = 395
         },
-        { ---9) House2
+        { ---12) House2
             x = 33,
             y = 1237,
             width = 347,
             height = 347
         },
-        { ---10) YellowGrass
+        { ---13) YellowGrass
             x = 75,
             y = 404,
             width = 240,
             height = 240
         },
-        { ---11) Lake
+        { ---14) Lake
             x = 1668,
             y = 542,
             width = 354,

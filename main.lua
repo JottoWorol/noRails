@@ -41,6 +41,7 @@ local composer = require( "composer" )
 display.setStatusBar( display.HiddenStatusBar )
 backGroup = display.newGroup()  -- Display group for the background image
 shadowGroup = display.newGroup()
+railBackGroup = display.newGroup()
 railGroup = display.newGroup()
 mainGroup = display.newGroup()  -- Display group for the Fuel, train, rails, etc.
 uiGroup = display.newGroup()    -- Display group for UI objects like the score

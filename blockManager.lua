@@ -11,19 +11,20 @@ setRail - поставить рельсу
 local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
 local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
- blockTable = {} --таблица с блоками препятствий
+blockTable = {} --таблица с блоками препятствий
 local linesCounter = 1 --счётчик линий уровня
 lastLine = nil  --последняя линия препятствий
 lastRail = nil  --последняя рельса
 local emptyLinesCount = cellsOnScreen + 1
-local spriteEnemiesOffset = 5
+local spriteEnemiesOffset = 8
 railsTable = {}
+railBackTable = {}
 railsAmount = 0
 putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
 coinsMngr = require("coinsManager")
 
-function getLastRail(
-)	return lastRail
+function getLastRail()	
+  return lastRail
 end
 
 function getTrain()
@@ -39,26 +40,25 @@ local function loadLevel(levelNumber) --загрузить уровень из �
 end
 
 local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --поставить блок blockID в точке (x,y) с myNamename
-    print(name," ", widht," ",height," ", blockID)
-    newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
-    if(name=="enemy" or name=="coal") then
-      table.insert(blockTable, newBlock)
-    elseif(name=="end")then
-      table.insert(blockTable, newBlock )
-    else
-      table.insert(coinTable, newBlock)
-    end
-    if(name=="end")then
-        physics.addBody( newBlock, "dynamic", {sSensor = true})
-else
+  newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
+  if(name=="enemy" or name=="coal") then
+    table.insert(blockTable, newBlock)
+  elseif(name=="end")then
+    table.insert(blockTable, newBlock )
+  else
+    table.insert(coinTable, newBlock)
+  end
+  if(name=="end")then
+    physics.addBody( newBlock, "dynamic", {isSensor = true})
+  else
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
   end
-    newBlock.myName = name
-    newBlock.isUsed = false
-    newBlock.x = x  --спавним в нужном ряду
-    newBlock.y = y  --спавним чуть выше вернего края
-    newBlock:setLinearVelocity(0, moveSpeed)
-    return newBlock
+  newBlock.myName = name
+  newBlock.isUsed = false
+  newBlock.x = x  --спавним в нужном ряду
+  newBlock.y = y  --спавним чуть выше вернего края
+  newBlock:setLinearVelocity(0, moveSpeed)
+  return newBlock
 end
 
 function setBlockLine() --поставить линию блоков
@@ -193,49 +193,50 @@ function setRail(dir) --поставить одну рельсу и вернут
   deleteGhost()
 	if (lastRail.y > putRailUpperBound) then
     playSound("rail")
+    local backRail = display.newImageRect(railBackGroup, sheetBasic, 6 + dir , CELL_WIDTH * (math.abs(dir)+1), CELL_WIDTH)
 		local newRail = display.newImageRect(railGroup, sheetBasic, 3 + dir , CELL_WIDTH * (math.abs(dir)+1) * railInitialSize, CELL_WIDTH * railInitialSize)
 		newRail.myName = dir
-		physics.addBody( newRail, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
+		physics.addBody( newRail, "kinematic", {radius = CELL_WIDTH/2*1,isSensor = true} )
+    physics.addBody( backRail, "dynamic", {isSensor = true})
 		table.insert( railsTable, newRail )
-
+    table.insert( railBackTable, backRail )
 		if(lastRail.isTrain) then
-					newRail.x = lastRail.x
+			newRail.x = lastRail.x
 		elseif (dir == 0) then
 			newRail.x = lastRail.x + lastRail.myName*CELL_WIDTH*0.5
 		else
 			newRail.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*dir+(lastRail.myName+dir)*math.abs(lastRail.myName))
-
 		end
+
+    newRail.y = lastRail.y - CELL_WIDTH
+    backRail.x = newRail.x
+    backRail.y = newRail.y
 
 		railsAmount = railsAmount + 1
     if(firstThree<3) then
       firstThree = firstThree + 1
-      newRail.y = lastRail.y - CELL_WIDTH
       newRail.width = newRail.width/railInitialSize
       newRail.height = newRail.height/railInitialSize
-      newRail:setLinearVelocity(0, moveSpeed)
       newRail.column = 3
-      lastRail = newRail
-      createGhost()
-		  return newRail
     else
-      newRail.y = lastRail.y - CELL_WIDTH
-      newRail:setLinearVelocity(0, moveSpeed)
       newRail.column = currentColumn
-      lastRail = newRail
-      currentRail = newRail
-      --timer.resume( railAnimationTimer )
-      createGhost()
     end
+    backRail:setLinearVelocity( 0, moveSpeed)
+    newRail:setLinearVelocity(0, moveSpeed)
+    lastRail = newRail
+    createGhost()
+    return newRail
 	end
 end
 
 function deleteLastRail()
   playSound("railDestroy")
   deleteGhost()
-  local thisRail = railsTable[railsAmount]
-  display.remove(thisRail)
-  table.remove( railsTable, i )
+  --local thisRail = railsTable[railsAmount]
+  display.remove(railsTable[railsAmount])
+  table.remove(railsTable)
+  display.remove(railBackTable[#railBackTable])
+  table.remove( railBackTable)
   railsAmount = railsAmount - 1
   lastRail = railsTable[railsAmount]
   createGhost()
@@ -266,6 +267,14 @@ function collectGarbage() --убираем всё, что вышло за экр
           railsAmount = railsAmount - 1
       end
   end
+
+  for i = #railBackTable, 1 , -1 do
+    local thisBack = railBackTable[i]
+    if (thisBack.y > _H)  then
+          display.remove( thisBack) -- убрать с экрана
+          table.remove( railBackTable, i ) -- убрать из памяти, так как содержится в списке
+      end
+  end
 end
 
 function updateBlockSpeed()
@@ -274,6 +283,9 @@ function updateBlockSpeed()
   end
   for i, rail in pairs(railsTable) do
   	rail:setLinearVelocity(0, moveSpeed)
+  end
+  for i, railBack in pairs(railBackTable) do
+    railBack:setLinearVelocity(0, moveSpeed)
   end
   for i, coin in pairs(coinTable) do
     coin:setLinearVelocity(0, moveSpeed)
@@ -284,8 +296,6 @@ function updateBlockSpeed()
 end
 
 function clearScreen()
-
-  --moveSpeed = 70
   emptyLinesCount = cellsOnScreen + 1
   linesCounter = 1
   score = 0
@@ -315,6 +325,11 @@ function clearScreen()
       display.remove(thisRail)
       table.remove( railsTable, i )
       railsAmount = railsAmount - 1
+  end
+
+  for i, back in pairs(railBackTable) do
+    display.remove( back )
+    table.remove( railBackTable,i )
   end
 end
 
