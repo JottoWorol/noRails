@@ -6,7 +6,7 @@ isPossibleToPlaceRail = false
 currentLevel = 0
 currentColumn = 3 --текущая колонка (от 1 до 5)
 columnDelta = 0
-
+trainTransitions = {}
 local turnTargetX = 0
 local turnDir = 0
 local accelerationMode = 0
@@ -87,7 +87,8 @@ local function rotationControl()
   end
   if(rotationState==0 and (train.rotation == 70 or train.rotation == -70)) then
     rotationState = 1
-    transition.to(train, {time = rotationTime(), rotation = 0})
+    local transition = transition.to(train, {time = rotationTime(), rotation = 0})
+    table.insert( trainTransitions, transition)
   elseif(rotationState == 1 and train.rotation == 0) then
     timer.pause(checkrotationTimer)
     rotationState = -1
@@ -99,7 +100,8 @@ timer.pause(checkrotationTimer)
 
 local function turnDelay()
  rotationState = 0
- transition.to(train, {time = xTurnTime(), x = train.x + turnDir*CELL_WIDTH})
+ local transition = transition.to(train, {time = xTurnTime(), x = train.x + turnDir*CELL_WIDTH})
+ table.insert(trainTransitions, transition)
  timer.resume(checkrotationTimer)
  timer.pause(startTurn)
 end
@@ -110,7 +112,8 @@ function turn(dir)
   if (isDead == false) then
     turnDir = dir
     timer.resume(startTurn)
-    transition.to(train, {time = rotationTime(), rotation = turnDir*70})
+    local transition = transition.to(train, {time = rotationTime(), rotation = turnDir*70})
+    table.insert( trainTransitions, transition)
   end
 end
 
@@ -121,6 +124,18 @@ end
 
 function turnRight()
   turn(1)
+end
+
+function trainTransitionPause()
+  for i, transit in pairs(trainTransitions) do
+      transition.pause(transit)
+  end
+end
+
+function trainTransitionResume()
+  for i, transit in pairs(trainTransitions) do
+      transition.resume(transit)
+  end
 end
 
 function levelStart(level)  --запускаем уровень #level
@@ -151,9 +166,7 @@ function levelStart(level)  --запускаем уровень #level
 end
 
 function levelPause()
-  transition.pause(train)
-  transition.pause(train)
-  transition.pause(train)
+  trainTransitionPause()
   playSound("button0")
   killPauseButton()
   showContinueButton()
@@ -167,9 +180,7 @@ function levelPause()
 end
 
 function levelContinue()
-  transition.resume(train)
-  transition.resume(train)
-  transition.resume(train)
+  trainTransitionResume()
   playSound("button0")
   showPauseButton()
   killContinueButton()
@@ -207,9 +218,8 @@ function levelEnd()
 end
 
 function diee(message) --умираем, высвечивается сообщение message
-  transition.pause(train)
-  transition.pause(train)
-  transition.pause(train)
+  trainTransitionPause()
+  rotationState = -1
   killPauseButton()
   showRestartButton()
   if(isDead) then
