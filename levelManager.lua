@@ -162,7 +162,6 @@ function levelStart(level)  --запускаем уровень #level
   showCoalIndicator()
   showPauseButton()
   startTimers()
-  playSound("music0")
 end
 
 function levelPause()
