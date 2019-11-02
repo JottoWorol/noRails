@@ -1,6 +1,7 @@
 local audioTable = {}
 local railRoundRobin = 0
 local coinRoundRobin = 0
+local isMusicPlaying = 0
 
   table.insert( audioTable, audio.loadSound("PlayButton.mp3")) --1
   table.insert( audioTable, audio.loadSound("rail0.mp3")) --2
@@ -14,6 +15,12 @@ local coinRoundRobin = 0
   table.insert( audioTable, audio.loadSound("recoverCoal.mp3")) --10
   table.insert( audioTable, audio.loadSound("Pause-Cont.mp3")) --11
   table.insert( audioTable, audio.loadSound("railDestroy.mp3")) --12
+  table.insert( audioTable, audio.loadSound("mainTheme.mp3")) --12
+
+function playMainTheme()
+  audio.play(audioTable[13])
+end
+
 
 
 function playSound(soundName)
@@ -34,7 +41,7 @@ function playSound(soundName)
     else
       coinRoundRobin = 0
     end
-  elseif(soundName == "recoverCoal") then
+  elseif(soundName == "coal") then
     audio.play( audioTable[10])
   elseif(soundName == "button0") then
     audio.play( audioTable[11])
@@ -42,6 +49,9 @@ function playSound(soundName)
     audio.play( audioTable[12])
   elseif(soundName == "playButton") then
     audio.play( audioTable[1])
+  elseif(soundName == "music0")then
+    audio.play(audioTable[13])
+    timer.performWithDelay( 118970, playMainTheme)
   end
 end
 
