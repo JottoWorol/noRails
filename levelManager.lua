@@ -246,6 +246,8 @@ function onLocalCollision( self, event ) --когда происходит ст�
       elseif (event.other.myName == 1 and not event.other.isUsed) then
         event.other.isUsed = true
         turnRight()
+      elseif ( event.other.myName == "end") then
+        levelEnd()
       elseif ( event.other.myName == "coal") then
         recoverCoal()
         playSound("coal")

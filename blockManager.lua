@@ -39,13 +39,20 @@ local function loadLevel(levelNumber) --загрузить уровень из �
 end
 
 local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --поставить блок blockID в точке (x,y) с myNamename
+    print(name," ", widht," ",height," ", blockID)
     newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
     if(name=="enemy" or name=="coal") then
       table.insert(blockTable, newBlock)
+    elseif(name=="end")then
+      table.insert(blockTable, newBlock )
     else
       table.insert(coinTable, newBlock)
     end
+    if(name=="end")then
+        physics.addBody( newBlock, "dynamic", {sSensor = true})
+else
     physics.addBody( newBlock, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
+  end
     newBlock.myName = name
     newBlock.isUsed = false
     newBlock.x = x  --спавним в нужном ряду
@@ -55,19 +62,23 @@ local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --пос
 end
 
 function setBlockLine() --поставить линию блоков
-
-  if(linesCounter>levelLength) then
-      linesCounter = 1
+  if(linesCounter > 120)then
+    return
   end
-
   local isChanged = false --есть ли что-то на линии
   local thisLine
   local blockName
   local sheet
-  local size
+  local sizeX
+  local sizeY
   for i = 1, GRID_WIDTH do
   	local blockID = string.byte(levelMap[linesCounter],i)
-    if(blockID>=48 and blockID<=57) then
+    if(blockID == 35)then
+      blockName = "end"
+      blockID = 9
+      sizeY = CELL_WIDTH
+      sizeX = CELL_WIDTH * 12
+    elseif(blockID>=48 and blockID<=57) then
       blockID = blockID - 48
       sheet = sheetBonus
     else
@@ -76,19 +87,24 @@ function setBlockLine() --поставить линию блоков
   	if(blockID~=0) then
   			if(sheet==sheetBonus and blockID==1) then
   				blockName = "coal"
-          size = CELL_WIDTH*0.6
+          sizeY = CELL_WIDTH*0.6
+          sizeX = sizeY
         elseif (sheet==sheetBonus and blockID == spriteCoinOffset) then
           blockName = "coin"
-          size = coinSize
+          sizeY = coinSize
+          sizeX = sizeY
+        elseif(blockName=="end")then
+          sheet = sheetUI
   			else
 				  blockName = "enemy"
           sheet = sheetBasic
-          size = CELL_WIDTH
+          sizeY = CELL_WIDTH
+          sizeX = sizeY
 			  end
 
       if(blockID == 5) then
       end
-			thisLine = setBlock(sheet, blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, size, size, blockName)
+			thisLine = setBlock(sheet, blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName)
 			isChanged = true
 	end
   end
@@ -315,6 +331,7 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	transition.to(train, {time = timePerCell(), y = bottomY - CELL_WIDTH})
 	--ещё две рельсы
 	setRail(0)
+  linesCounter = 1
   lastLine = setRail(0) --для синхронизаций объектов препятствий
 	setBlockLine() --ставим первое препятствие с привязкой к первой рельсе
 	setRail(0)
