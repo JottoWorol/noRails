@@ -23,7 +23,7 @@ railsAmount = 0
 putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
 coinsMngr = require("coinsManager")
 
-function getLastRail()	
+function getLastRail()
   return lastRail
 end
 
@@ -327,10 +327,17 @@ function clearScreen()
       railsAmount = railsAmount - 1
   end
 
-  for i, back in pairs(railBackTable) do
-    display.remove( back )
-    table.remove( railBackTable,i )
+--  for i, back in pairs(railBackTable) do
+--    display.remove( back )
+--    table.remove( railBackTable,i )
+--  end
+
+  for i = #railBackTable, 1 , -1 do
+      local thisBackRail = railBackTable[i]
+      display.remove(thisBackRail)
+      table.remove( railBackTable, i )
   end
+
 end
 
 function initializeGrid(level) --загрузить блоки уровня level
