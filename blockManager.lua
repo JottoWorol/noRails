@@ -19,6 +19,7 @@ local emptyLinesCount = cellsOnScreen + 1
 local spriteEnemiesOffset = 8
 railsTable = {}
 railBackTable = {}
+backLineTable = {}
 railsAmount = 0
 putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
 coinsMngr = require("coinsManager")
@@ -117,6 +118,22 @@ function setBlockLine() --поставить линию блоков
   linesCounter = linesCounter + 1  --загрузить линию блоков
 end
 
+
+local lastBackLine = nil
+function setBackLine()
+  local backLine = display.newImageRect(backGroup, "Grass.png", CELL_WIDTH*5 + 20, CELL_WIDTH*2)
+  backLine.x = display.contentCenterX
+  if(lastBackLine == nil) then
+    backLine.y = bottomY - CELL_WIDTH
+  else
+    backLine.y = lastBackLine.y - CELL_WIDTH*2
+  end
+  physics.addBody(backLine, "kinematic", {isSensor = true})
+  backLine:setLinearVelocity(0, moveSpeed)
+  table.insert(backLineTable, backLine)
+  lastBackLine = backLine
+end
+
 function setTrain(x,y)
   train = display.newImageRect( mainGroup, sheetBasic,  1, _W* 0.13, _W* 0.13*(340/152))
   train.myName = "player"
@@ -179,11 +196,11 @@ function createGhost()
 end
 
 function deleteGhost ()
-    for i = #ghostsTable, 1 , -1 do
-      local thisGhost = ghostsTable[i]
-        	  display.remove( thisGhost ) -- убрать с экрана
-            table.remove( ghostsTable, i )
-    end
+  for i = #ghostsTable, 1 , -1 do
+    local thisGhost = ghostsTable[i]
+      	  display.remove( thisGhost ) -- убрать с экрана
+          table.remove( ghostsTable, i )
+  end
 end
 
 
@@ -253,7 +270,6 @@ function collectGarbage() --убираем всё, что вышло за экр
       if (thisBlock.y > _H + CELL_WIDTH)  then
           display.remove( thisBlock ) -- убрать с экрана
           table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
-
       end
   end
 
@@ -275,6 +291,13 @@ function collectGarbage() --убираем всё, что вышло за экр
           table.remove( railBackTable, i ) -- убрать из памяти, так как содержится в списке
       end
   end
+
+  for i = #backLineTable, 1 , -1 do
+    if (backLineTable[i].y > (_H + 2*CELL_WIDTH))  then
+        display.remove(backLineTable[i]) -- убрать с экрана
+        table.remove( backLineTable, i ) -- убрать из памяти, так как содержится в списке
+    end
+  end
 end
 
 function updateBlockSpeed()
@@ -293,6 +316,9 @@ function updateBlockSpeed()
   for i, ghost in pairs(ghostsTable) do
     ghost:setLinearVelocity(0, moveSpeed)
   end
+  for i, backLine in pairs(backLineTable) do
+    backLine:setLinearVelocity(0,moveSpeed)
+  end
 end
 
 function clearScreen()
@@ -310,8 +336,7 @@ function clearScreen()
   isDead = false
 
   for i = #blockTable, 1 , -1 do
-    local thisBlock = blockTable[i]
-      display.remove(thisBlock)
+      display.remove(blockTable[i])
       table.remove( blockTable, i )
   end
 
@@ -321,27 +346,28 @@ function clearScreen()
   timer.pause( trainAnimationTimer )
 
   for i = #railsTable, 1 , -1 do
-      local thisRail = railsTable[i]
-      display.remove(thisRail)
+      display.remove(railsTable[i])
       table.remove( railsTable, i )
       railsAmount = railsAmount - 1
   end
 
---  for i, back in pairs(railBackTable) do
---    display.remove( back )
---    table.remove( railBackTable,i )
---  end
-
   for i = #railBackTable, 1 , -1 do
-      local thisBackRail = railBackTable[i]
-      display.remove(thisBackRail)
+      display.remove(railBackTable[i])
       table.remove( railBackTable, i )
+  end
+
+  for i = #backLineTable, 1 , -1 do
+    display.remove(railBackTable[i])
+    table.remove( railBackTable, i )
   end
 
 end
 
 function initializeGrid(level) --загрузить блоки уровня level
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
+  for i=1,130 do
+    setBackLine()
+  end
   setTrain(display.contentCenterX, bottomY + CELL_WIDTH*0.5)
 	lastRail = train
 	--train.anchorY = train.height*2/3

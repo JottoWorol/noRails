@@ -21,6 +21,8 @@ function playMainTheme()
   audio.play(audioTable[13])
 end
 
+mainThemeTimer = timer.performWithDelay( 118970, playMainTheme)
+timer.pause(mainThemeTimer)
 
 
 function playSound(soundName)
@@ -51,7 +53,7 @@ function playSound(soundName)
     audio.play( audioTable[1])
   elseif(soundName == "music0")then
     audio.play(audioTable[13])
-    timer.performWithDelay( 118970, playMainTheme)
+    timer.resume(mainThemeTimer)
   end
 end
 
