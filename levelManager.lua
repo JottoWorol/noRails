@@ -123,6 +123,8 @@ end
 
 function levelEnd()
   trainTransitionPause()
+  trainTransitionCancel()
+  isDead = true
   isPossibleToPlaceRail = false
   pauseTimers()
   physics.pause()
@@ -152,10 +154,10 @@ end
 
 function onLocalCollision( self, event ) --когда происходит столкновение
     if ( event.phase == "began" ) then
-      if (event.other.myName == -1 and not event.other.isUsed)then
+      if (event.other.myName == -1 and not event.other.isUsed and not event.other.isGhost)then
         event.other.isUsed = true
         turnLeft()
-      elseif (event.other.myName == 1 and not event.other.isUsed) then
+      elseif (event.other.myName == 1 and not event.other.isUsed and not event.other.isGhost) then
         event.other.isUsed = true
         turnRight()
       elseif ( event.other.myName == "end") then

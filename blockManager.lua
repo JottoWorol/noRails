@@ -121,16 +121,16 @@ function collectGarbage() --убираем всё, что вышло за экр
       end
   end
 
-  collectGarbageCoins()
-  collectGarbageCoal()
-  collectGarbageRails()
-
-  for i = #backLineTable, 1 , -1 do
-    if (backLineTable[i].y > (_H + 2*CELL_WIDTH))  then
+   for i = #backLineTable, 1 , -1 do
+    if (backLineTable[i].y > (_H + CELL_WIDTH))  then
         display.remove(backLineTable[i]) -- убрать с экрана
         table.remove( backLineTable, i ) -- убрать из памяти, так как содержится в списке
     end
   end
+
+  collectGarbageCoins()
+  collectGarbageCoal()
+  collectGarbageRails()
 end
 
 function updateBlockSpeed()
@@ -184,8 +184,8 @@ function clearScreen()
   timer.pause( trainAnimationTimer )
 
   for i = #backLineTable, 1 , -1 do
-    display.remove(railBackTable[i])
-    table.remove( railBackTable, i )
+    display.remove(backLineTable[i])
+    table.remove( backLineTable, i )
   end
 end
 
@@ -204,4 +204,5 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	setRail(0)
   setRail(0)
   timer.resume(railAnimationTimer)
+  print(#coinTable, #railsTable,#railBackTable,#coalTable, #blockTable)
 end

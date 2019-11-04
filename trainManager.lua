@@ -100,7 +100,7 @@ function trainTransitionPause()
   end
 end
 
-function trainTransitionCansel()
+function trainTransitionCancel()
   for i, transit in pairs(trainTransitions) do
       transition.cancel(transit)
   end

@@ -32,6 +32,7 @@ local function createGhost()
   for i=2,4 do
     local newGhost = display.newImageRect(railGroup, sheetBasic, i , CELL_WIDTH *(math.abs( i - 3)+1)* railInitialSize, CELL_WIDTH * railInitialSize)
     newGhost.myName = i - 3
+    newGhost.isGhost = true
     physics.addBody( newGhost, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
     table.insert( ghostsTable, newGhost )
     if (i == 3) then
@@ -114,13 +115,13 @@ function clearRails()
   for i = #railsTable, 1 , -1 do
     display.remove(railsTable[i])
     table.remove( railsTable, i )
-    railsAmount = railsAmount - 1
   end
 
   for i = #railBackTable, 1 , -1 do
     display.remove(railBackTable[i])
     table.remove( railBackTable, i )
   end
+  railsAmount = 0
 end
 
 function collectGarbageRails()

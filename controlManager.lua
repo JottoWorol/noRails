@@ -49,7 +49,6 @@ local function onLeft()
     if (lastRail.y > putRailUpperBound) then
       currentColumn = currentColumn - 1
     end
-    --columnDelta = -1
     setRail(-1)
 end
 
@@ -61,12 +60,10 @@ local function onRight()
       currentColumn = currentColumn + 1
     end
     setRail(1)
-    --columnDelta = 1
 end
 
 local function onTap()
     setRail(0)
-    --columnDelta = 0
 end
 
 dragDirection(display.getCurrentStage(), onLeft, onRight, onTap, onDown)
