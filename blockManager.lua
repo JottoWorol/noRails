@@ -1,13 +1,3 @@
---[[
-
-Это код отвечает за генерацию уровня
-initializeGrid - ставит первичные блоки и запускает движение
-loadLevel - загрузить карту уровня
-setBlock - поставить препятствие/бонус
-setBlockLine - поставить линию блоков
-setRail - поставить рельсу
-
-]]
 local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
 local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
@@ -16,9 +6,7 @@ local linesCounter = 1 --счётчик линий уровня
 lastLine = nil  --последняя линия препятствий
 local emptyLinesCount = cellsOnScreen + 1
 local spriteEnemiesOffset = 8
-
 backLineTable = {}
-
 coinsMngr = require("coinsManager")
 coalMngr = require("coal")
 railMngr = require("railManager")
@@ -110,7 +98,7 @@ function setBlockLine() --поставить линию блоков
 end
 
 local lastBackLine = nil
-function setBackLine()
+function setBackLine()  --фоновая трава
   local backLine = display.newImageRect(backGroup, "Grass.png", CELL_WIDTH*5 + 20, CELL_WIDTH*2)
   backLine.x = display.contentCenterX
   if(lastBackLine == nil) then
@@ -199,16 +187,14 @@ function clearScreen()
     display.remove(railBackTable[i])
     table.remove( railBackTable, i )
   end
-
 end
 
 function initializeGrid(level) --загрузить блоки уровня level
-  --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
-  lastBackLine = nil
+  lastBackLine = nil  --ставим фон
   for i=1,130 do
     setBackLine()
   end
-  trainInitialzie()
+  trainInitialzie()  --ставим поезд
 	lastRail = getTrain()
 	loadLevel(level)  -- загружаем карту уровня
   isPossibleToPlaceRail = true

@@ -14,7 +14,7 @@ firstThree = 0
 railInitialSize = 3
 railAnimationDivisor  = 1.73205080
 
-local function railAnimation()
+local function railAnimation() --анимация падения
   for i, rail in pairs(railsTable) do
     if(rail.height>CELL_WIDTH) then
       rail.width = rail.width/railAnimationDivisor
@@ -124,7 +124,7 @@ function clearRails()
 end
 
 function collectGarbageRails()
-   for i = #railsTable, 1 , -1 do
+  for i = #railsTable, 1 , -1 do
     local thisRail = railsTable[i]
     if (thisRail.y > _H)  then
       display.remove( thisRail ) -- убрать с экрана
@@ -132,7 +132,6 @@ function collectGarbageRails()
       railsAmount = railsAmount - 1
     end
   end
-
   for i = #railBackTable, 1 , -1 do
     local thisBack = railBackTable[i]
     if (thisBack.y > _H)  then

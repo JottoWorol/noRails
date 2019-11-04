@@ -5,15 +5,15 @@ local rotationState = -1
 local train
 
 
-local function xTurnTime()
+local function xTurnTime() --время сдвига
   return timePerCell()*0.2
 end
 
-local function rotationTime()
+local function rotationTime()  --время для поворота на 45
   return xTurnTime()
 end
 
-local function rotationControl()
+local function rotationControl() --контроль поворота
   if(train==nil) then
     return
   end
@@ -24,25 +24,25 @@ local function rotationControl()
   elseif(rotationState == 1 and train.rotation == 0) then
     timer.pause(checkrotationTimer)
     rotationState = -1
-  end
+  end 
 end
 
 local isTrainScaled = false
 
-local function trainAnimation()
+local function trainAnimation() --idle
   if(isTrainScaled) then
     train.width = train.width*145/136
     isTrainScaled = false
   else
     train.width = train.width/145*136
     isTrainScaled = true
-  end
+  end  
 end
 
 checkrotationTimer = timer.performWithDelay(34,rotationControl,0)
 timer.pause(checkrotationTimer)
 
-local function turnDelay()
+local function turnDelay() --отложенный поворот после триггера
   if(isDead)then
     return
   end
@@ -50,22 +50,22 @@ local function turnDelay()
   local transition = transition.to(train, {time = xTurnTime(), x = train.x + turnDir*CELL_WIDTH})
   table.insert(trainTransitions, transition)
   timer.resume(checkrotationTimer)
-  timer.pause(startTurn)
+  timer.pause(startTurn)  
 end
 
-local function turn(dir)
+local function turn(dir) --функция для поворота
   if (isDead == false) then
     turnDir = dir
     timer.resume(startTurn)
     local transition = transition.to(train, {time = rotationTime(), rotation = turnDir*70})
     table.insert( trainTransitions, transition)
-  end
+  end  
 end
 
 trainAnimationTimer = timer.performWithDelay( 100, trainAnimation,0 )
 timer.pause( trainAnimationTimer )
 
-function trainInitialzie()
+function trainInitialzie() --инициализация поезда
   train = display.newImageRect( mainGroup, sheetBasic,  1, _W* 0.13, _W* 0.13*(340/152))
   train.myName = "player"
   train.isTrain = true
