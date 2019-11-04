@@ -61,7 +61,6 @@ end
 
 function showScore()
   scoreBack = display.newImageRect( uiGroup, sheetUI, 9, _H/16 * (227/119), _H/14 )
-  --scoreBack.x = _H/14 * (281/140) + scoreBack.width*0.5
   scoreBack.x = (bottomX + coinImage.width * 0.5 + _W - (_H/14*(475/153))/2)/2
   scoreBack.y = bottomY - _H + scoreBack.height*0.5
   scoreText = display.newText( uiGroup, score, scoreBack.x, scoreBack.y, native.systemFont, 36 )
@@ -81,7 +80,8 @@ function showCoinIndicator()
   coinImage = display.newImageRect(uiGroup, sheetUI, 5, _H/14 * (281/140), _H/14)
   coinImage.x = bottomX + coinImage.width * 0.5
   coinImage.y = bottomY - _H + coinImage.height * 0.5
-  coinText = display.newText( uiGroup, "" .. coinAmount, coinImage.x + coinImage.width*0.1, coinImage.y, native.systemFont, 25, left)
+  coinText = display.newText({parent = uiGroup, text = "" .. coinAmount, x = coinImage.x + coinImage.width*0.1, y = coinImage.y, font = native.systemFont, fontSize = 25, align = "left"})
+  coinText.align = "left"
 end
 
 function killCoinIndicator()
@@ -91,6 +91,9 @@ end
 
 function updateCoinIndicator()
   coinText.text = "" .. coinAmount
+  if(coinAmount>9)then
+    coinText.x = coinImage.x + coinImage.width*0.1 + coinText.size/4
+  end
 end
 
 function showCoalIndicator()
