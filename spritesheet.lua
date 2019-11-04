@@ -113,11 +113,41 @@ tutorialHand=
 bonus=
 {
     frames={
-        { --coal
-            x = 2,
-            y = 105,
-            width = 152,
-            height = 152
+        { --coal0
+            x = 0,
+            y = 116,
+            width = 130,
+            height = 130
+        },
+        {  --coal1
+            x = 130,
+            y = 116,
+            width = 130,
+            height = 130
+        },
+        {  --coal2
+            x = 260,
+            y = 116,
+            width = 130,
+            height = 130
+        },
+        {  --coal3
+            x = 390,
+            y = 116,
+            width = 130,
+            height = 130
+        },
+        {  --coal4
+            x = 520,
+            y = 116,
+            width = 130,
+            height = 130
+        },
+        {  --coal5
+            x = 650,
+            y = 116,
+            width = 130,
+            height = 130
         },
         {  --coin0
             x = 0,

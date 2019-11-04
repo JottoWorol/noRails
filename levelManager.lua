@@ -34,7 +34,7 @@ function gameLoop () --запускаем с периодом timePerCell()
 end
 
 gameLoopTimer = timer.performWithDelay(100, gameLoop, 0 )
-cleanerTimer = timer.performWithDelay(10,collectGarbage,0)
+cleanerTimer = timer.performWithDelay(50,collectGarbage,0)
 
 
 function updateSpeed() --обновляем скорость уровня
@@ -210,10 +210,7 @@ function levelEnd()
   physics.pause()
   stopConsumeCoal()
   stopUpdateCoins()
-
   showResults()
-
-
 end
 
 function diee(message) --умираем, высвечивается сообщение message
@@ -254,7 +251,6 @@ function onLocalCollision( self, event ) --когда происходит ст�
       elseif ( event.other.myName == "coin") then
         coinPlus()
         event.other.isUsed = true
-        useCoin(event.other)
       elseif ( event.other.myName == "enemy") then
         diee("Нет пути!")
       end

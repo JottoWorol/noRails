@@ -23,6 +23,7 @@ backLineTable = {}
 railsAmount = 0
 putRailUpperBound = _H/4 --выше этого уровня поставить рельсу нельзя
 coinsMngr = require("coinsManager")
+coalMngr = require("coal")
 
 function getLastRail()
   return lastRail
@@ -42,12 +43,15 @@ end
 
 local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --поставить блок blockID в точке (x,y) с myNamename
   newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
-  if(name=="enemy" or name=="coal") then
+  if(name == "enemy") then
     table.insert(blockTable, newBlock)
+  elseif(name == "coin")then
+    table.insert(coinTable, newBlock)
+    print(#coinTable)
+  elseif(name == "coal")then
+    table.insert(coalTable, newBlock)
   elseif(name=="end")then
     table.insert(blockTable, newBlock )
-  else
-    table.insert(coinTable, newBlock)
   end
   if(name=="end")then
     physics.addBody( newBlock, "dynamic", {isSensor = true})
@@ -77,37 +81,34 @@ function setBlockLine() --поставить линию блоков
     if(blockID == 35)then
       blockName = "end"
       blockID = 9
+      sheet = sheetUI
       sizeY = CELL_WIDTH
       sizeX = CELL_WIDTH * 12
-    elseif(blockID>=48 and blockID<=57) then
-      blockID = blockID - 48
+    elseif(blockID == 49)then --coal
+      blockName = "coal"
+      blockID = spriteCoalOffset
       sheet = sheetBonus
-    else
+      sizeY = coalSize
+      sizeX = sizeY
+    elseif(blockID == 50)then --coin
+      blockName = "coin"
+      blockID = spriteCoinOffset
+      sheet = sheetBonus
+      sizeY = coinSize
+      sizeX = sizeY
+    elseif(blockID>96 and blockID<123)then
       blockID = blockID - 96 + spriteEnemiesOffset
+      blockName = "enemy"
+      sheet = sheetBasic
+      sizeY = CELL_WIDTH
+      sizeX = sizeY
     end
-  	if(blockID~=0) then
-  			if(sheet==sheetBonus and blockID==1) then
-  				blockName = "coal"
-          sizeY = CELL_WIDTH*0.6
-          sizeX = sizeY
-        elseif (sheet==sheetBonus and blockID == spriteCoinOffset) then
-          blockName = "coin"
-          sizeY = coinSize
-          sizeX = sizeY
-        elseif(blockName=="end")then
-          sheet = sheetUI
-  			else
-				  blockName = "enemy"
-          sheet = sheetBasic
-          sizeY = CELL_WIDTH
-          sizeX = sizeY
-			  end
-
-      if(blockID == 5) then
-      end
-			thisLine = setBlock(sheet, blockID,bottomX + 5 + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName)
-			isChanged = true
-	end
+  	
+    if(blockID~=48)then
+		  thisLine = setBlock(sheet, blockID,bottomX + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName)
+      isChanged = true
+    end
+	  
   end
   if(not isChanged) then
   	emptyLinesCount = emptyLinesCount + 1
@@ -179,19 +180,19 @@ ghostsTable = {}
 function createGhost()
   for i=2,4 do
     local newGhost = display.newImageRect(railGroup, sheetBasic, i , CELL_WIDTH *(math.abs( i - 3)+1)* railInitialSize, CELL_WIDTH * railInitialSize)
-          newGhost.myName = i - 3
-          physics.addBody( newGhost, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
-          table.insert( ghostsTable, newGhost )
-          if (i == 3) then
-            newGhost.x = lastRail.myName*CELL_WIDTH*0.5 + lastRail.x
-          else
-      			newGhost.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*(i - 3)+(lastRail.myName+(i - 3))*math.abs(lastRail.myName))
-          end
-          newGhost.width = newGhost.width/railInitialSize
-          newGhost.height = newGhost.height/railInitialSize
-          newGhost.y = lastRail.y - CELL_WIDTH
-          newGhost:setLinearVelocity(0, moveSpeed)
-          newGhost:setFillColor(0.3, 0.3, 0.3, 0.3)
+    newGhost.myName = i - 3
+    physics.addBody( newGhost, "dynamic", {radius = CELL_WIDTH/2*1,isSensor = true} )
+    table.insert( ghostsTable, newGhost )
+    if (i == 3) then
+      newGhost.x = lastRail.myName*CELL_WIDTH*0.5 + lastRail.x
+    else
+			newGhost.x = lastRail.x + CELL_WIDTH*0.5*((1-math.abs(lastRail.myName))*(i - 3)+(lastRail.myName+(i - 3))*math.abs(lastRail.myName))
+    end
+    newGhost.width = newGhost.width/railInitialSize
+    newGhost.height = newGhost.height/railInitialSize
+    newGhost.y = lastRail.y - CELL_WIDTH
+    newGhost:setLinearVelocity(0, moveSpeed)
+    newGhost:setFillColor(0.3, 0.3, 0.3, 0.3)
   end
 end
 
@@ -263,10 +264,6 @@ end
 function collectGarbage() --убираем всё, что вышло за экран
   for i = #blockTable, 1 , -1 do
     local thisBlock = blockTable[i]
-      if(thisBlock.myName == "coal" and thisBlock.isUsed == true) then
-      	  display.remove( thisBlock ) -- убрать с экрана
-          table.remove( blockTable, i )
-      end
       if (thisBlock.y > _H + CELL_WIDTH)  then
           display.remove( thisBlock ) -- убрать с экрана
           table.remove( blockTable, i ) -- убрать из памяти, так как содержится в списке
@@ -274,6 +271,7 @@ function collectGarbage() --убираем всё, что вышло за экр
   end
 
   collectGarbageCoins()
+  collectGarbageCoal()
 
   for i = #railsTable, 1 , -1 do
     local thisRail = railsTable[i]
@@ -313,6 +311,9 @@ function updateBlockSpeed()
   for i, coin in pairs(coinTable) do
     coin:setLinearVelocity(0, moveSpeed)
   end
+  for i, coal in pairs(coalTable) do
+    coal:setLinearVelocity(0, moveSpeed)
+  end
   for i, ghost in pairs(ghostsTable) do
     ghost:setLinearVelocity(0, moveSpeed)
   end
@@ -341,6 +342,7 @@ function clearScreen()
   end
 
   clearCoins()
+  clearCoal()
 
   timer.pause( railAnimationTimer )
   timer.pause( trainAnimationTimer )
@@ -365,6 +367,7 @@ end
 
 function initializeGrid(level) --загрузить блоки уровня level
   --level = 0 -- временное решение, ибо придётся через левый геттер получать левел (и я понял в чём была ошибка со сценами, я дебил)
+  lastBackLine = nil
   for i=1,130 do
     setBackLine()
   end

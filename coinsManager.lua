@@ -1,48 +1,36 @@
 coinTable = {}
 coinSize = CELL_WIDTH*0.6
-coinIconSize = 100/5
 coinAmount = 0
-spriteCoinOffset = 2 --номер ячейки с монетой в спрайтшите
+spriteCoinOffset = 7 --номер ячейки с монетой в спрайтшите
 local coinState = 0 -- from 0 to 5
 
 
 
 function coinPlus()
-  playSound("coin")
   coinAmount = coinAmount + 1
-end
-
-function useCoin(coin)
-  for i = #coinTable, 1 , -1 do
-      if(coin == coinTable[i])then
-      display.remove(coin)
-      table.remove( coinTable, i )
-    end
-  end
 end
 
 function clearCoins()
   for i = #coinTable, 1 , -1 do
-      local coin = coinTable[i]
-      display.remove(coin)
-      table.remove( coinTable, i )
+    display.remove(coinTable[i])
+    table.remove( coinTable, i )
   end
 end
 
 function collectGarbageCoins()
   for i = #coinTable, 1 , -1 do
       local coin = coinTable[i]
-      if(coin.y > _H + CELL_WIDTH) then
+      if(coin.y > bottomY or coin.isUsed) then
         display.remove(coin)
         table.remove( coinTable, i )
       end
   end
 end
 
-function updateSprite(spriteNumber)
+local function updateSprite(spriteNumber)
   local newTable = {}
   for i = #coinTable, 1 , -1 do
-      local coin = coinTable[i]
+    local coin = coinTable[i]
     local oldX = coin.x
     local oldY = coin.y
   
@@ -51,7 +39,7 @@ function updateSprite(spriteNumber)
       lastLine = newCoin
     end
     display.remove(coin)
-    table.remove( coinTable, i )
+    table.remove(coinTable, i)
     table.insert(newTable, newCoin)
     physics.addBody( newCoin, "dynamic", { radius = CELL_WIDTH*0.3, isSensor = true})
     newCoin.myName = "coin"
@@ -70,7 +58,6 @@ function nextState()
     coinState=0
   end
   coinTable = updateSprite(coinState)
-  
 end
 
 coinUpdateTimer = timer.performWithDelay( 100, nextState, 0)

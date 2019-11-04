@@ -16,7 +16,7 @@ end
 
 --грид
 GRID_WIDTH = 5
-CELL_WIDTH = (_W - 20 ) / 5
+CELL_WIDTH = (_W ) / 5
 
 --параметры поезда
 moveSpeed = 10
@@ -31,7 +31,6 @@ end
 function timePerCell()   --время прохождения одной ячейки в миллисекундах
   return CELL_WIDTH*1000/moveSpeed
 end
-print( "timePerCell = ",timePerCell(0) )
 --подрубаем физику
 physics = require("physics")
 

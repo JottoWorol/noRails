@@ -29,7 +29,6 @@ function playSound(soundName)
   --soundName = "rail" || "button0" || "coin" || coal || "playButton"
   if(soundName == "rail") then
     audio.play(audioTable[2+railRoundRobin])
-    print( "play ", audioTable[2+railRoundRobin])
     if(railRoundRobin<3) then
       railRoundRobin = railRoundRobin + 1
     else
@@ -37,7 +36,6 @@ function playSound(soundName)
     end
   elseif(soundName == "coin") then
     audio.play(audioTable[6+coinRoundRobin])
-    print( "play ", audioTable[2+coinRoundRobin])
     if(coinRoundRobin<3) then
       coinRoundRobin = coinRoundRobin + 1
     else

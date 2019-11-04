@@ -1,5 +1,3 @@
-coal = require("coal")
-
 local background = display.newImageRect( backGroup, "Back.png" , _W, _H)
       background.x = display.contentCenterX
       background.y = display.contentCenterY
