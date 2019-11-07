@@ -21,7 +21,7 @@ function playMainTheme()
   audio.play(audioTable[13])
 end
 
-mainThemeTimer = timer.performWithDelay( 118970, playMainTheme)
+mainThemeTimer = timer.performWithDelay( 118970, playMainTheme,0)
 timer.pause(mainThemeTimer)
 
 
