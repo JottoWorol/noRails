@@ -2,6 +2,7 @@ local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество я
 local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
 blockTable = {} --таблица с блоками препятствий
+blockTransitions = {}
 local linesCounter = 1 --счётчик линий уровня
 lastLine = nil  --последняя линия препятствий
 local emptyLinesCount = cellsOnScreen + 1
@@ -20,9 +21,11 @@ local function loadLevel(levelNumber) --загрузить уровень из �
 	end
 end
 
-local function setBlock(spriteSheet, blockID, x,y, widht, height, name) --поставить блок blockID в точке (x,y) с myNamename
+local function setBlock(spriteSheet, blockID, x,y, widht, height, name, cycleName) --поставить блок blockID в точке (x,y) с myNamename
   newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
   if(name == "enemy") then
+    newBlock.cycleCode = cycleName
+    newBlock.cycleStage = 0
     table.insert(blockTable, newBlock)
   elseif(name == "coin")then
     table.insert(coinTable, newBlock)
@@ -75,6 +78,11 @@ function setBlockLine() --поставить линию блоков
       sizeY = coinSize
       sizeX = sizeY
     elseif(blockID>96 and blockID<123)then
+      if(blockID==103)then
+        cycle="cowCycle"
+      else
+        cycle="noCycle"
+      end
       blockID = blockID - 96 + spriteEnemiesOffset
       blockName = "enemy"
       sheet = sheetBasic
@@ -83,7 +91,7 @@ function setBlockLine() --поставить линию блоков
     end
   	
     if(blockID~=48)then
-		  thisLine = setBlock(sheet, blockID,bottomX + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName)
+		  thisLine = setBlock(sheet, blockID,bottomX + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName, cycle)
       isChanged = true
     end
 	  
@@ -121,7 +129,7 @@ function collectGarbage() --убираем всё, что вышло за экр
       end
   end
 
-   for i = #backLineTable, 1 , -1 do
+  for i = #backLineTable, 1 , -1 do
     if (backLineTable[i].y > (_H + CELL_WIDTH))  then
         display.remove(backLineTable[i]) -- убрать с экрана
         table.remove( backLineTable, i ) -- убрать из памяти, так как содержится в списке
@@ -189,6 +197,27 @@ function clearScreen()
   end
 end
 
+function updateBlockAnimation()
+  for i, block in pairs(blockTable) do
+    if(block.y>bottomY-_H and block.cycleCode ~= nil)then
+      if(block.cycleCode == "cowCycle")then
+        if(block.cycleStage==0 and block.x == bottomX + CELL_WIDTH*4.5)then
+          local blockTran = transition.to(block, {time = timePerCell()*3, x = bottomX + CELL_WIDTH*0.5})
+          block.cycleStage = 1
+          table.insert(blockTran, blockTransitions)
+        elseif(block.cycleStage==1 and block.x == bottomX + CELL_WIDTH*0.5)then
+          local blockTran = transition.to(block, {time = timePerCell()*3, x = bottomX + CELL_WIDTH*4.5})
+          table.insert(blockTran, blockTransitions)
+          block.cycleStage = 0
+        end
+      end
+    end
+  end
+end
+
+blockAnimationTimer = timer.performWithDelay( 60, updateBlockAnimation,0)
+timer.pause(blockAnimationTimer)
+
 function initializeGrid(level) --загрузить блоки уровня level
   lastBackLine = nil  --ставим фон
   for i=1,130 do
@@ -204,5 +233,5 @@ function initializeGrid(level) --загрузить блоки уровня leve
 	setRail(0)
   setRail(0)
   timer.resume(railAnimationTimer)
-  print(#coinTable, #railsTable,#railBackTable,#coalTable, #blockTable)
+  timer.resume(blockAnimationTimer)
 end

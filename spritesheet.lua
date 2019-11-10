@@ -276,6 +276,12 @@ sheetOptions =
             y = 542,
             width = 354,
             height = 604
+        },
+        { ---10) Cow cycle
+            x = 472,
+            y = 350,
+            width = 256,
+            height = 256
         }
     }
 }

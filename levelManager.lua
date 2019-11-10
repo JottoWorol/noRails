@@ -148,6 +148,7 @@ function diee(message) --умираем, высвечивается сообще
   physics.pause()
   stopConsumeCoal()
   stopUpdateCoins()
+  timer.pause(blockAnimationTimer)
   dieText = display.newText( uiGroup, message,
   display.contentCenterX,display.contentCenterY, native.systemFont, 48 )
 end
