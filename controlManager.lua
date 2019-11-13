@@ -49,6 +49,7 @@ local function onLeft()
     if (lastRail.y > putRailUpperBound) then
       currentColumn = currentColumn - 1
     end
+    deleteLastRail()
     setRail(-1)
 end
 
@@ -59,6 +60,7 @@ local function onRight()
     if (lastRail.y > putRailUpperBound) then
       currentColumn = currentColumn + 1
     end
+    deleteLastRail()
     setRail(1)
 end
 
