@@ -35,7 +35,7 @@ function updateSpeed() --обновляем скорость уровня
   else
     moveSpeed = levelSpeed(currentLevel)
   end
-  setBlockLine()
+ -- setBlockLine()
   updateBlockSpeed()
 end
 

@@ -1,24 +1,38 @@
 local cellsOnScreen = intDiv(_H,CELL_WIDTH) --целое количество ячеек, которое помещается на экран
-local levelLength = 50 --линий на уровень
 local levelMap = {} --таблица с линиями
 blockTable = {} --таблица с блоками препятствий
 blockTransitions = {}
-local linesCounter = 1 --счётчик линий уровня
+backLineTable = {}
+local linesCounter = 0 --счётчик линий уровня
 lastLine = nil  --последняя линия препятствий
 local emptyLinesCount = cellsOnScreen + 1
 local spriteEnemiesOffset = 8
-backLineTable = {}
+--RANDOM GEN######
+levelLength = 0
+local levelBlocksNumber
+levelBlockLength = 8
+local currentLineBase
+--#######
+
 coinsMngr = require("coinsManager")
 coalMngr = require("coal")
 railMngr = require("railManager")
 trainMngr = require("trainManager")
+
+local function getRandomLevelBlock()
+  return 1+math.random(0,levelBlocksNumber-1)*levelBlockLength
+end
+
 
 local function loadLevel(levelNumber) --загрузить уровень из файла level[levelNumber].txt
 	local fileName = "level"..tostring(levelNumber)..".txt"
 	local levelPath = system.pathForFile( fileName, system.ResourceDirectory ) --открываем файл уровня
 	for line in io.lines(levelPath) do
   		table.insert(levelMap, line)           --считываем линии уровня
+      levelLength = levelLength + 1
 	end
+  levelBlocksNumber = intDiv(levelLength,levelBlockLength)
+  currentLineBase = getRandomLevelBlock()
 end
 
 local function setBlock(spriteSheet, blockID, x,y, widht, height, name, cycleName) --поставить блок blockID в точке (x,y) с myNamename
@@ -48,9 +62,6 @@ local function setBlock(spriteSheet, blockID, x,y, widht, height, name, cycleNam
 end
 
 function setBlockLine() --поставить линию блоков
-  if(linesCounter > 120)then
-    return
-  end
   local isChanged = false --есть ли что-то на линии
   local thisLine
   local blockName
@@ -58,7 +69,7 @@ function setBlockLine() --поставить линию блоков
   local sizeX
   local sizeY
   for i = 1, GRID_WIDTH do
-  	local blockID = string.byte(levelMap[linesCounter],i)
+  	local blockID = string.byte(levelMap[currentLineBase + linesCounter],i)
     if(blockID == 35)then
       blockName = "end"
       blockID = 9
@@ -93,8 +104,7 @@ function setBlockLine() --поставить линию блоков
     if(blockID~=48)then
 		  thisLine = setBlock(sheet, blockID,bottomX + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName, cycle)
       isChanged = true
-    end
-	  
+    end 
   end
   if(not isChanged) then
   	emptyLinesCount = emptyLinesCount + 1
@@ -102,7 +112,12 @@ function setBlockLine() --поставить линию блоков
   	lastLine = thisLine
   	emptyLinesCount = 0
   end
-  linesCounter = linesCounter + 1  --загрузить линию блоков
+  if(linesCounter<levelBlockLength-1)then
+    linesCounter = linesCounter + 1  --загрузить линию блоков
+  else
+    linesCounter=0
+    currentLineBase = getRandomLevelBlock()
+  end
 end
 
 local lastBackLine = nil
@@ -198,6 +213,10 @@ function clearScreen()
 end
 
 function updateBlockAnimation()
+  if(lastLine.y>0)then
+    setBlockLine()
+  end
+  --[[
   for i, block in pairs(blockTable) do
     if(block.y>bottomY-_H and block.cycleCode ~= nil)then
       if(block.cycleCode == "cowCycle")then
@@ -212,7 +231,7 @@ function updateBlockAnimation()
         end
       end
     end
-  end
+  end]]
 end
 
 blockAnimationTimer = timer.performWithDelay( 60, updateBlockAnimation,0)
