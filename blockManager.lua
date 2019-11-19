@@ -8,9 +8,10 @@ lastLine = nil  --последняя линия препятствий
 local emptyLinesCount = cellsOnScreen + 1
 local spriteEnemiesOffset = 8
 --RANDOM GEN######
+local season = 0
 levelLength = 0
 local levelBlocksNumber
-levelBlockLength = 8
+local levelBlockLength = 8
 local currentLineBase
 --#######
 
@@ -39,7 +40,11 @@ local function setBlock(spriteSheet, blockID, x,y, widht, height, name, cycleNam
   newBlock = display.newImageRect(mainGroup, spriteSheet, blockID , widht, height)
   if(name == "enemy") then
     newBlock.cycleCode = cycleName
-    newBlock.cycleStage = 0
+    if(x<_W/2)then
+      newBlock.cycleStage = 1
+    else
+      newBlock.cycleStage = 0
+    end
     table.insert(blockTable, newBlock)
   elseif(name == "coin")then
     table.insert(coinTable, newBlock)
@@ -89,12 +94,14 @@ function setBlockLine() --поставить линию блоков
       sizeY = coinSize
       sizeX = sizeY
     elseif(blockID>96 and blockID<123)then
-      if(blockID==103)then
+      if(blockID==102)then
         cycle="cowCycle"
+        blockID = blockID - 96 + spriteEnemiesOffset - 2 + season*5
       else
         cycle="noCycle"
+        blockID = blockID - 96 + spriteEnemiesOffset + season*4
       end
-      blockID = blockID - 96 + spriteEnemiesOffset
+      
       blockName = "enemy"
       sheet = sheetBasic
       sizeY = CELL_WIDTH
@@ -195,8 +202,8 @@ function clearScreen()
   isDead = false
 
   for i = #blockTable, 1 , -1 do
-      display.remove(blockTable[i])
-      table.remove( blockTable, i )
+    display.remove(blockTable[i])
+    table.remove( blockTable, i )
   end
 
   clearCoins()
@@ -216,7 +223,7 @@ function updateBlockAnimation()
   if(lastLine.y>0)then
     setBlockLine()
   end
-  --[[
+  
   for i, block in pairs(blockTable) do
     if(block.y>bottomY-_H and block.cycleCode ~= nil)then
       if(block.cycleCode == "cowCycle")then
@@ -231,7 +238,7 @@ function updateBlockAnimation()
         end
       end
     end
-  end]]
+  end
 end
 
 blockAnimationTimer = timer.performWithDelay( 60, updateBlockAnimation,0)

@@ -240,48 +240,104 @@ sheetOptions =
             width = 157,
             height = 332
         },
-        { ---9) Tree
-            x = 65,
-            y = 102,
-            width = 256,
-            height = 256
+        { ---9) Tree Summer
+            x = 159,
+            y = 93,
+            width = 202,
+            height = 202
         },
-        { ---10) Cow
-            x = 472,
-            y = 101,
-            width = 256,
-            height = 256
+        { ---10) Cow Summer
+            x = 152,
+            y = 302,
+            width = 216,
+            height = 216
         },
         {
-          ---11) House1
-            x = 1608,
-            y = 0,
-            width = 395,
-            height = 395
+          ---11) House Summer
+            x = 370,
+            y = 297,
+            width = 216,
+            height = 216
         },
-        { ---12) House2
-            x = 33,
-            y = 1237,
-            width = 347,
-            height = 347
+        {
+          ---11) Tractor Summer
+            x = 366,
+            y = 89,
+            width = 216,
+            height = 216
         },
-        { ---13) YellowGrass
-            x = 75,
-            y = 404,
-            width = 240,
-            height = 240
+        {
+          ---11) Plat Summer
+            x = 702,
+            y = 1321,
+            width = 216,
+            height = 216
         },
-        { ---14) Lake
-            x = 1668,
-            y = 542,
-            width = 354,
-            height = 604
+        { ---9) Tree Autum
+            x = 1360,
+            y = 76,
+            width = 216,
+            height = 216
         },
-        { ---10) Cow cycle
-            x = 472,
-            y = 350,
-            width = 256,
-            height = 256
+        { ---10) Cow Autum
+            x = 1360,
+            y = 293,
+            width = 216,
+            height = 216
+        },
+        {
+          ---11) House Autum
+            x = 1576,
+            y = 284,
+            width = 216,
+            height = 216
+        },
+        {
+          ---11) Tractor Autum
+            x = 1575,
+            y = 83,
+            width = 216,
+            height = 216
+        },
+        {
+          ---11) Plat Autum
+            x = 702,
+            y = 1321,
+            width = 216,
+            height = 216
+        },
+        { ---9) Tree Winter
+            x = 1351,
+            y = 671,
+            width = 216,
+            height = 216
+        },
+        { ---10) Cow Winter
+            x = 1350,
+            y = 890,
+            width = 216,
+            height = 216
+        },
+        {
+          ---11) House Winter
+            x = 1566,
+            y = 882,
+            width = 216,
+            height = 216
+        },
+        {
+          ---11) Tractor Winter
+            x = 1569,
+            y = 674,
+            width = 216,
+            height = 216
+        },
+        {
+          ---11) Plat Winter
+            x = 702,
+            y = 1321,
+            width = 216,
+            height = 216
         }
     }
 }
