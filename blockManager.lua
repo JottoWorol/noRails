@@ -96,7 +96,7 @@ function setBlockLine() --поставить линию блоков
     elseif(blockID>96 and blockID<123)then
       if(blockID==102)then
         cycle="cowCycle"
-        blockID = blockID - 96 + spriteEnemiesOffset - 2 + season*5
+        blockID = blockID - 96 + spriteEnemiesOffset - 2 + season*4
       else
         cycle="noCycle"
         blockID = blockID - 96 + spriteEnemiesOffset + season*4
@@ -228,11 +228,11 @@ function updateBlockAnimation()
     if(block.y>bottomY-_H and block.cycleCode ~= nil)then
       if(block.cycleCode == "cowCycle")then
         if(block.cycleStage==0 and block.x == bottomX + CELL_WIDTH*4.5)then
-          local blockTran = transition.to(block, {time = timePerCell()*3, x = bottomX + CELL_WIDTH*0.5})
+          local blockTran = transition.to(block, {time = 4000/levelSpeed(0)*8, x = bottomX + CELL_WIDTH*0.5})
           block.cycleStage = 1
           table.insert(blockTran, blockTransitions)
         elseif(block.cycleStage==1 and block.x == bottomX + CELL_WIDTH*0.5)then
-          local blockTran = transition.to(block, {time = timePerCell()*3, x = bottomX + CELL_WIDTH*4.5})
+          local blockTran = transition.to(block, {time = 4000/levelSpeed(0)*8, x = bottomX + CELL_WIDTH*4.5})
           table.insert(blockTran, blockTransitions)
           block.cycleStage = 0
         end

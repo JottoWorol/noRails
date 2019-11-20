@@ -21,7 +21,7 @@ CELL_WIDTH = (_W ) / 5
 --параметры поезда
 moveSpeed = 10
 function levelSpeed(level)  --возвращает обычную скорость текущего уровня
-  return 90
+  return 40
 end
 
 function getCoalConsumption() --сколько единиц топлива из 100 потребляется за 0.1 секунду

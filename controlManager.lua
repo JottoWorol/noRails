@@ -35,7 +35,6 @@ function dragDirection(dispObj, left, right, tap, down) --SWIPE HANDLING
     dispObj:addEventListener("touch", touchListener)
 end
 
---с цифрами работать быстрее, чем со строками. и можно будет быстро получить номер рельсы в спрайтшите
 
 local function onDown()
   deleteLastRail()

@@ -31,7 +31,7 @@ cleanerTimer = timer.performWithDelay(50,collectGarbage,0)
 
 function updateSpeed() --обновляем скорость уровня
   if(railsAmount>3) then
-    moveSpeed = levelSpeed(currentLevel)*railsAmount/2
+    moveSpeed = levelSpeed(currentLevel)*railsAmount
   else
     moveSpeed = levelSpeed(currentLevel)
   end
