@@ -14,7 +14,7 @@ local levelBlocksNumber
 local levelBlockLength = 8
 local currentLineBase
 --#######
-local traktorTransitionTime = 4000/levelSpeed(0)*8;
+local traktorTransitionTime = 40000/levelSpeed(0)*2;
 coinsMngr = require("coinsManager")
 coalMngr = require("coal")
 railMngr = require("railManager")
@@ -101,17 +101,17 @@ function setBlockLine() --поставить линию блоков
         cycle="noCycle"
         blockID = blockID - 96 + spriteEnemiesOffset + season*4
       end
-      
+
       blockName = "enemy"
       sheet = sheetBasic
       sizeY = CELL_WIDTH
       sizeX = sizeY
     end
-  	
+
     if(blockID~=48)then
 		  thisLine = setBlock(sheet, blockID,bottomX + CELL_WIDTH*(0.5 + (i-1)), lastLine.y - (emptyLinesCount+1)*CELL_WIDTH, sizeX, sizeY, blockName, cycle)
       isChanged = true
-    end 
+    end
   end
   if(not isChanged) then
   	emptyLinesCount = emptyLinesCount + 1
@@ -223,7 +223,7 @@ function updateBlockAnimation()
   if(lastLine.y>0)then
     setBlockLine()
   end
-  
+
   for i, block in pairs(blockTable) do
     if(block.y>bottomY-_H and block.cycleCode ~= nil)then
       if(block.cycleCode == "cowCycle")then
