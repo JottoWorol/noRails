@@ -14,7 +14,7 @@ local levelBlocksNumber
 local levelBlockLength = 8
 local currentLineBase
 --#######
-
+local traktorTransitionTime = 4000/levelSpeed(0)*8;
 coinsMngr = require("coinsManager")
 coalMngr = require("coal")
 railMngr = require("railManager")
@@ -228,11 +228,11 @@ function updateBlockAnimation()
     if(block.y>bottomY-_H and block.cycleCode ~= nil)then
       if(block.cycleCode == "cowCycle")then
         if(block.cycleStage==0 and block.x == bottomX + CELL_WIDTH*4.5)then
-          local blockTran = transition.to(block, {time = 4000/levelSpeed(0)*8, x = bottomX + CELL_WIDTH*0.5})
+          local blockTran = transition.to(block, {time = traktorTransitionTime, x = bottomX + CELL_WIDTH*0.5})
           block.cycleStage = 1
           table.insert(blockTran, blockTransitions)
         elseif(block.cycleStage==1 and block.x == bottomX + CELL_WIDTH*0.5)then
-          local blockTran = transition.to(block, {time = 4000/levelSpeed(0)*8, x = bottomX + CELL_WIDTH*4.5})
+          local blockTran = transition.to(block, {time = traktorTransitionTime, x = bottomX + CELL_WIDTH*4.5})
           table.insert(blockTran, blockTransitions)
           block.cycleStage = 0
         end
