@@ -14,7 +14,7 @@ local levelBlocksNumber
 local levelBlockLength = 8
 local currentLineBase
 --#######
-local traktorTransitionTime = 40000/levelSpeed(0)*2;
+local traktorTransitionTime = 40000/levelSpeed(0)*4;
 coinsMngr = require("coinsManager")
 coalMngr = require("coal")
 railMngr = require("railManager")
